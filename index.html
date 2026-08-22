@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f5f6f8"/>
 <title>TEAM EYSL Mobile Operating v1</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--ink:#111317;--muted:#858b94;--line:#e1e5ea;--green:#16865f;--amber:#a86706}
@@ -197,52 +196,8 @@ body{background:#eef0f3}
  .pagehead h1{font-size:24px}
 }
 
-
-/* PWA mobile shell */
-@media (max-width:760px){
-  body{overscroll-behavior:none}
-  .drawer{position:fixed!important;left:0;top:0;bottom:0;z-index:200!important;
-          transform:translateX(-105%);transition:transform .22s ease;
-          width:min(86vw,340px)!important;box-shadow:0 0 30px rgba(0,0,0,.12)}
-  .drawer.open{transform:translateX(0)}
-  .drawerBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.22);z-index:190;display:none}
-  .drawerBackdrop.open{display:block}
-  .app{min-height:100dvh}
-}
-
-
-/* ===== PWA drawer v2: always closed until explicitly opened ===== */
-.drawer{
-  position:fixed!important;
-  top:0!important;
-  bottom:0!important;
-  left:max(0px,calc(50% - 360px))!important;
-  width:min(86vw,340px)!important;
-  transform:translateX(-110%)!important;
-  transition:transform .22s ease!important;
-  z-index:220!important;
-  box-shadow:0 12px 40px rgba(0,0,0,.16)!important;
-}
-.drawer.open{transform:translateX(0)!important}
-.drawerOverlay{
-  position:fixed!important;
-  inset:0!important;
-  display:none!important;
-  background:rgba(0,0,0,.28)!important;
-  z-index:210!important;
-}
-.drawerOverlay.open{display:block!important}
-@media (max-width:760px){
-  .drawer{left:0!important;width:min(86vw,340px)!important}
-}
-
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-
-<meta name="theme-color" content="#f5f6f8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="TEAM EYSL">
 
 
 <link rel="manifest" href="/manifest.webmanifest">
@@ -250,7 +205,7 @@ body{background:#eef0f3}
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="TEAM EYSL">
-<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icon-192.png">
 
 </head>
 <body>
@@ -327,7 +282,7 @@ body{background:#eef0f3}
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">활동 신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -1191,6 +1146,7 @@ function drawerGo(id){closeDrawer();showPage(id)}
 function toggleSub(id){document.getElementById(id).classList.toggle('open')}
 
 window.addEventListener('load',async()=>{
+ closeDrawer();
  const loggedIn=await initAuth();
  initAttendanceOptions();
  if(!loggedIn)return;
@@ -1215,43 +1171,11 @@ window.addEventListener('load',async()=>{
 });
 </script>
 
-
 <script>
-(function(){
-  function forceDrawerClosed(){
-    const drawer=document.getElementById('drawer');
-    const overlay=document.getElementById('drawerOverlay');
-    if(drawer) drawer.classList.remove('open');
-    if(overlay) overlay.classList.remove('open');
-  }
-  window.addEventListener('pageshow', forceDrawerClosed);
-  document.addEventListener('DOMContentLoaded', forceDrawerClosed);
-
-  // Keep the original functions, but guarantee predictable behavior.
-  const originalOpen=window.openDrawer;
-  window.openDrawer=function(){
-    const drawer=document.getElementById('drawer');
-    const overlay=document.getElementById('drawerOverlay');
-    if(drawer) drawer.classList.add('open');
-    if(overlay) overlay.classList.add('open');
-  };
-  window.closeDrawer=function(){
-    const drawer=document.getElementById('drawer');
-    const overlay=document.getElementById('drawerOverlay');
-    if(drawer) drawer.classList.remove('open');
-    if(overlay) overlay.classList.remove('open');
-  };
-
-  document.addEventListener('keydown',e=>{
-    if(e.key==='Escape') window.closeDrawer();
-  });
-
-  if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>{
-      navigator.serviceWorker.register('/sw.js').catch(()=>{});
-    });
-  }
-})();
+window.addEventListener('pageshow',()=>{try{closeDrawer()}catch(e){}});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+}
 </script>
 
 </body>
