@@ -1,0 +1,10 @@
+{
+  "name": "TEAM EYSL Training Club",
+  "short_name": "TEAM EYSL",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#f5f6f8",
+  "orientation": "portrait-primary",
+  "description": "TEAM EYSL Training Club member app"
+}
