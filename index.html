@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f6f8"/>
+<title>TEAM EYSL Mobile Operating v1</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#111317;--muted:#858b94;--line:#e1e5ea;--green:#16865f;--amber:#a86706}
+*{box-sizing:border-box} body{margin:0;background:#e9ebee;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{width:min(430px,100%);min-height:100vh;margin:auto;background:var(--bg);padding-bottom:82px;position:relative}
+.top{position:sticky;top:0;z-index:20;background:rgba(245,246,248,.97);display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.brandbox{display:flex;align-items:center;gap:12px}.hamb{width:39px;height:39px;border:1px solid var(--line);background:#fff;border-radius:14px;font-size:20px}.brand b{font-size:22px;letter-spacing:-1px}.brand span{display:block;font-size:9px;letter-spacing:2.6px;color:#888;margin-top:5px}
+.userbox{display:flex;align-items:center;gap:7px}.role{font-size:9px;padding:5px 8px;border-radius:999px;background:#edf8f2;color:#147a58}.avatar{width:39px;height:39px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:900}
+.page{display:none;padding:8px 18px 28px}.page.active{display:block}.title{font-size:28px;letter-spacing:-1.3px;margin:9px 0 18px}.pagehead{display:grid;grid-template-columns:34px 1fr 34px;align-items:center;margin:7px 0 16px}.pagehead h1{font-size:24px;text-align:center;margin:0}.back{border:0;background:none;font-size:23px;padding:0}.section{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}.section h2{font-size:17px;margin:0}.link{font-size:10px;color:#8a9098}
+.card,.row,.statusCard,.notice,.panel{background:#fff;border:1px solid var(--line);border-radius:18px}.card{padding:16px}.row{padding:14px;display:flex;align-items:center;gap:11px}.grow{flex:1;min-width:0}.row b{font-size:13px}.row p{font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.45}
+.icon{width:42px;height:42px;border-radius:13px;background:#f0f2f4;display:grid;place-items:center}
+.list{display:flex;flex-direction:column;gap:9px}.tag{font-size:10px;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#3469c8;white-space:nowrap}.tag.wait{background:#fff0d6;color:#9d5c00}.tag.done{background:#eceff2;color:#74787d}.tag.ok{background:#edf7f2;color:#11805b}
+.btn{border:0;border-radius:13px;padding:11px 13px;font-size:12px;font-weight:850}.primary{background:#111;color:#fff}.outline{background:#fff;border:1px solid var(--line)}.ghost{background:#eef0f2}.amber{background:#fff0d7;color:#925900}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.hero{background:#11161d;color:#fff;border-radius:24px;padding:20px}.hero small{font-size:9px;color:#aab1ba;letter-spacing:1px}.hero h1{font-size:22px;line-height:1.3;margin:8px 0}.hero p{font-size:11px;color:#c9ced4;margin:0}
+.nav{position:fixed;z-index:18;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:76px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)}
+.nav button{border:0;background:none;color:#999;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.nav button.active{color:#111;font-weight:900}.nav i{font-style:normal;font-size:19px}
+.notice{padding:15px}.notice h3{font-size:15px;margin:5px 0}.notice .date{font-size:10px;color:#999}.notice p{font-size:11px;color:#777;margin:0}.fab{position:fixed;right:max(calc((100vw - 430px)/2 + 18px),18px);bottom:92px;width:52px;height:52px;border:0;border-radius:18px;background:#111;color:#fff;font-size:26px;z-index:16}
+.article{background:#fff;border:1px solid var(--line);border-radius:20px;padding:19px}.article h2{font-size:21px;margin:8px 0 14px}.article p{font-size:13px;line-height:1.8;white-space:pre-line}.meta{font-size:10px;color:#92979d}
+.comments .comment{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}.comment b{font-size:11px}.comment span{font-size:9px;color:#999;margin-left:6px}.comment p{font-size:12px;margin:6px 0 0}.commentForm{display:flex;gap:6px;margin-top:9px}.commentForm input{flex:1;border:1px solid var(--line);border-radius:13px;padding:10px}.commentForm button{border:0;border-radius:12px;background:#111;color:#fff;padding:0 13px}
+.formrow{margin:13px 0}.formrow label{display:block;font-size:11px;font-weight:850;margin-bottom:7px}.formrow input,.formrow select,.formrow textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}.formrow textarea{min-height:150px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.uploadBox{background:#fff;border:1px dashed #cdd3da;border-radius:16px;padding:15px;font-size:11px}.filechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{background:#f1f3f5;border-radius:999px;padding:6px 8px;font-size:9px}
+.chatTabs,.filters,.recordTabs{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 13px}.chatTabs button,.filters button,.recordTabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:11px}.chatTabs button.active,.filters button.active,.recordTabs button.active{background:#111;color:#fff;border-color:#111}
+.chatBody{height:calc(100vh - 230px);overflow:auto;padding-bottom:80px}.bubbleRow{display:flex;gap:8px;margin:12px 0}.bubbleRow.me{justify-content:flex-end}.bubble{max-width:255px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.45}.me .bubble{background:#111;color:#fff}.bubbleName{font-size:9px;color:#888;margin-bottom:4px}.bubbleTime{font-size:9px;color:#999;margin:0 4px;align-self:end}.bubbleFlex{display:flex;align-items:flex-end;gap:4px}.me .bubbleFlex{flex-direction:row-reverse}.chatInput{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);width:min(430px,100%);background:var(--bg);padding:8px 10px;display:flex;gap:6px;z-index:13}.chatInput input{flex:1;min-width:0;border:1px solid var(--line);border-radius:14px;padding:10px}.chatInput button{border:0;border-radius:12px;padding:0 12px}
+.dmRow{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;display:flex;align-items:center;gap:10px}.dmAv{width:38px;height:38px;border-radius:50%;background:#eceff2;display:grid;place-items:center;font-weight:850}.dmRow b{font-size:12px}.dmRow p{font-size:10px;color:#888;margin:3px 0 0}
+.calendar{background:#fff;border:1px solid var(--line);border-radius:21px;padding:14px}.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.calhead button{border:0;background:#eef0f2;border-radius:10px;padding:7px 10px}.week,.days{display:grid;grid-template-columns:repeat(7,1fr)}.week span{text-align:center;font-size:10px;color:#999;padding:6px}.day{min-height:48px;border-radius:10px;text-align:center;font-size:11px;padding:6px 2px}.day.selected{background:#111;color:#fff}.dots{display:flex;justify-content:center;gap:2px;margin-top:4px}.dot{width:5px;height:5px;border-radius:50%;background:#3478f6}.dot.race{background:#e49628}.dot.event{background:#dc6e96}
+.statusCard{padding:15px}.statusTop{display:flex;justify-content:space-between;gap:10px}.statusTop h3{font-size:14px;margin:0}.statusTop p{font-size:11px;color:#7e848a;line-height:1.45;margin:5px 0 0}
+.detail{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.detailrow{padding:11px 0;border-bottom:1px solid #edf0f2}.detailrow:last-child{border-bottom:0}.detailrow b{display:block;font-size:10px;color:#858b92;margin-bottom:5px}.detailrow span{font-size:13px;line-height:1.5}
+.names{font-size:11px;line-height:1.9}.waitlist{display:grid;grid-template-columns:1fr 1fr;gap:7px}.waititem{background:#f4f5f7;border-radius:11px;padding:9px;font-size:11px}.offer{background:#fff4df;border:1px solid #f0d49e}.offerBox{background:#fff7e9;border:1px solid #ecd099;border-radius:16px;padding:13px;margin-top:11px}.offerBox b{font-size:12px}.offerBox p{font-size:10px;color:#715a36;line-height:1.5}.countdown{font-size:18px;font-weight:900;margin-top:8px}
+.bigChoiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.bigChoice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;font-size:13px;text-align:left}.bigChoice.on{background:#111;color:#fff;border-color:#111}
+.profile{background:#15191e;color:#fff;border-radius:23px;padding:18px;display:flex;align-items:center;gap:13px}.profile .bigav{width:58px;height:58px;border-radius:17px;background:#fff;color:#111;display:grid;place-items:center;font-weight:900}.profile h2{margin:0 0 4px;font-size:18px}.profile p{margin:0;color:#bbb;font-size:11px}
+.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.menuCard{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px}.menuCard b{display:block;font-size:13px}.menuCard span{display:block;font-size:10px;color:#888;margin-top:5px;line-height:1.4}
+.summary{background:linear-gradient(145deg,#f0f4ff,#fff);border:1px solid #dfe6f8;border-radius:21px;padding:17px}.summary h3{margin:6px 0 11px;font-size:18px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:#fff;border:1px solid #e5e8ee;border-radius:14px;padding:11px}.metric b{font-size:19px;display:block}.metric span{font-size:9px;color:#80858b}.monthSwitch{display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 0 14px}.monthSwitch button{border:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.pbgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pb{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.pb .stroke{font-size:11px;color:#777}.pb .time{font-size:21px;font-weight:900;margin:5px 0}.pb .meet{font-size:9px;color:#999;line-height:1.35}.history{display:flex;flex-direction:column;gap:8px}.hist{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.hist .topline{display:flex;justify-content:space-between;gap:10px}.hist b{font-size:13px}.hist span{font-size:10px;color:#777}.good{color:var(--green)!important}.bad{color:#c94c4c!important}
+.yearMonth{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.stat strong{font-size:23px;display:block}.stat span{font-size:9px;color:#888}
+.manageSummary{display:grid;grid-template-columns:1fr 1fr;gap:9px}.manageCard{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.manageCard h4{font-size:12px;font-weight:950;margin:0 0 8px}.manageCard strong{font-size:23px}.rank span{display:block;font-size:10px;color:#555;margin-top:5px}
+.memberrow{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;display:flex;align-items:center;gap:8px}.memberrow b{font-size:12px}.memberrow p{font-size:10px;color:#888;margin:3px 0 0}
+.attGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.attGrid div{background:#f4f5f7;border-radius:10px;padding:8px 3px;text-align:center}.attGrid b{font-size:13px;display:block}.attGrid span{font-size:8px;color:#777}.attChoice{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 8px;font-size:10px}.attChoice.on{background:#111;color:#fff}
+.mediaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mediaTile{aspect-ratio:1;border-radius:12px;background:#eceff2;overflow:hidden;position:relative;display:grid;place-items:center}.mediaTile img,.mediaTile video{width:100%;height:100%;object-fit:cover}.play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:28px;text-shadow:0 1px 5px #000}.fileRow{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}.fileRow b{font-size:12px}.fileRow span{font-size:9px;color:#888}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modal img,.modal video{max-width:100%;max-height:82vh;border-radius:14px}.modalClose{position:absolute;right:20px;top:20px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;font-size:20px}
+.drawerOverlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:45;display:none}.drawerOverlay.open{display:block}.drawer{position:fixed;z-index:46;top:0;bottom:0;left:calc(50% - 215px);width:min(340px,86vw);background:#fff;transform:translateX(-105%);transition:.2s;padding:18px 14px;overflow:auto}.drawer.open{transform:translateX(0)}.drawerHead{display:flex;justify-content:space-between;align-items:center;padding:6px 5px 15px}.drawerHead button{border:0;background:#f1f2f4;border-radius:10px;width:34px;height:34px}.dsec{font-size:10px;color:#a0a4aa;margin:18px 8px 7px;font-weight:850}.ditem,.dparent{padding:12px 11px;border-radius:12px;font-size:13px}.ditem.main,.dparent{font-weight:900}.dparent{display:flex;justify-content:space-between}.dsub{display:none;margin-left:24px}.dsub.open{display:block}.dsub .ditem{font-size:12px;color:#555;font-weight:500}
+.auth{position:fixed;inset:0;background:#f5f6f8;z-index:100;display:none;align-items:center;justify-content:center;padding:22px}.auth.open{display:flex}.authbox{width:min(390px,100%);background:#fff;border:1px solid var(--line);border-radius:26px;padding:25px 20px}.authbox h1{font-size:27px;margin:0}.authbox small{display:block;color:#888;letter-spacing:2px;margin-top:6px}.authbox p{font-size:12px;color:#777;line-height:1.6;margin:18px 0}.authbox input{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px}.roleBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.passArea{display:none;margin-top:10px}.passArea.open{display:block}
+@media(max-width:430px){.drawer{left:0}}
+.toast{position:fixed;left:50%;bottom:102px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:10px;z-index:90;opacity:0;transition:.2s}.toast.show{opacity:1}
+
+.attSix{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.attMini{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px 7px;text-align:center}.attMini strong{display:block;font-size:20px}.attMini span{font-size:9px;color:#858b94}.subfilters{margin-top:-5px}.folderGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.folder{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;min-height:100px}.folder .emoji{font-size:27px}.folder b{display:block;margin:9px 0 4px;font-size:13px}.folder span{font-size:9px;color:#888}.attachBtn{width:42px;min-width:42px;height:42px;border:1px solid var(--line)!important;background:#fff!important;color:#111!important;font-size:18px!important}.trainingPlan{white-space:pre-line;font-size:12px;line-height:1.7}.smallLine{font-size:10px!important;color:#888!important;margin-top:5px!important}.adminAggRow{padding:12px 0;border-bottom:1px solid #edf0f2}.adminAggRow:last-child{border-bottom:0}.adminAggRow b{font-size:12px}.adminAggRow p{font-size:10px;color:#888;margin:4px 0 0;line-height:1.5}
+
+/* V16 refinements */
+.statusPill{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:6px 10px;border-radius:999px;font-size:10px;white-space:nowrap;background:#edf7f2;color:#11805b}
+.statusPill.wait{background:#fff0d6;color:#9d5c00}.statusPill.idle{background:#eef0f2;color:#777}
+.memberSimpleRow{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;display:flex;align-items:center;gap:10px}
+.memberSimpleRow b{font-size:12px}.memberSimpleRow p{font-size:10px;color:#888;margin:3px 0 0}
+.emojiPanel{
+ display:none;
+ position:fixed;
+ left:50%;
+ bottom:134px;
+ transform:translateX(-50%);
+ width:min(410px,calc(100% - 24px));
+ grid-template-columns:repeat(7,1fr);
+ gap:6px;
+ background:#fff;
+ border:1px solid var(--line);
+ border-radius:16px;
+ padding:10px;
+ box-shadow:0 8px 28px rgba(0,0,0,.13);
+ z-index:40;
+}
+.emojiPanel.open{display:grid}
+.emojiPanel button{
+ border:0;
+ background:#f4f5f7;
+ border-radius:10px;
+ min-height:40px;
+ font-size:20px;
+ padding:0;
+ touch-action:manipulation;
+}
+.chatMedia{max-width:190px;border-radius:14px;overflow:hidden;background:#eceff2;position:relative}
+.chatMedia img,.chatMedia video{display:block;width:100%;max-height:240px;object-fit:cover}
+.chatFile{display:flex;align-items:center;gap:8px;min-width:180px}.chatFile .ficon{font-size:24px}.chatFile small{display:block;color:#999;margin-top:3px}
+.saveLink{display:inline-flex;margin-top:7px;font-size:10px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:#fff;color:#111}
+.modalActions{position:absolute;left:20px;right:20px;bottom:22px;display:flex;justify-content:center;z-index:3}
+.modalActions a{background:#fff;color:#111;text-decoration:none;border-radius:999px;padding:10px 16px;font-size:11px;font-weight:800}
+.folderPreview{width:58px;height:58px;border-radius:12px;overflow:hidden;background:#eef0f2;display:grid;place-items:center;flex:0 0 auto}
+.folderPreview img,.folderPreview video{width:100%;height:100%;object-fit:cover}
+.folderFileRow{background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px;display:flex;align-items:center;gap:11px}
+
+
+/* Operating auth / approval */
+.authbox .authFields{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.authbox .authFields input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;font-size:16px}
+.authRole{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+.authRole button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:11px;font-size:12px;font-weight:850}
+.authRole button.active{background:#111;color:#fff;border-color:#111}
+.authActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.authMsg{display:none;margin-top:12px;border-radius:13px;padding:11px 12px;font-size:11px;line-height:1.55;background:#f3f5f7;color:#555}
+.authMsg.show{display:block}.authMsg.error{background:#fff0f0;color:#a33}.authMsg.success{background:#edf8f2;color:#167557}
+.authHint{font-size:10px;color:#999;line-height:1.5;margin-top:12px}
+.approvalRow{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.approvalRow h3{font-size:13px;margin:0}.approvalRow p{font-size:10px;color:#888;margin:5px 0 0}
+.approvalEmpty{background:#fff;border:1px dashed var(--line);border-radius:17px;padding:24px;text-align:center;font-size:11px;color:#888}
+
+
+/* Operating data + admin controls */
+.adminKebab{position:relative;margin-left:auto;flex:0 0 auto}
+.kebabBtn{width:34px;height:34px;border:0;background:transparent;border-radius:10px;font-size:20px;line-height:1;cursor:pointer}
+.kebabBtn:hover{background:#f1f2f4}
+.kebabMenu{display:none;position:absolute;right:0;top:38px;z-index:60;min-width:112px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.kebabMenu.open{display:block}
+.kebabMenu button{width:100%;border:0;background:#fff;text-align:left;padding:10px 11px;border-radius:9px;font-size:11px;font-weight:750;cursor:pointer}
+.kebabMenu button:hover{background:#f4f5f7}.kebabMenu button.danger{color:#c23737}
+.emptyState{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px 18px;text-align:center;color:#8b8f95;font-size:11px;line-height:1.6}
+.adminInlineHead{display:flex;align-items:flex-start;gap:8px}
+
+
+/* ===== TEAM EYSL MOBILE DISTRIBUTION ===== */
+html,body{max-width:100%;overflow-x:hidden}
+body{background:#eef0f3}
+.app{
+ width:100%;
+ max-width:720px;
+ min-height:100dvh;
+ margin:0 auto;
+ background:#f5f6f8;
+ position:relative;
+}
+@media (max-width:760px){
+ body{background:#f5f6f8}
+ .app{max-width:none;margin:0;min-height:100dvh}
+ header{
+  position:sticky;top:0;z-index:80;
+  padding-top:max(12px,env(safe-area-inset-top));
+  background:rgba(245,246,248,.96);
+  backdrop-filter:blur(14px);
+ }
+ .page{padding-left:16px!important;padding-right:16px!important;padding-bottom:110px!important}
+ .pagehead{padding-top:8px}
+ .pagehead h1{font-size:26px}
+ .nav{
+  position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+  width:100%!important;max-width:none!important;
+  padding-bottom:max(6px,env(safe-area-inset-bottom));
+  z-index:100;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(14px);
+ }
+ .nav button{min-width:0;font-size:10px}
+ .nav button span{font-size:9px}
+ .drawer{width:min(88vw,360px)!important}
+ .statusCard,.card,.row,.notice,.folder,.memberSimpleRow,.memberrow{border-radius:18px!important}
+ .statusTop{gap:10px}
+ .actions{gap:7px;flex-wrap:wrap}
+ .actions .btn{min-height:44px}
+ .btn{font-size:12px}
+ .chatBody{padding-bottom:170px!important}
+ .chatInput{
+  position:fixed!important;left:0;right:0;bottom:72px!important;z-index:90;
+  width:100%;max-width:720px;margin:0 auto;
+  padding:10px 12px;background:rgba(245,246,248,.98);
+ }
+ .emojiPanel{bottom:145px!important;width:calc(100% - 20px)!important;max-width:520px!important}
+ .chatMedia{max-width:62vw}
+ .modalContent img,.modalContent video{max-width:96vw;max-height:78vh}
+ .auth{padding:20px 16px}
+ .authbox{width:100%!important;max-width:520px!important;padding:28px 20px!important}
+ .authbox h1{font-size:34px}
+ .authActions,.authRole{grid-template-columns:1fr 1fr}
+ .filters{overflow-x:auto;white-space:nowrap;padding-bottom:4px;scrollbar-width:none}
+ .filters::-webkit-scrollbar{display:none}
+ .filters button{flex:0 0 auto}
+ .calendarWrap{padding:14px!important}
+ .calendarDays{gap:4px!important}
+ .day{min-height:52px!important}
+ .folderGrid{grid-template-columns:1fr 1fr!important;gap:10px!important}
+ .adminKebab{z-index:5}
+ .kebabMenu{position:absolute;right:0;top:38px}
+}
+@media (max-width:420px){
+ .page{padding-left:12px!important;padding-right:12px!important}
+ header{padding-left:12px!important;padding-right:12px!important}
+ .brand h1{font-size:23px!important}
+ .brand small{font-size:9px!important;letter-spacing:4px!important}
+ .statusCard{padding:16px!important}
+ .statusTop h3{font-size:15px!important}
+ .statusTop p{font-size:11px!important;line-height:1.55}
+ .btn{padding:10px 13px!important}
+ .folderGrid{grid-template-columns:1fr!important}
+ .authbox h1{font-size:30px}
+ .authbox small{font-size:14px}
+ .pagehead h1{font-size:24px}
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+<meta name="theme-color" content="#f5f6f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TEAM EYSL">
+
+</head>
+<body>
+<div id="auth" class="auth">
+ <div class="authbox">
+  <h1>TEAM EYSL</h1><small>TRAINING CLUB</small>
+  <p>승인된 TEAM EYSL 멤버만 사용할 수 있어요.<br>처음이라면 회원가입 후 관리자 승인을 기다려주세요.</p>
+
+  <div class="authRole">
+   <button id="authRoleMember" class="active" type="button" onclick="setAuthRole('member')">모임원용</button>
+   <button id="authRoleAdmin" type="button" onclick="setAuthRole('admin')">관리자용</button>
+  </div>
+
+  <div class="authFields">
+   <input id="authNickname" autocomplete="username" maxlength="30" placeholder="닉네임">
+   <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="비밀번호">
+  </div>
+
+  <div class="authActions">
+   <button id="signupBtn" class="btn outline" type="button" onclick="signupMember()">회원가입</button>
+   <button id="loginBtn" class="btn primary" type="button" onclick="loginOperatingMember()">로그인</button>
+  </div>
+
+  <div id="authMessage" class="authMsg"></div>
+  <div class="authHint">닉네임은 중복 사용할 수 없어요. 비밀번호는 8자 이상으로 설정해주세요.</div>
+ </div>
+</div>
+
+<div class="app">
+<header class="top">
+ <div class="brandbox"><button class="hamb" onclick="openDrawer()">☰</button><div class="brand"><b>TEAM EYSL</b><span>TRAINING CLUB</span></div></div>
+ <div class="userbox"><span id="roleBadge" class="role">회원</span><div id="avatar" class="avatar">MS</div></div>
+</header>
+
+<section id="home" class="page active">
+ <div id="homeNotice" class="hero"><small>LATEST NOTICE</small><h1>8월 TEAM EYSL 공지</h1><p>새 공지와 팀 소식을 확인해주세요.</p></div>
+ <div class="section"><h2>내가 참여하는 다음 일정</h2></div><div id="homeMine"><div class="card">현재 신청한 일정이 없어요.</div></div>
+ <div class="section"><h2>다가오는 일정</h2><span class="link" onclick="showPage('schedule')">전체보기</span></div><div id="homeUpcoming" class="list">
+<div class="row" onclick="openTraining('t906')"><div class="icon">🏊</div><div class="grow"><b>9/6 정기 훈련</b><p>9/6 · 남부터미널 · 신청 가능</p></div><span class="tag">신청 가능</span></div>
+<div class="row" onclick="showPage('raceList')"><div class="icon">🏆</div><div class="grow"><b>2026 배럴 스프린트 챔피언십</b><p>9/12–13 · 김천 · 신청 가능</p></div><span class="tag">신청 가능</span></div>
+<div class="row" onclick="openEventDetail('e927')"><div class="icon">🎉</div><div class="grow"><b>9월 TEAM EYSL 정모</b><p>9/27 · 미정 · 신청 가능</p></div><span class="tag">신청 가능</span></div>
+</div>
+ <div class="section"><h2>지금 뜨는 콘텐츠</h2></div>
+ <div id="myActivitySummary" class="summary" onclick="showPage('activity')"><div class="meta">활동 데이터</div><h3>아직 활동 리포트가 없어요</h3><div class="metrics"><div class="metric"><b>-</b><span>훈련 참여</span></div><div class="metric"><b>-</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div><div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
+
+<section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
+<section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">대회</button><button onclick="setRecordMajor('fin',this)">핀대회</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
+<section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage(window.myStatusBackTarget||'mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
+<section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
+
+<section id="media" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1 id="mediaTitle">미디어</h1><span></span></div><div id="mediaRoot"><div class="actions"><button class="btn primary" onclick="createFolder()">＋ 폴더 만들기</button></div><div id="folderGrid" class="folderGrid"></div></div><div id="folderView" style="display:none"><div class="actions"><button class="btn outline" onclick="closeFolder()">← 폴더 목록</button><button class="btn primary" onclick="document.getElementById('folderUpload').click()">＋ 파일 올리기</button><input id="folderUpload" type="file" multiple hidden onchange="uploadToFolder(this)"></div><div id="folderFiles" class="list"></div></div></section>
+<section id="files" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>파일</h1><span></span></div><div class="list"><div class="fileRow" onclick="openTextFile('9월 훈련표','9월 TEAM EYSL 훈련표\n스프린트 및 스타트 중심 훈련')"><div class="icon">📄</div><div class="grow"><b>9월 훈련표</b><span>PDF · 8/22</span></div></div><div class="fileRow" onclick="openTextFile('배럴 참가명단','2026 배럴 참가명단\n민선 / 희선 / 승희 / 재연')"><div class="icon">📊</div><div class="grow"><b>배럴 참가명단</b><span>XLSX · 8/21</span></div></div></div></section>
+
+<section id="adminSchedule" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>일정 등록</h1><span></span></div><div class="formrow"><label>일정 종류</label><select id="aType" onchange="renderAdminFields()"><option value="training">훈련</option><option value="race">대회</option><option value="event">이벤트</option></select></div><div class="formrow"><label>제목</label><input id="aTitle"></div><div class="formrow"><label>날짜</label><input id="aDate" type="date"></div><div class="grid2"><div class="formrow"><label>시작 시간</label><input id="aStart" type="time"></div><div class="formrow"><label>종료 시간</label><input id="aEnd" type="time"></div></div><div class="formrow"><label>장소</label><input id="aPlace"></div><div id="trainingFields"><div class="formrow"><label>코치</label><input id="aCoach"></div><div class="formrow"><label>준비물</label><input id="aGear"></div><div class="formrow"><label>레인별 마감인원</label><input id="aCapacity" placeholder="예: A레인 10명 / B레인 10명"></div><div class="formrow"><label>훈련표 직접 작성</label><textarea id="aPlan" placeholder="워밍업 / 드릴 / 메인세트 / 쿨다운 등을 자유롭게 작성"></textarea></div><div class="formrow"><label>훈련표 파일</label><input id="aPlanFile" type="file" accept="image/*,.pdf,.doc,.docx"></div></div><div class="formrow"><label>상세 내용</label><textarea id="aDetail"></textarea></div><div class="formrow"><label>사진·파일·링크</label><input id="aAttach" type="file" multiple><input id="aLink" placeholder="https://..." style="margin-top:7px"></div><button class="btn primary" style="width:100%" onclick="registerSchedule()">일정 등록</button></section>
+<section id="adminScheduleDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('adminSchedule')">←</button><h1>등록 일정</h1><span></span></div><div id="adminScheduleDetailBody"></div></section>
+
+<section id="memberDirectory" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원리스트</h1><span></span></div><div id="memberDirectoryList" class="list"></div></section>
+
+<section id="memberApproval" class="page">
+ <div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 승인</h1><span></span></div>
+ <div class="section"><h2>승인 대기</h2><span id="pendingCount" class="link"></span></div>
+ <div id="pendingMemberList" class="list"></div>
+ <div class="section"><h2>최근 처리 회원</h2></div>
+ <div id="processedMemberList" class="list"></div>
+</section>
+
+<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank"><span>1. 민선 · 4회</span><span>2. 희선 · 3회</span><span>3. 승희 · 3회</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank"><span>1. 준석 · 42일</span><span>2. 태영 · 31일</span><span>3. 예진 · 27일</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank"><span>나연 · 8/12</span><span>광섭 · 8/18</span><span>세령 · 8/21</span></div></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
+<section id="memberDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('memberAdmin')">←</button><h1>회원 상세</h1><span></span></div><div id="memberDetailBody"></div></section>
+
+<section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>신청 취합</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">이벤트</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">이벤트</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
+<section id="attendanceAdminDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('attendanceAdmin')">←</button><h1>출석 체크</h1><span></span></div><div id="attAdminDetailBody"></div></section>
+
+<nav class="nav"><button class="active" data-page="home" onclick="showPage('home')"><i>⌂</i>홈</button><button data-page="notice" onclick="showPage('notice')"><i>▤</i>공지</button><button data-page="chat" onclick="showPage('chat')"><i>◉</i>채팅방</button><button data-page="schedule" onclick="showPage('schedule')"><i>◫</i>신청</button><button data-page="mypage" onclick="showPage('mypage')"><i>○</i>마이페이지</button></nav>
+</div>
+
+<div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+
+<div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const SUPABASE_URL='https://rbghqyhzvczavtjwiocc.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_KCrcumJ1l2lXCO_BjuYXEg_YaFRph-a';
+const dbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+ auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+});
+const today='2026-08-22';
+let authRole='member';
+let currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
+let unreadNoticeIds=new Set();
+let currentNoticeId=null;
+let noticeAttachments=[];
+let mediaItems=[];
+let scheduleFilter='all'; let recordMajor='meet'; let currentFolder=null;
+let mediaFolders=[];
+let currentDm=null;
+let currentMonth=new Date(2026,8,1);
+let selectedTrainingId='t829';
+let currentStatusKind='training',currentStatusFilter='all';
+let summaryMonth=8;
+let attendanceType='all',attendanceState='all';
+let directoryMembers=[]; let operatingActivities=[]; let editingActivityId=null; let editingNoticeId=null; const signedUrlCache=new Map();
+
+let notices=[];
+
+let members=[];
+
+let trainings={};
+
+let raceApplication=null;
+let race=null;
+let events=[];
+
+let attendanceHistory=[];
+
+let attRecords={};
+
+let groupMessages=[];
+let dmMessages={};
+
+
+function isAdmin(){return currentUser.role==='admin'&&currentUser.actualRole==='admin'}
+function closeAllKebab(except=null){
+ document.querySelectorAll('.kebabMenu.open').forEach(x=>{if(x!==except)x.classList.remove('open')});
+}
+function toggleKebab(e,id){
+ e.stopPropagation();
+ const el=document.getElementById(id);
+ closeAllKebab(el);
+ el?.classList.toggle('open');
+}
+document.addEventListener('click',()=>closeAllKebab());
+
+function fmtKDate(ts){
+ const d=new Date(ts); if(Number.isNaN(d.getTime()))return String(ts||'');
+ return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmtChatTime(ts){
+ const d=new Date(ts); return d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function safeFileName(name){return name.replace(/[^\p{L}\p{N}._ -]/gu,'_').slice(0,120)}
+function attachmentKind(mime=''){return mime.startsWith('image/')?'image':mime.startsWith('video/')?'video':'file'}
+async function signedTeamFile(path,ttl=3600){
+ if(!path)return null;
+ const cached=signedUrlCache.get(path);
+ if(cached&&cached.expires>Date.now()+60000)return cached.url;
+ const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,ttl);
+ if(error){console.error(error);return null}
+ signedUrlCache.set(path,{url:data.signedUrl,expires:Date.now()+ttl*1000});
+ return data.signedUrl;
+}
+async function uploadTeamFile(file,area){
+ const path=`${currentUser.memberId}/${area}/${Date.now()}-${crypto.randomUUID()}--${encodeURIComponent(safeFileName(file.name))}`;
+ const {error}=await dbClient.storage.from('team-files').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});
+ if(error)throw error;
+ return path;
+}
+async function loadDirectoryMembers(){
+ if(!currentUser.memberId)return [];
+ const {data,error}=await dbClient.from('members').select('id,nickname,birth_year,gender,role,status').eq('status','approved').order('nickname');
+ if(error){console.error(error);return []}
+ directoryMembers=(data||[]).filter(m=>m.id!==currentUser.memberId);
+ return directoryMembers;
+}
+async function memberNameMap(ids){
+ const unique=[...new Set((ids||[]).filter(Boolean))], map={};
+ if(!unique.length)return map;
+ const {data,error}=await dbClient.from('members').select('id,nickname').in('id',unique);
+ if(error){console.error(error);return map}
+ (data||[]).forEach(m=>map[m.id]=m.nickname); return map;
+}
+async function normalizeMessageRows(rows){
+ const names=await memberNameMap(rows.flatMap(r=>[r.sender_id,r.recipient_id]));
+ const out=[];
+ for(const r of rows){
+  let attachment=null;
+  if(r.attachment_path){
+   const url=await signedTeamFile(r.attachment_path);
+   const raw=r.attachment_path.split('--').slice(1).join('--')||r.attachment_path.split('/').pop();
+   attachment={name:decodeURIComponent(raw),url,kind:attachmentKind(r.attachment_type||''),size:''};
+  }
+  out.push({id:r.id,name:names[r.sender_id]||'회원',text:r.body||'',time:fmtChatTime(r.created_at),me:r.sender_id===currentUser.memberId,attachment});
+ }
+ return out;
+}
+
+async function loadActivities(){
+ if(!currentUser.memberId)return [];
+ const {data,error}=await dbClient.from('activities').select('*').order('activity_date',{ascending:true});
+ if(error){console.error('activities',error);operatingActivities=[];return []}
+ operatingActivities=data||[];
+ trainings={}; events=[]; race=null;
+ operatingActivities.forEach(a=>{
+   const d=a.details||{};
+   if(a.kind==='training')trainings[a.id]={id:a.id,title:a.title,date:a.activity_date,start:(a.start_time||'').slice(0,5),end:(a.end_time||'').slice(0,5),place:a.place||'',coach:d.coach||'-',gear:d.gear||'-',lane:d.lane||'-',info:d.info||'',capacity:a.capacity||20,participants:[],waitlist:[],offer:null,plan:d.plan||'',planBy:d.planBy||'',planDate:a.activity_date};
+   else if(a.kind==='event')events.push({id:a.id,title:a.title,date:a.activity_date,start:(a.start_time||'').slice(0,5),end:(a.end_time||'').slice(0,5),place:a.place||'',participants:[],detail:d.info||'',done:a.activity_date<today});
+   else if(a.kind==='race'&&!race)race={id:a.id,title:a.title,date:a.activity_date,endDate:d.endDate||a.activity_date,place:a.place||'',participants:[],detail:d.info||'',relays:d.relays||[]};
+ });
+ return operatingActivities;
+}
+function activityMenu(a){
+ if(!isAdmin())return '';
+ return `<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'actMenu-${a.id}')">⋯</button><div id="actMenu-${a.id}" class="kebabMenu"><button onclick="event.stopPropagation();editActivity('${a.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteActivity('${a.id}')">삭제</button></div></div>`;
+}
+async function deleteActivity(id){
+ closeAllKebab();
+ const a=operatingActivities.find(x=>x.id===id); if(!a)return;
+ if(!confirm(`'${a.title}' 일정을 삭제할까요?\n신청 내역이 연결되어 있다면 함께 삭제될 수 있습니다.`))return;
+ const {error}=await dbClient.from('activities').delete().eq('id',id);
+ if(error){console.error(error);return toast('일정을 삭제하지 못했습니다.')}
+ await loadActivities(); await renderHome(); renderCalendar(); renderTrainingList(); renderRaceList(); toast('일정을 삭제했습니다.');
+}
+function editActivity(id){
+ closeAllKebab();
+ const a=operatingActivities.find(x=>x.id===id); if(!a)return;
+ editingActivityId=id;
+ const d=a.details||{};
+ showPage('adminSchedule');
+ document.getElementById('aType').value=a.kind;
+ document.getElementById('aType').disabled=true;
+ document.getElementById('aTitle').value=a.title||'';
+ document.getElementById('aDate').value=a.activity_date||'';
+ document.getElementById('aStart').value=(a.start_time||'').slice(0,5);
+ document.getElementById('aEnd').value=(a.end_time||'').slice(0,5);
+ document.getElementById('aPlace').value=a.place||'';
+ document.getElementById('aCoach').value=d.coach||'';
+ document.getElementById('aGear').value=d.gear||'';
+ document.getElementById('aCapacity').value=d.lane||a.capacity||'';
+ document.getElementById('aPlan').value=d.plan||'';
+ document.getElementById('aDetail').value=d.info||'';
+ document.getElementById('aLink').value=d.link||'';
+ renderAdminFields();
+ const btn=document.querySelector('#adminSchedule button[onclick="registerSchedule()"]');
+ if(btn)btn.textContent='수정 완료';
+}
+function resetActivityEditor(){
+ editingActivityId=null;
+ const type=document.getElementById('aType'); if(type)type.disabled=false;
+ ['aTitle','aDate','aStart','aEnd','aPlace','aCoach','aGear','aCapacity','aPlan','aDetail','aLink'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+ const btn=document.querySelector('#adminSchedule button[onclick="registerSchedule()"]');if(btn)btn.textContent='일정 등록';
+}
+
+async function loadNotices(){
+ if(!currentUser.memberId)return [];
+ const {data,error}=await dbClient.from('notices').select('*').order('created_at',{ascending:false});
+ if(error){console.error(error);notices=[];return []}
+ notices=data||[]; return notices;
+}
+function noticeMenu(n){
+ if(!isAdmin())return '';
+ return `<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'noticeMenu-${n.id}')">⋯</button><div id="noticeMenu-${n.id}" class="kebabMenu"><button onclick="event.stopPropagation();editNotice('${n.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteNotice('${n.id}')">삭제</button></div></div>`;
+}
+function editNotice(id){
+ closeAllKebab(); const n=notices.find(x=>x.id===id); if(!n)return;
+ editingNoticeId=id; showPage('noticeWrite');
+ document.getElementById('nwTitle').value=n.title||'';document.getElementById('nwBody').value=n.body||'';
+ const btn=document.querySelector('#noticeWrite button[onclick="saveNotice()"]');if(btn)btn.textContent='수정 완료';
+}
+async function deleteNotice(id){
+ closeAllKebab(); const n=notices.find(x=>x.id===id);if(!n)return;
+ if(!confirm(`'${n.title}' 공지를 삭제할까요?`))return;
+ const {error}=await dbClient.from('notices').delete().eq('id',id);
+ if(error){console.error(error);return toast('공지를 삭제하지 못했습니다.')}
+ await renderNotices(); toast('공지를 삭제했습니다.');
+}
+function resetNoticeEditor(){
+ editingNoticeId=null;document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';
+ const btn=document.querySelector('#noticeWrite button[onclick="saveNotice()"]');if(btn)btn.textContent='공지 등록';
+}
+
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ if(id==='home')renderHome();
+ if(id==='notice')renderNotices();
+ if(id==='chat'){renderGroup();renderDmList()}
+ if(id==='schedule')renderCalendar();
+ if(id==='trainingList')renderTrainingList();
+ if(id==='raceList')renderRaceList();
+ if(id==='mypage')applyRole();
+ if(id==='attendance'){initAttendanceOptions();renderAttendance()}
+ if(id==='activity')renderActivity();
+ if(id==='memberAdmin')renderMembers();
+ if(id==='memberDirectory')renderMemberDirectory();
+ if(id==='memberApproval')renderApprovalRequests();
+ if(id==='attendanceAdmin')renderAttendanceAdmin();
+ if(id==='media')renderFolders();
+ if(id==='files')renderFiles();
+ window.scrollTo(0,0);
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
+function now(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+
+function setAuthRole(role){
+ authRole=role==='admin'?'admin':'member';
+ document.getElementById('authRoleMember')?.classList.toggle('active',authRole==='member');
+ document.getElementById('authRoleAdmin')?.classList.toggle('active',authRole==='admin');
+ setAuthMessage('');
+}
+
+function setAuthMessage(message,type=''){
+ const el=document.getElementById('authMessage');
+ if(!el)return;
+ el.textContent=message||'';
+ el.className='authMsg'+(message?' show':'')+(type?' '+type:'');
+}
+
+function setAuthBusy(busy){
+ const signup=document.getElementById('signupBtn'),login=document.getElementById('loginBtn');
+ if(signup)signup.disabled=busy;
+ if(login)login.disabled=busy;
+ if(signup)signup.style.opacity=busy?'.55':'1';
+ if(login)login.style.opacity=busy?'.55':'1';
+}
+
+async function callAuthFunction(name,body){
+ const res=await fetch(`${SUPABASE_URL}/functions/v1/${name}`,{
+   method:'POST',
+   headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY},
+   body:JSON.stringify(body)
+ });
+ let data={};
+ try{data=await res.json()}catch(_){}
+ return {ok:res.ok,status:res.status,data};
+}
+
+async function signupMember(){
+ const nickname=document.getElementById('authNickname')?.value.trim()||'';
+ const password=document.getElementById('authPassword')?.value||'';
+ if(nickname.length<2)return setAuthMessage('닉네임은 2자 이상 입력해주세요.','error');
+ if(password.length<8)return setAuthMessage('비밀번호는 8자 이상으로 입력해주세요.','error');
+ setAuthBusy(true);setAuthMessage('회원가입 요청을 등록하고 있어요.');
+ try{
+   const result=await callAuthFunction('register-member',{nickname,password,role:authRole});
+   if(!result.ok)return setAuthMessage(result.data.error||'회원가입 요청에 실패했습니다.','error');
+   setAuthMessage('가입 요청 완료! 관리자 승인 후 같은 닉네임과 비밀번호로 로그인해주세요.','success');
+ }catch(e){
+   console.error(e);setAuthMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.','error');
+ }finally{setAuthBusy(false)}
+}
+
+async function loginOperatingMember(){
+ const nickname=document.getElementById('authNickname')?.value.trim()||'';
+ const password=document.getElementById('authPassword')?.value||'';
+ if(!nickname||!password)return setAuthMessage('닉네임과 비밀번호를 입력해주세요.','error');
+ setAuthBusy(true);setAuthMessage('로그인 중이에요.');
+ try{
+   const identity=await callAuthFunction('resolve-login-identity',{nickname});
+   if(!identity.ok)return setAuthMessage(identity.data.error||'로그인에 실패했습니다.','error');
+
+   if(authRole==='admin'&&identity.data.role!=='admin'){
+     return setAuthMessage('관리자 권한이 승인된 계정이 아닙니다.','error');
+   }
+
+   const {data:signIn,error:signInError}=await dbClient.auth.signInWithPassword({
+     email:identity.data.auth_email,
+     password
+   });
+   if(signInError||!signIn.session){
+     return setAuthMessage('닉네임 또는 비밀번호가 올바르지 않습니다.','error');
+   }
+
+   const {data:memberRows,error:memberError}=await dbClient.rpc('get_my_member');
+   const member=Array.isArray(memberRows)?memberRows[0]:memberRows;
+   if(memberError||!member||member.status!=='approved'){
+     await dbClient.auth.signOut();
+     return setAuthMessage('승인된 회원 정보를 확인하지 못했습니다.','error');
+   }
+
+   if(authRole==='admin'&&member.role!=='admin'){
+     await dbClient.auth.signOut();
+     return setAuthMessage('관리자 권한이 승인된 계정이 아닙니다.','error');
+   }
+
+   const mode=authRole==='admin'?'admin':'member';
+   try{localStorage.setItem('eysl_view_mode',mode)}catch(_){}
+   currentUser={
+     nickname:member.nickname,
+     role:mode==='admin'?'admin':'member',
+     actualRole:member.role,
+     memberId:member.id,
+     birth_year:member.birth_year,
+     gender:member.gender
+   };
+
+   document.getElementById('auth')?.classList.remove('open');
+   setAuthMessage('');
+   applyRole();
+   await loadDirectoryMembers();
+   await loadActivities();
+   await loadNotices();
+   await renderHome();
+   showPage('home');
+ }catch(e){
+   console.error('TEAM EYSL login:',e);
+   setAuthMessage('로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.','error');
+ }finally{setAuthBusy(false)}
+}
+
+async function loadMemberFromSession(){
+ const {data:{session},error:sessionError}=await dbClient.auth.getSession();
+ if(sessionError||!session)return false;
+
+ const {data,error}=await dbClient.rpc('get_my_member');
+ const member=Array.isArray(data)?data[0]:data;
+
+ if(error||!member||member.status!=='approved'){
+   console.error('TEAM EYSL session member load:',error);
+   await dbClient.auth.signOut();
+   return false;
+ }
+
+ let mode=localStorage.getItem('eysl_view_mode')||'member';
+ if(mode==='admin'&&member.role!=='admin')mode='member';
+
+ currentUser={
+   nickname:member.nickname,
+   role:mode==='admin'?'admin':'member',
+   actualRole:member.role,
+   memberId:member.id,
+   birth_year:member.birth_year,
+   gender:member.gender
+ };
+ return true;
+}
+
+async function initAuth(){
+ const ok=await loadMemberFromSession();
+ if(ok){
+   document.getElementById('auth')?.classList.remove('open');
+   applyRole();
+   return true;
+ }
+ document.getElementById('auth')?.classList.add('open');
+ currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
+ applyRole();
+ return false;
+}
+
+function applyRole(){
+ const isAdmin=currentUser.role==='admin'&&currentUser.actualRole==='admin';
+ const badge=document.getElementById('roleBadge'),avatar=document.getElementById('avatar');
+ if(badge)badge.textContent=isAdmin?'관리자':'회원';
+ if(avatar)avatar.textContent=(currentUser.nickname||'EY').slice(0,2);
+ const fab=document.getElementById('noticeFab'),adminMenu=document.getElementById('adminMenu');
+ if(fab)fab.style.display=isAdmin?'block':'none';
+ if(adminMenu)adminMenu.style.display=isAdmin?'block':'none';
+ const myName=document.getElementById('myName');
+ if(myName&&currentUser.nickname)myName.textContent=currentUser.nickname;
+}
+
+async function logout(){
+ try{await dbClient.auth.signOut()}catch(e){console.error(e)}
+ localStorage.removeItem('eysl_view_mode');
+ currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
+ location.reload();
+}
+
+async function renderApprovalRequests(){
+ if(currentUser.role!=='admin'||currentUser.actualRole!=='admin')return;
+ const pendingBox=document.getElementById('pendingMemberList');
+ const processedBox=document.getElementById('processedMemberList');
+ const count=document.getElementById('pendingCount');
+ if(!pendingBox||!processedBox)return;
+
+ pendingBox.innerHTML='<div class="card meta">불러오는 중...</div>';
+ const {data,error}=await dbClient.from('members')
+   .select('id,nickname,role_request,status,birth_year,gender,created_at')
+   .in('status',['pending','approved','rejected','blocked'])
+   .order('created_at',{ascending:false});
+
+ if(error){
+   console.error(error);pendingBox.innerHTML='<div class="approvalEmpty">회원 승인 목록을 불러오지 못했습니다.</div>';return;
+ }
+ const pending=(data||[]).filter(x=>x.status==='pending');
+ const processed=(data||[]).filter(x=>x.status!=='pending').slice(0,10);
+ if(count)count.textContent=`${pending.length}명`;
+
+ pendingBox.innerHTML=pending.length?pending.map(m=>`<div class="approvalRow">
+   <h3>${m.nickname}</h3>
+   <p>${m.role_request==='admin'?'관리자 권한 요청':'모임원 가입 요청'}${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${m.gender}`:''}</p>
+   <div class="actions">
+    <button class="btn primary" onclick="manageMemberApproval('${m.id}','approve')">승인</button>
+    <button class="btn outline" onclick="manageMemberApproval('${m.id}','reject')">거절</button>
+   </div>
+ </div>`).join(''):'<div class="approvalEmpty">현재 승인 대기 회원이 없습니다.</div>';
+
+ processedBox.innerHTML=processed.length?processed.map(m=>`<div class="row">
+   <div class="grow"><b>${m.nickname}</b><p>${m.role==='admin'?'관리자':'모임원'} · ${m.status==='approved'?'승인됨':m.status==='rejected'?'거절됨':'내보냄'}</p></div>
+   <span class="tag ${m.status==='approved'?'ok':'done'}">${m.status==='approved'?'승인':m.status==='rejected'?'거절':'차단'}</span>
+ </div>`).join(''):'<div class="approvalEmpty">처리된 회원이 없습니다.</div>';
+}
+
+async function manageMemberApproval(memberId,action){
+ const {data:{session}}=await dbClient.auth.getSession();
+ if(!session)return toast('다시 로그인해주세요.');
+ try{
+   const res=await fetch(`${SUPABASE_URL}/functions/v1/manage-member-approval`,{
+     method:'POST',
+     headers:{
+       'Content-Type':'application/json',
+       'apikey':SUPABASE_PUBLISHABLE_KEY,
+       'Authorization':`Bearer ${session.access_token}`
+     },
+     body:JSON.stringify({member_id:memberId,action})
+   });
+   const data=await res.json();
+   if(!res.ok)return toast(data.error||'처리하지 못했습니다.');
+   toast(action==='approve'?'회원 승인이 완료됐습니다.':'회원 요청을 거절했습니다.');
+   await renderApprovalRequests();
+ }catch(e){console.error(e);toast('회원 승인 처리 중 오류가 발생했습니다.')}
+}
+
+async function renderHome(){
+ if(!currentUser.memberId)return;
+ await loadActivities();
+ const now=today;
+ const upcoming=operatingActivities.filter(a=>a.activity_date>=now).sort((a,b)=>a.activity_date.localeCompare(b.activity_date)).slice(0,4);
+ const next=upcoming[0];
+ const nextEl=document.getElementById('nextEl'),upcomingEl=document.getElementById('upcomingEl');
+ if(nextEl)nextEl.innerHTML=next?`<div class="row" onclick="showPage('schedule')"><div class="icon">${next.kind==='training'?'🏊':next.kind==='race'?'🏆':'🎉'}</div><div class="grow"><b>${next.title}</b><p>${next.activity_date} · ${next.place||''}</p></div><span>›</span></div>`:'<div class="emptyState">참여 예정인 다음 일정이 없습니다.</div>';
+ if(upcomingEl)upcomingEl.innerHTML=upcoming.length?upcoming.map(a=>`<div class="row" onclick="showPage('schedule')"><div class="icon">${a.kind==='training'?'🏊':a.kind==='race'?'🏆':'🎉'}</div><div class="grow"><b>${a.title}</b><p>${a.activity_date} · ${a.place||''}</p></div>${activityMenu(a)}</div>`).join(''):'<div class="emptyState">등록된 예정 일정이 없습니다.</div>';
+ const content=document.querySelector('.summary');
+ if(content&&content.closest('#home')){ /* legacy card is left visually but no fake numbers are injected here */ }
+}
+
+async function renderNotices(){
+ await loadNotices();
+ const box=document.getElementById('noticeList');
+ box.innerHTML=notices.map(n=>`<div class="notice" onclick="openNotice('${n.id}')"><div class="adminInlineHead"><div class="grow"><div class="date">${fmtKDate(n.created_at)}</div><h3>${n.title}</h3><p>${(n.body||'').split('\n')[0]}</p></div>${noticeMenu(n)}</div></div>`).join('')||'<div class="emptyState">등록된 공지가 없습니다.<br>관리자가 공지를 등록하면 여기에 표시돼요.</div>';
+}
+function openNotice(id){
+ const n=notices.find(x=>x.id===id);if(!n)return;
+ currentNoticeId=id;showPage('noticeDetail');
+ document.getElementById('noticeDetailBody').innerHTML=`<div class="card"><div class="adminInlineHead"><div class="grow"><div class="meta">${fmtKDate(n.created_at)}</div><h2 style="margin:6px 0 12px">${n.title}</h2></div>${noticeMenu(n)}</div><div style="white-space:pre-wrap;line-height:1.75;font-size:12px">${n.body||''}</div></div>`;
+}
+function renderNoticeDetail(){const n=notices.find(x=>x.id===currentNoticeId);document.getElementById('noticeArticle').innerHTML=`<div class="article"><div class="meta">${n.date}</div><h2>${n.title}</h2><p>${n.body}</p>${n.attachments?.length?`<div class="section"><h2>첨부</h2></div>${n.attachments.map(a=>`<div class="fileRow" onclick="openAttachment('${a.url}','${a.type}')"><div class="icon">${a.type.startsWith('image')?'🖼️':a.type.startsWith('video')?'🎬':'📎'}</div><div class="grow"><b>${a.name}</b></div></div>`).join('')}`:''}</div>`;document.getElementById('comments').innerHTML=n.comments.map(c=>`<div class="comment"><b>${c.name}</b><span>${c.time}</span><p>${c.text}</p></div>`).join('')||'<div class="card meta">아직 댓글이 없습니다.</div>'}
+function addComment(){const i=document.getElementById('commentInput');if(!i.value.trim())return;notices.find(x=>x.id===currentNoticeId).comments.push({name:currentUser.nickname,time:now(),text:i.value.trim()});i.value='';renderNoticeDetail()}
+function collectNoticeFiles(inp){[...inp.files].forEach(f=>noticeAttachments.push({name:f.name,type:f.type,url:URL.createObjectURL(f)}));document.getElementById('noticeFileChips').innerHTML=noticeAttachments.map(a=>`<span class="chip">${a.name}</span>`).join('')}
+async function saveNotice(){
+ if(!isAdmin())return toast('관리자만 공지를 등록할 수 있습니다.');
+ const title=document.getElementById('nwTitle').value.trim(),body=document.getElementById('nwBody').value.trim();
+ if(!title||!body)return toast('제목과 본문을 입력해주세요');
+ const wasEditing=!!editingNoticeId;
+ let error;
+ if(wasEditing)({error}=await dbClient.from('notices').update({title,body,updated_at:new Date().toISOString()}).eq('id',editingNoticeId));
+ else ({error}=await dbClient.from('notices').insert({title,body,created_by:currentUser.memberId}));
+ if(error){console.error(error);return toast('공지를 저장하지 못했습니다.')}
+ resetNoticeEditor();noticeAttachments=[];document.getElementById('noticeFileChips').innerHTML='';
+ await renderNotices();showPage('notice');toast(wasEditing?'공지를 수정했습니다.':'공지가 등록됐습니다');
+}
+function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('video'))openModal(url,type);else window.open(url,'_blank')}
+
+async function renderGroup(){
+ if(!currentUser.memberId){groupChatBody.innerHTML='';return}
+ const {data,error}=await dbClient.from('messages').select('*').eq('room_type','group').order('created_at',{ascending:true}).limit(300);
+ if(error){console.error(error);groupChatBody.innerHTML='<div class="emptyState">채팅을 불러오지 못했습니다.</div>';return}
+ groupMessages=await normalizeMessageRows(data||[]);
+ groupChatBody.innerHTML=groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('')||'<div class="emptyState">아직 채팅이 없습니다.</div>';
+ groupChatBody.scrollTop=groupChatBody.scrollHeight;
+}
+async function sendGroup(){
+ const i=groupInput,text=i.value.trim();if(!text||!currentUser.memberId)return;
+ const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,room_type:'group',body:text});
+ if(error){console.error(error);return toast('메시지를 보내지 못했습니다.')}
+ i.value='';await renderGroup();
+}
+function switchChat(mode){document.getElementById('groupTab').classList.toggle('active',mode==='group');document.getElementById('dmTab').classList.toggle('active',mode==='dm');document.getElementById('groupView').style.display=mode==='group'?'block':'none';document.getElementById('dmView').style.display=mode==='dm'?'block':'none';if(mode==='dm')renderDmList()}
+async function renderDmList(){
+ if(!currentUser.memberId)return;
+ await loadDirectoryMembers();
+ dmList.innerHTML=directoryMembers.map(m=>`<div class="dmRow" onclick="startDm('${m.nickname}')"><div class="dmAv">${m.nickname.slice(0,1)}</div><div class="grow"><b>${m.nickname}</b><p>1:1 채팅하기</p></div><span>›</span></div>`).join('')||'<div class="emptyState">채팅 가능한 회원이 없습니다.</div>';
+}
+function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');renderDm()}
+async function renderDm(){
+ if(!currentDm)return;
+ if(!directoryMembers.length)await loadDirectoryMembers();
+ const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
+ const {data,error}=await dbClient.from('messages').select('*').eq('room_type','dm').or(`and(sender_id.eq.${currentUser.memberId},recipient_id.eq.${peer.id}),and(sender_id.eq.${peer.id},recipient_id.eq.${currentUser.memberId})`).order('created_at',{ascending:true}).limit(300);
+ if(error){console.error(error);dmBody.innerHTML='<div class="emptyState">대화를 불러오지 못했습니다.</div>';return}
+ const rows=await normalizeMessageRows(data||[]);dmMessages[currentDm]=rows;
+ dmBody.innerHTML=rows.map(m=>renderChatMessage(m,m.me?'나':currentDm)).join('')||'<div class="emptyState">첫 메시지를 보내보세요.</div>';dmBody.scrollTop=dmBody.scrollHeight;
+}
+async function sendDm(){
+ const text=dmInput.value.trim();if(!text||!currentDm)return;
+ if(!directoryMembers.length)await loadDirectoryMembers();const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
+ const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:peer.id,room_type:'dm',body:text});
+ if(error){console.error(error);return toast('메시지를 보내지 못했습니다.')}
+ dmInput.value='';await renderDm();
+}
+
+function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
+async function renderCalendar(){
+ if(!currentUser.memberId)return;
+ await loadActivities();
+ const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
+ calTitle.textContent=`${y}년 ${m+1}월`;calendarDays.innerHTML='';
+ const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
+ for(let i=0;i<first;i++)calendarDays.innerHTML+='<div></div>';
+ for(let d=1;d<=last;d++){
+  const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const hits=operatingActivities.filter(a=>a.activity_date===ds&&(scheduleFilter==='all'||a.kind===scheduleFilter));
+  calendarDays.innerHTML+=`<button class="day" onclick="selectDay('${ds}')">${d}<div class="dots">${hits.slice(0,3).map(a=>`<i class="dot ${a.kind==='race'?'race':a.kind==='event'?'event':''}"></i>`).join('')}</div></button>`;
+ }
+ dayInfo.innerHTML='<div class="emptyState" style="margin-top:10px">날짜를 선택하면 등록된 일정을 볼 수 있어요.</div>';
+}
+function selectDay(ds){
+ document.querySelectorAll('.day').forEach(x=>x.classList.remove('selected'));
+ const list=operatingActivities.filter(a=>a.activity_date===ds&&(scheduleFilter==='all'||a.kind===scheduleFilter));
+ dayInfo.innerHTML=list.length?list.map(a=>`<div class="statusCard" style="margin-top:10px"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)} · ${a.place||''}</p></div>${activityMenu(a)}</div></div>`).join(''):`<div class="emptyState" style="margin-top:10px">${ds} 등록 일정 없음${isAdmin()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`;
+}
+
+async function renderTrainingList(){
+ await loadActivities();
+ const list=operatingActivities.filter(a=>a.kind==='training').sort((a,b)=>a.activity_date.localeCompare(b.activity_date));
+ trainingCards.innerHTML=list.map(a=>`<div class="statusCard"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)} · ${a.place||''}<br>${a.capacity?`정원 ${a.capacity}명`:'정원 미설정'}</p></div>${activityMenu(a)}</div><div class="actions"><button class="btn outline" onclick="openTraining('${a.id}')">훈련 상세</button><button class="btn primary" onclick="openTraining('${a.id}')">참석 신청</button></div></div>`).join('')||'<div class="emptyState">등록된 훈련이 없습니다.</div>';
+}
+function applyTraining(id){const t=trainings[id];if(t.participants.length<t.capacity)t.participants.push(currentUser.nickname);else t.waitlist.push({name:currentUser.nickname,order:t.waitlist.length+1});renderTrainingList();renderHome();toast(`${t.title.split(' ')[0]} 훈련 ${t.participants.includes(currentUser.nickname)?'신청완료':'대기 신청완료'}`)}
+async function openTraining(id){
+ if(!Object.keys(trainings).length)await loadActivities();
+ const t=trainings[id];if(!t)return toast('훈련을 찾지 못했습니다.');
+ selectedTrainingId=id;showPage('trainingDetail');
+ const a=operatingActivities.find(x=>x.id===id);
+ trainingDetailBody.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${a?activityMenu(a):''}</div><div class="detailrow"><b>훈련명</b><span>${t.title}</span></div><div class="detailrow"><b>날짜</b><span>${t.date}</span></div><div class="detailrow"><b>시간</b><span>${t.start}–${t.end}</span></div><div class="detailrow"><b>장소</b><span>${t.place}</span></div><div class="detailrow"><b>코치</b><span>${t.coach}</span></div><div class="detailrow"><b>준비물</b><span>${t.gear}</span></div><div class="detailrow"><b>훈련 정보</b><span>${t.info||'-'}</span></div></div>${t.plan?`<div class="section"><h2>훈련표</h2></div><div class="card"><div class="trainingPlan">${t.plan}</div></div>`:''}<div class="actions"><button class="btn primary" onclick="toast('신청 DB 연결은 다음 단계에서 활성화됩니다.')">참석 신청</button></div>`;
+}
+function openTrainingEdit(id){const t=trainings[id],inP=t.participants.includes(currentUser.nickname);showPage('trainingDetail');document.getElementById('trainingDetailBody').innerHTML=`<div class="section"><h2>${t.title} 신청 변경</h2></div><div class="card"><p style="font-size:12px">현재 상태: <b>${inP?'신청완료':'대기중'}</b></p><div class="formrow"><label>변경할 상태</label><select id="trainingEditState"><option value="attend" ${inP?'selected':''}>참석 신청</option><option value="wait" ${!inP?'selected':''}>대기 신청</option></select></div><button class="btn primary" style="width:100%" onclick="saveTrainingEdit('${id}')">수정 완료</button></div>`}
+function saveTrainingEdit(id){const t=trainings[id],v=document.getElementById('trainingEditState').value;t.participants=t.participants.filter(n=>n!==currentUser.nickname);t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);if(v==='attend'&&t.participants.length<t.capacity)t.participants.push(currentUser.nickname);else t.waitlist.push({name:currentUser.nickname,order:t.waitlist.length+1});normalizeWait(t);renderTrainingList();openApplyStatus(id);toast('수정 내용이 반영됐습니다')}
+function cancelTraining(id){
+ const t=trainings[id];
+ const wasParticipant=t.participants.includes(currentUser.nickname);
+ const wasWait=t.waitlist.some(w=>w.name===currentUser.nickname);
+
+ if(wasParticipant){
+   t.participants=t.participants.filter(n=>n!==currentUser.nickname);
+   // Empty seat: if waiters exist, open only for wait #1 for 24h.
+   if(t.waitlist.length){
+     normalizeWait(t);
+     t.offer={name:t.waitlist[0].name,expiresAt:Date.now()+86400000};
+   }else{
+     t.offer=null;
+   }
+ }else if(wasWait){
+   t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);
+   normalizeWait(t);
+   // If the cancelled user was the current offer holder, pass offer to new #1.
+   if(t.offer&&t.offer.name===currentUser.nickname){
+     t.offer=t.waitlist.length?{name:t.waitlist[0].name,expiresAt:Date.now()+86400000}:null;
+   }
+ }
+
+ // Stay on current page and refresh only the visible state.
+ const active=document.querySelector('.page.active')?.id;
+ if(active==='trainingList') renderTrainingList();
+ else if(active==='trainingDetail') openTraining(id);
+ else if(active==='myStatus') renderMyStatusList();
+ else renderTrainingList();
+
+ renderHome();
+
+ let nextLabel='참석 신청';
+ if(t.participants.length>=t.capacity || t.waitlist.length || t.offer) nextLabel='대기 신청';
+ toast(`${wasParticipant?'참석':'대기'} 취소 완료 · ${nextLabel} 가능`);
+}
+function normalizeWait(t){t.waitlist.forEach((w,i)=>w.order=i+1)}
+function openApplyStatus(id){selectedTrainingId=id;showPage('applyStatus');renderApplyStatus()}
+function renderApplyStatus(){const t=trainings[selectedTrainingId];const mineOffer=t.offer&&t.offer.name===currentUser.nickname;document.getElementById('applyStatusBody').innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${t.title}</span></div><div class="detailrow"><b>신청</b><span>${t.participants.length}/${t.capacity}</span></div><div class="detailrow"><b>대기</b><span>${t.waitlist.length}명</span></div></div>${t.offer?`<div class="offerBox"><b>${t.offer.name}님 참석 응답 대기중</b><p>자리 발생으로 대기 1번에게만 24시간 참석 기회가 열려 있습니다.</p><div class="countdown">${remaining(t.offer.expiresAt)} 남음</div>${mineOffer?`<div class="actions"><button class="btn primary" onclick="acceptOffer()">참석하기</button><button class="btn outline" onclick="declineOffer()">포기하기</button></div>`:''}</div>`:''}<div class="section"><h2>신청완료 ${t.participants.length}명</h2></div><div class="card names">${t.participants.join(' · ')}</div><div class="section"><h2>대기 ${t.waitlist.length}명</h2></div><div class="waitlist">${t.waitlist.map(w=>`<div class="waititem ${t.offer?.name===w.name?'offer':''}"><b>${w.order}. ${w.name}</b>${t.offer?.name===w.name?'<div class="meta">24시간 응답 대기중</div>':''}</div>`).join('')||'<div class="meta">대기자가 없습니다.</div>'}</div>`}
+function remaining(ex){const ms=Math.max(0,ex-Date.now());return `${Math.floor(ms/3600000)}시간 ${Math.floor(ms%3600000/60000)}분`}
+function acceptOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.participants.push(currentUser.nickname);t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);renderApplyStatus();renderHome();toast('신청완료')}
+function declineOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);if(t.waitlist.length)t.offer={name:t.waitlist[0].name,expiresAt:Date.now()+86400000};renderApplyStatus();toast('다음 대기자에게 기회가 넘어갔습니다')}
+
+async function renderRaceList(){
+ await loadActivities();
+ const races=operatingActivities.filter(a=>a.kind==='race').sort((a,b)=>a.activity_date.localeCompare(b.activity_date));
+ raceCards.innerHTML=races.map(a=>`<div class="statusCard"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${a.activity_date} · ${a.place||''}</p></div>${activityMenu(a)}</div><div class="actions"><button class="btn outline" onclick="openRaceActivity('${a.id}')">상세 내용</button><button class="btn primary" onclick="openRaceActivity('${a.id}')">신청하기</button></div></div>`).join('')||'<div class="emptyState">등록된 대회가 없습니다.</div>';
+}
+function openRaceDetail(){showPage('raceDetail');document.getElementById('raceDetailBody').innerHTML=`<div class="article"><div class="meta">관리자 작성 내용</div><h2>${race.title}</h2><p>${race.detail}</p></div><div class="section"><h2>첨부 사진</h2></div><div class="mediaGrid"><div class="mediaTile" onclick="openSampleImage('swim')">🏊‍♀️</div><div class="mediaTile" onclick="openSampleImage('trophy')">🏆</div></div><div class="section"><h2>첨부 파일</h2></div><div class="fileRow" onclick="openSampleFile()"><div class="icon">📄</div><div class="grow"><b>2026 배럴 상세 내용</b><span>첨부파일 열기</span></div><b>›</b></div><div class="section"><h2>링크</h2></div><div class="fileRow" onclick="window.open('https://www.google.com/search?q=배럴+스프린트+챔피언십','_blank')"><div class="grow"><b>배럴 공식 대회 페이지</b></div><b>↗</b></div>`}
+function openSampleImage(type){const svg=type==='swim'?`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="100%" height="100%" fill="#eef3f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="180">🏊‍♀️</text></svg>`:`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="100%" height="100%" fill="#fff4d8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="180">🏆</text></svg>`;openModal('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),'image/svg+xml')}
+function openSampleFile(){const blob=new Blob(['2026 배럴 스프린트 챔피언십 상세 내용\\n\\n집결 07:30 / 김천실내수영장'],{type:'text/plain'});window.open(URL.createObjectURL(blob),'_blank')}
+function openRaceApply(){showPage('raceApply');document.getElementById('relayChoices').innerHTML=race.relays.map(r=>`<button type="button" class="bigChoice ${raceApplication?.relays.includes(r)?'on':''}" onclick="toggleRelay(this)">${r}</button>`).join('');document.getElementById('noRelay').classList.toggle('on',!!raceApplication?.noRelay);if(raceApplication){raceGroup.value=raceApplication.group;raceS1.value=raceApplication.s1;raceS2.value=raceApplication.s2;raceSubmit.textContent='수정 완료'}else raceSubmit.textContent='대회 신청하기'}
+function toggleRelay(b){document.getElementById('noRelay').classList.remove('on');b.classList.toggle('on')}
+function selectNoRelay(){document.querySelectorAll('#relayChoices .bigChoice').forEach(b=>b.classList.remove('on'));document.getElementById('noRelay').classList.add('on')}
+function submitRace(){const noRelay=document.getElementById('noRelay').classList.contains('on');raceApplication={group:raceGroup.value,s1:raceS1.value,s2:raceS2.value,relays:noRelay?[]:[...document.querySelectorAll('#relayChoices .on')].map(b=>b.textContent),noRelay};renderRaceList();renderMyStatus('race');toast('신청 내용이 저장됐습니다')}
+function cancelRace(){raceApplication=null;renderRaceList();renderMyStatus('race');toast('대회 신청을 취소했습니다')}
+function renderMyStatus(kind,backTarget='mypage'){
+ currentStatusKind=kind;currentStatusFilter='all';
+ window.myStatusBackTarget=backTarget||'mypage';
+ showPage('myStatus');
+ document.querySelectorAll('#myStatus .filters button').forEach((b,i)=>b.classList.toggle('active',i===0));
+ const title=kind==='race'?'나의 대회 신청 내역':kind==='training'?'나의 훈련 신청 내역':kind==='event'?'나의 이벤트 신청 내역':'나의 전체 신청 내역';
+ myStatusTitle.textContent=title;
+ renderMyStatusList();
+}
+function filterMyStatus(f,b){currentStatusFilter=f;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMyStatusList()}
+function renderMyStatusList(){
+ document.getElementById('myStatusList').innerHTML='<div class="emptyState">아직 저장된 신청 내역이 없습니다.<br>실제 신청 DB 연결 후 신청한 활동만 여기에 표시됩니다.</div>';
+}
+function openEventDetail(id){const e=events.find(x=>x.id===id);showPage('myStatus');document.getElementById('myStatusTitle').textContent='이벤트 상세';document.getElementById('myStatusList').innerHTML=`<div class="detail"><div class="detailrow"><b>이벤트</b><span>${e.title}</span></div><div class="detailrow"><b>일시</b><span>${e.date} · ${e.start}–${e.end}</span></div><div class="detailrow"><b>장소</b><span>${e.place}</span></div><div class="detailrow"><b>신청현황</b><span>${e.participants.join(' · ')}</span></div></div><div class="actions"><button class="btn outline" onclick="renderMyStatus('event')">목록으로</button></div>`}
+
+function changeSummaryMonth(n){summaryMonth=Math.max(1,Math.min(12,summaryMonth+n));renderActivity()}
+function renderActivity(){
+ document.getElementById('activityBody').innerHTML='<div class="emptyState">아직 집계된 활동 데이터가 없습니다.<br>실제 출석·신청 기록이 쌓이면 월간 요약이 생성됩니다.</div>';
+}
+
+
+function openEventActivity(id){
+ const a=(operatingActivities||[]).find(x=>x.id===id);if(!a)return;
+ showPage('eventDetail');
+ const box=document.getElementById('eventDetailBody');
+ if(!box)return;
+ const d=a.details||{};
+ box.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${typeof activityMenu==='function'?activityMenu(a):''}</div>
+ <div class="detailrow"><b>이벤트명</b><span>${a.title}</span></div>
+ <div class="detailrow"><b>일자</b><span>${a.activity_date}</span></div>
+ <div class="detailrow"><b>시간</b><span>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)}</span></div>
+ <div class="detailrow"><b>장소</b><span>${a.place||'-'}</span></div>
+ <div class="detailrow"><b>상세</b><span>${d.info||'-'}</span></div></div>
+ <div class="actions"><button class="btn primary" onclick="toast('이벤트 신청 기능은 운영 DB 연결 중입니다.')">참석 신청</button></div>`;
+}
+
+function openRaceActivity(id){
+ const a=operatingActivities.find(x=>x.id===id);if(!a)return;
+ showPage('raceDetail');const d=a.details||{};
+ raceDetailBody.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${activityMenu(a)}</div><div class="detailrow"><b>대회명</b><span>${a.title}</span></div><div class="detailrow"><b>일자</b><span>${a.activity_date}${d.endDate&&d.endDate!==a.activity_date?` ~ ${d.endDate}`:''}</span></div><div class="detailrow"><b>장소</b><span>${a.place||'-'}</span></div><div class="detailrow"><b>상세</b><span>${d.info||'-'}</span></div></div><div class="actions"><button class="btn primary" onclick="toast('대회 신청 DB 연결은 다음 단계에서 활성화됩니다.')">대회 신청하기</button></div>`;
+}
+
+function setRecordMajor(v,b){recordMajor=v;document.querySelectorAll('#recordMajor button').forEach(x=>x.classList.remove('active'));b.classList.add('active');const minor=document.getElementById('recordMinor');if(v==='meet'||v==='fin')minor.innerHTML=`<button class="active" onclick="showRecord('personal',this)">개인전</button><button onclick="showRecord('relay',this)">단체전</button>`;else minor.innerHTML=`<button class="active" onclick="showRecord('measure',this)">기록측정</button><button onclick="showRecord('other',this)">기타</button>`;showRecord(v==='other'?'measure':'personal',minor.querySelector('button'))}
+function showRecord(type,btn){
+ document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
+ document.getElementById('recordBody').innerHTML='<div class="emptyState">아직 등록된 기록이 없습니다.</div>';
+}
+function recordHist(stroke,rows){return `<div class="section"><h2>${stroke} 히스토리</h2></div><div class="history">${rows.map(r=>`<div class="hist"><div class="topline"><b>${r[0]}초</b><span class="${r[2].startsWith('▼')?'good':''}">${r[2]}</span></div><span>${r[1]}</span></div>`).join('')}</div>`}
+function initAttendanceOptions(){
+ const y=attYear,m=attMonth,now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
+ y.innerHTML='';for(let yr=cy;yr>=2024;yr--)y.innerHTML+=`<option value="${yr}" ${yr===cy?'selected':''}>${yr}년</option>`;
+ m.innerHTML='';for(let mo=1;mo<=12;mo++)m.innerHTML+=`<option value="${String(mo).padStart(2,'0')}" ${mo===cm?'selected':''}>${mo}월</option>`;
+}
+function renderAttendance(){
+ const box=document.getElementById('attList')||document.getElementById('attendanceList');
+ if(box)box.innerHTML='<div class="emptyState">아직 저장된 출석 기록이 없습니다.</div>';
+ const stats=document.querySelector('#attendance .stats');if(stats)stats.innerHTML='<div class="stat"><strong>0회</strong><span>누적 출석</span></div><div class="stat"><strong>0회</strong><span>이번 달 출석</span></div>';
+}
+
+async function renderFolders(){
+ if(!currentUser.memberId)return;
+ const {data:fs,error}=await dbClient.from('media_folders').select('*').order('created_at',{ascending:false});
+ if(error){console.error(error);folderGrid.innerHTML='<div class="emptyState">폴더를 불러오지 못했습니다.</div>';return}
+ const {data:files}=await dbClient.from('media_files').select('*').order('created_at',{ascending:false});
+ const names=await memberNameMap([...(fs||[]).map(x=>x.created_by),...(files||[]).map(x=>x.uploader_id)]);
+ mediaFolders=(fs||[]).map(f=>({id:f.id,name:f.name,creator:names[f.created_by]||'회원',creatorId:f.created_by,date:fmtKDate(f.created_at),files:(files||[]).filter(x=>x.folder_id===f.id).map(x=>({id:x.id,name:x.file_name,type:attachmentKind(x.mime_type||''),mime:x.mime_type||'',uploader:names[x.uploader_id]||'회원',uploaderId:x.uploader_id,date:fmtKDate(x.created_at),path:x.storage_path,url:null}))}));
+ folderGrid.innerHTML=mediaFolders.map(f=>`<div class="folder" onclick="openFolder('${f.id}')"><div class="adminInlineHead"><div class="grow"><div class="emoji">📁</div><b>${f.name}</b><span>만든 사람 · ${f.creator}<br>${f.date} · ${f.files.length}개 파일</span></div>${isAdmin()?`<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'folderMenu-${f.id}')">⋯</button><div id="folderMenu-${f.id}" class="kebabMenu"><button onclick="event.stopPropagation();renameFolder('${f.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteFolder('${f.id}')">삭제</button></div></div>`:''}</div></div>`).join('')||'<div class="emptyState">생성된 폴더가 없습니다.</div>';
+}
+async function createFolder(){
+ const name=prompt('폴더명을 입력해주세요');if(!name?.trim())return;
+ const {error}=await dbClient.from('media_folders').insert({name:name.trim().slice(0,80),created_by:currentUser.memberId});
+ if(error){console.error(error);return toast('폴더를 만들지 못했습니다.')}await renderFolders();toast('폴더를 만들었습니다');
+}
+async function openFolder(id){
+ currentFolder=id;if(!mediaFolders.length)await renderFolders();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
+ mediaTitle.textContent=f.name;mediaRoot.style.display='none';folderView.style.display='block';await renderFolderFiles();
+}
+function closeFolder(){currentFolder=null;mediaTitle.textContent='미디어';mediaRoot.style.display='block';folderView.style.display='none';renderFolders()}
+async function uploadToFolder(inp){
+ const files=[...inp.files];if(!files.length||!currentFolder)return;
+ try{
+  for(const file of files){
+   const path=await uploadTeamFile(file,`media/${currentFolder}`);
+   const {error}=await dbClient.from('media_files').insert({folder_id:currentFolder,uploader_id:currentUser.memberId,file_name:file.name,storage_path:path,mime_type:file.type||'application/octet-stream'});
+   if(error){await dbClient.storage.from('team-files').remove([path]);throw error}
+  }
+  await renderFolders();currentFolder=currentFolder;await renderFolderFiles();toast('파일을 공유했습니다.');
+ }catch(e){console.error(e);toast('파일 업로드에 실패했습니다.')}finally{inp.value=''}
+}
+async function renderFolderFiles(){
+ const f=mediaFolders.find(x=>x.id===currentFolder);if(!f)return;
+ const rows=[];
+ for(let i=0;i<f.files.length;i++){
+  const x=f.files[i];x.url=await signedTeamFile(x.path);
+  let preview='<div class="folderPreview">📄</div>';
+  if(x.type==='image'&&x.url)preview=`<div class="folderPreview"><img src="${x.url}"></div>`;
+  if(x.type==='video'&&x.url)preview=`<div class="folderPreview"><video src="${x.url}" muted></video></div>`;
+  const menu=isAdmin()?`<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'fileMenu-${x.id}')">⋯</button><div id="fileMenu-${x.id}" class="kebabMenu"><button onclick="event.stopPropagation();renameMediaFile('${x.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteMediaFile('${x.id}')">삭제</button></div></div>`:'';
+  rows.push(`<div class="folderFileRow" onclick="openFolderFile('${f.id}',${i})">${preview}<div class="grow"><b>${x.name}</b><span>올린 사람 · ${x.uploader} · ${x.date}</span></div>${menu}</div>`);
+ }
+ folderFiles.innerHTML=rows.join('')||'<div class="emptyState">아직 공유된 파일이 없습니다.</div>';
+}
+async function openFolderFile(fid,i){
+ const x=mediaFolders.find(f=>f.id===fid)?.files?.[i];if(!x)return;
+ const url=x.url||await signedTeamFile(x.path);if(!url)return toast('파일을 열지 못했습니다.');
+ if(x.type==='image'||x.type==='video')openModal(url,x.type,x.name);else{const a=document.createElement('a');a.href=url;a.download=x.name;a.target='_blank';a.click()}
+}
+function openTextFile(name,text){const b=new Blob([text],{type:'text/plain'});window.open(URL.createObjectURL(b),'_blank')}
+function addEmoji(id){const el=document.getElementById(id);el.value+=' 😊';el.focus()}
+function renderChatMessage(m,label){
+ let content='';
+ if(m.attachment){
+  const a=m.attachment;
+  if(a.kind==='image'&&a.url)content=`<div class="chatMedia" onclick="openModal('${a.url}','image','${a.name}')"><img src="${a.url}" alt="${a.name}"></div>`;
+  else if(a.kind==='video'&&a.url)content=`<div class="chatMedia" onclick="openModal('${a.url}','video','${a.name}')"><video src="${a.url}" muted playsinline></video><div class="play">▶</div></div>`;
+  else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${a.name}</b><small>${a.size||''}</small>${a.url?`<a class="saveLink" href="${a.url}" download="${a.name}" onclick="event.stopPropagation()">저장</a>`:''}</div></div>`;
+ }else content=`<div class="bubble">${m.text||''}</div>`;
+ return `<div class="bubbleRow ${m.me?'me':''}"><div><div class="bubbleName" style="${m.me?'text-align:right':''}">${label}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${m.time||''}</span></div></div></div>`;
+}
+const emojiChoices=['😀','😆','😂','🥹','😭','😍','😘','😎','🤩','🥳','👍','👏','🙌','🙏','💪','🔥','❤️','🩵','✨','🎉','👀','🏊‍♀️','🏊‍♂️','💦','🫧','🏆','🥇','📣'];
+function toggleEmojiPanel(kind){
+ const panelId=kind==='group'?'groupEmojiPanel':'dmEmojiPanel';
+ const otherId=kind==='group'?'dmEmojiPanel':'groupEmojiPanel';
+ const p=document.getElementById(panelId);
+ const other=document.getElementById(otherId);
+ if(!p)return;
+ if(other)other.classList.remove('open');
+ if(!p.dataset.ready){
+   p.innerHTML=emojiChoices.map(e=>`<button type="button" data-emoji="${e}">${e}</button>`).join('');
+   p.querySelectorAll('button').forEach(btn=>{
+     btn.addEventListener('click',()=>sendEmoji(kind,btn.dataset.emoji));
+   });
+   p.dataset.ready='1';
+ }
+ p.classList.toggle('open');
+}
+async function sendEmoji(kind,e){
+ if(kind==='group'){
+  const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,room_type:'group',body:e});
+  if(error)return toast('이모티콘을 보내지 못했습니다.');groupEmojiPanel.classList.remove('open');await renderGroup();
+ }else if(currentDm){
+  if(!directoryMembers.length)await loadDirectoryMembers();const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
+  const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:peer.id,room_type:'dm',body:e});
+  if(error)return toast('이모티콘을 보내지 못했습니다.');dmEmojiPanel.classList.remove('open');await renderDm();
+ }
+}
+
+async function chatAttach(inp,kind){
+ const files=[...inp.files];if(!files.length)return;
+ try{
+  if(kind==='dm'&&!directoryMembers.length)await loadDirectoryMembers();
+  const peer=kind==='dm'?directoryMembers.find(m=>m.nickname===currentDm):null;if(kind==='dm'&&!peer)return;
+  for(const f of files){
+   const path=await uploadTeamFile(f,kind==='group'?'chat/group':`chat/dm/${peer.id}`);
+   const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:kind==='group'?null:peer.id,room_type:kind,attachment_path:path,attachment_type:f.type||'application/octet-stream'});
+   if(error){await dbClient.storage.from('team-files').remove([path]);throw error}
+  }
+  if(kind==='group')await renderGroup();else await renderDm();
+ }catch(e){console.error(e);toast('첨부파일 업로드에 실패했습니다.')}finally{inp.value=''}
+}
+function setScheduleFilter(v,b){scheduleFilter=v;document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCalendar()}
+
+function addMedia(inp){[...inp.files].forEach(f=>mediaItems.push({type:f.type.startsWith('video')?'video':'image',name:f.name,url:URL.createObjectURL(f)}));renderMedia('all')}
+function filterMedia(type,btn){btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMedia(type)}
+function renderMedia(type){const arr=mediaItems.filter(x=>type==='all'||x.type===type);document.getElementById('mediaGrid').innerHTML=arr.map((x,i)=>`<div class="mediaTile" onclick="openModal('${x.url}','${x.type}')">${x.type==='image'?`<img src="${x.url}">`:`<video src="${x.url}"></video><div class="play">▶</div>`}</div>`).join('')||'<div class="card meta" style="grid-column:1/-1">아직 업로드한 미디어가 없습니다.</div>'}
+function openModal(url,type,name='TEAM-EYSL-file'){modalContent.innerHTML=type.startsWith('video')||type==='video'?`<video src="${url}" controls autoplay></video>`:`<img src="${url}" alt="">`;modalSave.href=url;modalSave.download=name||'TEAM-EYSL-file';modal.classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open');document.getElementById('modalContent').innerHTML=''}
+
+function renderAdminFields(){document.getElementById('trainingFields').style.display=document.getElementById('aType').value==='training'?'block':'none'}
+async function registerSchedule(){
+ if(!isAdmin())return toast('관리자만 일정을 등록할 수 있습니다.');
+ const title=aTitle.value.trim(),date=aDate.value,start=aStart.value,end=aEnd.value,place=aPlace.value.trim(),kind=aType.value;
+ if(!title||!date||!start||!end||!place)return toast('필수 항목을 입력해주세요');
+ let capacity=null,lane=(aCapacity.value||'').trim();
+ const numeric=lane.match(/\d+/); if(numeric)capacity=Number(numeric[0]);
+ const details={coach:aCoach.value||'',gear:aGear.value||'',lane,plan:aPlan.value||'',info:aDetail.value||'',link:aLink.value||'',planBy:currentUser.nickname};
+ const payload={kind,title,activity_date:date,start_time:start,end_time:end,place,capacity,details,updated_at:new Date().toISOString()};
+ const wasEditing=!!editingActivityId;
+ let data,error;
+ if(wasEditing)({data,error}=await dbClient.from('activities').update(payload).eq('id',editingActivityId).select().single());
+ else ({data,error}=await dbClient.from('activities').insert({...payload,created_by:currentUser.memberId}).select().single());
+ if(error){console.error(error);return toast('일정을 저장하지 못했습니다.')}
+ resetActivityEditor();await loadActivities();renderCalendar();renderTrainingList();renderRaceList();await renderHome();
+ showPage('schedule');toast(wasEditing?'일정을 수정했습니다.':'일정을 등록했습니다.');
+}
+
+
+async function renameFolder(id){
+ closeAllKebab();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
+ const name=prompt('폴더명을 수정해주세요',f.name);if(!name?.trim()||name.trim()===f.name)return;
+ const {error}=await dbClient.from('media_folders').update({name:name.trim().slice(0,80)}).eq('id',id);
+ if(error)return toast('폴더명을 수정하지 못했습니다.');await renderFolders();toast('폴더명을 수정했습니다.');
+}
+async function deleteFolder(id){
+ closeAllKebab();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
+ if(!confirm(`'${f.name}' 폴더와 안의 파일을 모두 삭제할까요?`))return;
+ const paths=f.files.map(x=>x.path).filter(Boolean);if(paths.length)await dbClient.storage.from('team-files').remove(paths);
+ const {error}=await dbClient.from('media_folders').delete().eq('id',id);if(error)return toast('폴더를 삭제하지 못했습니다.');
+ closeFolder();await renderFolders();toast('폴더를 삭제했습니다.');
+}
+async function renameMediaFile(id){
+ closeAllKebab();const f=mediaFolders.find(x=>x.id===currentFolder),x=f?.files.find(v=>v.id===id);if(!x)return;
+ const name=prompt('파일 표시명을 수정해주세요',x.name);if(!name?.trim()||name.trim()===x.name)return;
+ const {error}=await dbClient.from('media_files').update({file_name:name.trim().slice(0,255)}).eq('id',id);
+ if(error)return toast('파일명을 수정하지 못했습니다.');await renderFolders();await openFolder(currentFolder);toast('파일명을 수정했습니다.');
+}
+async function deleteMediaFile(id){
+ closeAllKebab();const f=mediaFolders.find(x=>x.id===currentFolder),x=f?.files.find(v=>v.id===id);if(!x)return;
+ if(!confirm(`'${x.name}' 파일을 삭제할까요?`))return;
+ await dbClient.storage.from('team-files').remove([x.path]);
+ const {error}=await dbClient.from('media_files').delete().eq('id',id);if(error)return toast('파일을 삭제하지 못했습니다.');
+ await renderFolders();await openFolder(currentFolder);toast('파일을 삭제했습니다.');
+}
+
+async function renderMemberDirectory(){
+ if(typeof loadDirectoryMembers==='function')await loadDirectoryMembers();
+ const box=document.getElementById('memberDirectoryList');if(!box)return;
+ const rows=(directoryMembers||[]).filter(m=>m.id!==currentUser.memberId);
+ box.innerHTML=rows.map(m=>`<div class="memberSimpleRow"><div class="grow"><b>${m.nickname}</b><p>${m.birth_year?m.birth_year+'년생':'생년 미등록'} · ${m.gender||'성별 미등록'}</p></div><button class="btn outline" onclick="startDm('${m.nickname}')">1:1 채팅</button></div>`).join('')||'<div class="emptyState">등록된 회원이 없습니다.</div>';
+}
+async function renderMembers(){
+ if(!isAdmin())return;
+ const {data,error}=await dbClient.from('members').select('id,nickname,birth_year,gender,role,status,created_at').order('created_at',{ascending:false});
+ if(error){console.error(error);return}
+ const active=(data||[]).filter(m=>m.status==='approved'),blocked=(data||[]).filter(m=>m.status==='blocked');
+ memberCount.textContent=active.length;
+ memberList.innerHTML=active.map(m=>`<div class="memberrow"><div class="grow"><b>${m.nickname} · ${m.birth_year||'-'} · ${m.gender||'-'}</b><p>${m.role==='admin'?'관리자':'회원'} · 가입 ${fmtKDate(m.created_at)}</p></div></div>`).join('')||'<div class="emptyState">승인된 회원이 없습니다.</div>';
+ blockedList.innerHTML=blocked.map(m=>`<div class="memberrow"><div class="grow"><b>${m.nickname}</b><p>내보내기 처리됨</p></div></div>`).join('')||'<div class="emptyState">내보낸 회원이 없습니다.</div>';
+}
+function openMember(name){const m=members.find(x=>x.name===name);showPage('memberDetail');document.getElementById('memberDetailBody').innerHTML=`<div class="profile"><div class="bigav">${name.slice(0,1)}</div><div class="grow"><h2>${name}</h2><p>${m.birth} · ${m.gender} · ${m.level}</p></div><button class="btn outline" onclick="startDm('${name}')">1:1 채팅</button></div><div class="section"><h2>기본 정보</h2></div><div class="detail"><div class="detailrow"><b>가입일</b><span>${m.join}</span></div><div class="detailrow"><b>수력</b><span>2년+</span></div></div><div class="section"><h2>출석</h2></div><div class="stats"><div class="stat"><strong>${m.att}회</strong><span>누적 출석</span></div><div class="stat"><strong>${m.late}회</strong><span>지각</span></div></div><div class="section"><h2>영법별 PB</h2></div><div class="pbgrid">${Object.entries(m.pb).map(([s,t])=>`<div class="pb"><div class="stroke">${s}</div><div class="time">${t}</div></div>`).join('')}</div><div class="section"><h2>대회 이력</h2></div><div class="list">${m.races.map((r,i)=>`<div class="row"><div class="grow"><b>${r}</b><p>신청종목 · ${i===0?'자유형 50m · 접영 50m · 혼성계영 200m':'배영 50m · 자유형 50m · 단체전 참가 안 함'}</p></div></div>`).join('')||'<div class="card meta">참가 대회 없음</div>'}</div><div class="section"><h2>훈련 이력</h2></div><div class="list">${m.trains.map(r=>`<div class="row"><div class="grow"><b>${r}</b></div></div>`).join('')||'<div class="card meta">참가 훈련 없음</div>'}</div>${currentUser.role==='admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${name}')">회원 내보내기</button></div>`:''}`}
+function kickMember(name){const m=members.find(x=>x.name===name);m.blocked=true;showPage('memberAdmin');renderMembers();toast(`${name} 회원을 내보냈습니다`)}
+function restoreMember(name){members.find(x=>x.name===name).blocked=false;renderMembers();toast(`${name} 회원을 복구했습니다`)}
+
+function renderApplicationAdmin(kind='training',btn){
+ if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+ applicationAdminBody.innerHTML='<div class="emptyState">아직 실제 신청 데이터가 없습니다.</div>';
+}
+
+function setAttType(v,b){attendanceType=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
+function setAttState(v,b){attendanceState=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
+function attEvents(){return [...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,people:t.participants,state:t.date<today?'done':'upcoming'})),{id:'barrel',type:'race',label:'대회',title:race.title,date:race.date,people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:'upcoming'},...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,people:e.participants,state:e.done?'done':'upcoming'}))]}
+function renderAttendanceAdmin(){
+ attAdminList.innerHTML='<div class="emptyState">아직 실제 출석 데이터가 없습니다.</div>';
+}
+function attCounts(e){const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;e.people.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});return {present,late,absent}}
+function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
+function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>신청 인원</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>신청자 체크</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
+function setAtt(id,name,status){if(!attRecords[id])attRecords[id]={};attRecords[id][name]={status,paid:status==='지각'?(attRecords[id][name]?.paid||false):null};renderAttDetail(attEvents().find(x=>x.id===id))}
+function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].paid;renderAttDetail(attEvents().find(x=>x.id===id))}
+
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('open')}
+function drawerGo(id){closeDrawer();showPage(id)}
+function toggleSub(id){document.getElementById(id).classList.toggle('open')}
+
+window.addEventListener('load',async()=>{
+ const loggedIn=await initAuth();
+ initAttendanceOptions();
+ if(!loggedIn)return;
+ try{
+  await loadDirectoryMembers();
+  await loadActivities();
+  await loadNotices();
+  await renderHome();
+  await renderNotices();
+  await renderGroup();
+  await renderDmList();
+  await renderCalendar();
+  await renderTrainingList();
+  await renderRaceList();
+  renderActivity();
+  renderAttendance();
+  await renderMemberDirectory();
+  if(isAdmin()){await renderMembers();renderAttendanceAdmin();renderApplicationAdmin('training')}
+  await renderFolders();
+  setRecordMajor('meet',document.querySelector('#recordMajor button'));
+ }catch(err){console.error('TEAM EYSL operating init:',err)}
+});
+</script>
+</body>
+</html>
