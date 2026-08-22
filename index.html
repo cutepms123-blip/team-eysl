@@ -2,8 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TEAM EYSL Mobile Operating v1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#f5f6f8"/>
+<title>TEAM EYSL Operating Data v1</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--ink:#111317;--muted:#858b94;--line:#e1e5ea;--green:#16865f;--amber:#a86706}
 *{box-sizing:border-box} body{margin:0;background:#e9ebee;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink)}
@@ -108,191 +109,99 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .approvalEmpty{background:#fff;border:1px dashed var(--line);border-radius:17px;padding:24px;text-align:center;font-size:11px;color:#888}
 
 
-/* Operating data + admin controls */
-.adminKebab{position:relative;margin-left:auto;flex:0 0 auto}
-.kebabBtn{width:34px;height:34px;border:0;background:transparent;border-radius:10px;font-size:20px;line-height:1;cursor:pointer}
-.kebabBtn:hover{background:#f1f2f4}
-.kebabMenu{display:none;position:absolute;right:0;top:38px;z-index:60;min-width:112px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-.kebabMenu.open{display:block}
-.kebabMenu button{width:100%;border:0;background:#fff;text-align:left;padding:10px 11px;border-radius:9px;font-size:11px;font-weight:750;cursor:pointer}
-.kebabMenu button:hover{background:#f4f5f7}.kebabMenu button.danger{color:#c23737}
-.emptyState{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px 18px;text-align:center;color:#8b8f95;font-size:11px;line-height:1.6}
-.adminInlineHead{display:flex;align-items:flex-start;gap:8px}
-
-
-/* ===== TEAM EYSL MOBILE DISTRIBUTION ===== */
-html,body{max-width:100%;overflow-x:hidden}
-body{background:#eef0f3}
-.app{
- width:100%;
- max-width:720px;
- min-height:100dvh;
- margin:0 auto;
- background:#f5f6f8;
- position:relative;
-}
-@media (max-width:760px){
- body{background:#f5f6f8}
- .app{max-width:none;margin:0;min-height:100dvh}
- header{
-  position:sticky;top:0;z-index:80;
-  padding-top:max(12px,env(safe-area-inset-top));
-  background:rgba(245,246,248,.96);
-  backdrop-filter:blur(14px);
- }
- .page{padding-left:16px!important;padding-right:16px!important;padding-bottom:110px!important}
- .pagehead{padding-top:8px}
- .pagehead h1{font-size:26px}
- .nav{
-  position:fixed!important;left:0!important;right:0!important;bottom:0!important;
-  width:100%!important;max-width:none!important;
-  padding-bottom:max(6px,env(safe-area-inset-bottom));
-  z-index:100;background:rgba(255,255,255,.97);
-  backdrop-filter:blur(14px);
- }
- .nav button{min-width:0;font-size:10px}
- .nav button span{font-size:9px}
- .drawer{width:min(88vw,360px)!important}
- .statusCard,.card,.row,.notice,.folder,.memberSimpleRow,.memberrow{border-radius:18px!important}
- .statusTop{gap:10px}
- .actions{gap:7px;flex-wrap:wrap}
- .actions .btn{min-height:44px}
- .btn{font-size:12px}
- .chatBody{padding-bottom:170px!important}
- .chatInput{
-  position:fixed!important;left:0;right:0;bottom:72px!important;z-index:90;
-  width:100%;max-width:720px;margin:0 auto;
-  padding:10px 12px;background:rgba(245,246,248,.98);
- }
- .emojiPanel{bottom:145px!important;width:calc(100% - 20px)!important;max-width:520px!important}
- .chatMedia{max-width:62vw}
- .modalContent img,.modalContent video{max-width:96vw;max-height:78vh}
- .auth{padding:20px 16px}
- .authbox{width:100%!important;max-width:520px!important;padding:28px 20px!important}
- .authbox h1{font-size:34px}
- .authActions,.authRole{grid-template-columns:1fr 1fr}
- .filters{overflow-x:auto;white-space:nowrap;padding-bottom:4px;scrollbar-width:none}
- .filters::-webkit-scrollbar{display:none}
- .filters button{flex:0 0 auto}
- .calendarWrap{padding:14px!important}
- .calendarDays{gap:4px!important}
- .day{min-height:52px!important}
- .folderGrid{grid-template-columns:1fr 1fr!important;gap:10px!important}
- .adminKebab{z-index:5}
- .kebabMenu{position:absolute;right:0;top:38px}
-}
-@media (max-width:420px){
- .page{padding-left:12px!important;padding-right:12px!important}
- header{padding-left:12px!important;padding-right:12px!important}
- .brand h1{font-size:23px!important}
- .brand small{font-size:9px!important;letter-spacing:4px!important}
- .statusCard{padding:16px!important}
- .statusTop h3{font-size:15px!important}
- .statusTop p{font-size:11px!important;line-height:1.55}
- .btn{padding:10px 13px!important}
- .folderGrid{grid-template-columns:1fr!important}
- .authbox h1{font-size:30px}
- .authbox small{font-size:14px}
- .pagehead h1{font-size:24px}
-}
-
-
-/* ===== FINAL mobile bottom nav fix ===== */
+/* ===== TEAM EYSL FINAL MOBILE NAV ===== */
 @media (max-width: 760px){
-  html, body{
-    width:100%;
-    max-width:100%;
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
     overflow-x:hidden!important;
   }
 
   .app{
     width:100%!important;
-    max-width:100%!important;
-    margin:0!important;
+    max-width:430px!important;
+    margin:0 auto!important;
     padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;
-    overflow-x:hidden!important;
   }
 
-  .bottom{
+  /* actual bottom navigation */
+  .nav{
     position:fixed!important;
     left:0!important;
     right:0!important;
     bottom:0!important;
+    transform:none!important;
     width:100%!important;
-    max-width:none!important;
+    max-width:430px!important;
     min-width:0!important;
-    margin:0!important;
-    padding:8px max(6px, env(safe-area-inset-left))
-            calc(8px + env(safe-area-inset-bottom))
-            max(6px, env(safe-area-inset-right))!important;
+    height:calc(72px + env(safe-area-inset-bottom))!important;
+    margin:0 auto!important;
+    padding:0 0 env(safe-area-inset-bottom)!important;
     box-sizing:border-box!important;
     display:grid!important;
     grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    gap:0!important;
-    z-index:120!important;
-    background:#fff!important;
-    border-top:1px solid #e7e7e7!important;
+    overflow:hidden!important;
+    background:rgba(255,255,255,.98)!important;
+    z-index:60!important;
   }
 
-  .bottom .bitem,
-  .bottom > *{
+  .nav button{
+    width:100%!important;
     min-width:0!important;
-    width:auto!important;
     max-width:none!important;
     margin:0!important;
-    padding:4px 0!important;
+    padding:7px 1px 5px!important;
+    box-sizing:border-box!important;
     display:flex!important;
-    flex-direction:column!important;
     align-items:center!important;
     justify-content:center!important;
-    gap:3px!important;
-    text-align:center!important;
-    overflow:visible!important;
-  }
-
-  .bottom .bitem span,
-  .bottom > * span{
-    display:block!important;
-    max-width:100%!important;
-    white-space:nowrap!important;
+    flex-direction:column!important;
+    gap:4px!important;
     overflow:hidden!important;
-    text-overflow:clip!important;
-    font-size:11px!important;
-    line-height:1.2!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
   }
 
-  .bottom svg,
-  .bottom .bi,
-  .bottom .bicon{
+  .nav button i{
+    font-size:19px!important;
+    line-height:1!important;
     flex:0 0 auto!important;
-    width:22px!important;
-    height:22px!important;
   }
 
-  /* prevent inner desktop-width containers from pushing mobile content sideways */
-  main, .main, .content, .page, .shell{
+  .page{
+    width:100%!important;
     max-width:100%!important;
     min-width:0!important;
+    overflow-x:hidden!important;
+  }
+
+  /* login must cover app nav completely */
+  .auth{
+    min-height:100dvh!important;
+    height:100dvh!important;
+    overflow-y:auto!important;
+    z-index:500!important;
+  }
+  #auth.open + .app .nav{
+    display:none!important;
   }
 }
 
-/* standalone PWA gets only the app bar, with proper iPhone home-indicator spacing */
+/* Installed PWA safe area */
 @media (display-mode: standalone){
-  .bottom{
-    padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;
+  .nav{
+    padding-bottom:env(safe-area-inset-bottom)!important;
   }
 }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
-
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#f5f6f8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="TEAM EYSL">
 <link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 
 </head>
 <body>
@@ -307,7 +216,7 @@ body{background:#eef0f3}
   </div>
 
   <div class="authFields">
-   <input id="authNickname" autocomplete="username" maxlength="30" placeholder="닉네임">
+   <input id="authNickname" autocomplete="username" maxlength="30" placeholder="아이디 (앱에서 사용할 이름)">
    <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="비밀번호">
   </div>
 
@@ -317,7 +226,7 @@ body{background:#eef0f3}
   </div>
 
   <div id="authMessage" class="authMsg"></div>
-  <div class="authHint">닉네임은 중복 사용할 수 없어요. 비밀번호는 8자 이상으로 설정해주세요.</div>
+  <div class="authHint">아이디는 중복 사용할 수 없으며, 가입한 아이디가 앱에서 회원 이름으로 그대로 표시됩니다. 비밀번호는 8자 이상으로 설정해주세요.</div>
  </div>
 </div>
 
@@ -336,11 +245,31 @@ body{background:#eef0f3}
 <div class="row" onclick="openEventDetail('e927')"><div class="icon">🎉</div><div class="grow"><b>9월 TEAM EYSL 정모</b><p>9/27 · 미정 · 신청 가능</p></div><span class="tag">신청 가능</span></div>
 </div>
  <div class="section"><h2>지금 뜨는 콘텐츠</h2></div>
- <div id="myActivitySummary" class="summary" onclick="showPage('activity')"><div class="meta">활동 데이터</div><h3>아직 활동 리포트가 없어요</h3><div class="metrics"><div class="metric"><b>-</b><span>훈련 참여</span></div><div class="metric"><b>-</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div><div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
+ <div class="summary" onclick="showPage('activity')"><div class="meta">MONTHLY ACTIVITY</div><h3>8월 내 활동 요약이 도착했어요 🎉</h3><div class="metrics"><div class="metric"><b>4회</b><span>훈련 참여</span></div><div class="metric"><b>100%</b><span>출석률</span></div></div></div>
+</section>
+
+<section id="notice" class="page"><h1 class="title">공지</h1><div id="noticeList" class="list"></div><button id="noticeFab" class="fab" onclick="showPage('noticeWrite')">＋</button></section>
+<section id="noticeDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('notice')">←</button><h1>공지</h1><span></span></div><div id="noticeArticle"></div><div class="section"><h2>댓글</h2></div><div id="comments" class="comments"></div><div class="commentForm"><input id="commentInput" placeholder="댓글을 입력하세요"><button onclick="addComment()">등록</button></div></section>
+<section id="noticeWrite" class="page"><div class="pagehead"><button class="back" onclick="showPage('notice')">←</button><h1>공지 작성</h1><span></span></div><div class="formrow"><label>제목</label><input id="nwTitle"></div><div class="formrow"><label>본문</label><textarea id="nwBody"></textarea></div><div class="formrow"><label>첨부</label><div class="uploadBox"><button class="btn outline" onclick="document.getElementById('noticeMediaInput').click()">사진·영상</button> <button class="btn outline" onclick="document.getElementById('noticeFileInput').click()">파일</button><input id="noticeMediaInput" type="file" accept="image/*,video/*" multiple hidden onchange="collectNoticeFiles(this)"><input id="noticeFileInput" type="file" multiple hidden onchange="collectNoticeFiles(this)"><div id="noticeFileChips" class="filechips"></div></div></div><button class="btn primary" style="width:100%" onclick="saveNotice()">공지 등록</button></section>
+
+<section id="chat" class="page"><h1 class="title">채팅방</h1><div class="chatTabs"><button id="groupTab" class="active" onclick="switchChat('group')">전체채팅</button><button id="dmTab" onclick="switchChat('dm')">개인채팅</button></div><div id="groupView"><div id="groupChatBody" class="chatBody"></div><div id="groupEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('groupAttach').click()">＋</button><input id="groupAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'group')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('group')">☺</button><input id="groupInput" placeholder="메시지 보내기"><button class="primary" onclick="sendGroup()">전송</button></div></div><div id="dmView" style="display:none"><div id="dmList" class="list"></div></div></section>
+<section id="dmChat" class="page"><div class="pagehead"><button class="back" onclick="showPage('chat');switchChat('dm')">←</button><h1 id="dmTitle">개인채팅</h1><span></span></div><div id="dmBody" class="chatBody"></div><div id="dmEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('dmAttach').click()">＋</button><input id="dmAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'dm')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('dm')">☺</button><input id="dmInput" placeholder="메시지 보내기"><button class="primary" onclick="sendDm()">전송</button></div></section>
+
+<section id="schedule" class="page"><h1 class="title">신청</h1><div class="filters" id="scheduleFilters"><button class="active" onclick="setScheduleFilter('all',this)">전체</button><button onclick="setScheduleFilter('training',this)">훈련</button><button onclick="setScheduleFilter('race',this)">대회</button><button onclick="setScheduleFilter('event',this)">이벤트</button></div><div class="calendar"><div class="calhead"><button onclick="changeMonth(-1)">‹</button><b id="calTitle"></b><button onclick="changeMonth(1)">›</button></div><div class="week"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendarDays" class="days"></div></div><div id="dayInfo"></div></section>
+
+<section id="trainingList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>훈련</h1><span></span></div><div id="trainingCards" class="list"></div></section>
+<section id="raceList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>대회</h1><span></span></div><div id="raceCards" class="list"></div></section>
+<section id="trainingDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('trainingList')">←</button><h1>훈련 상세</h1><span></span></div><div id="trainingDetailBody"></div></section>
+<section id="applyStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('trainingList')">←</button><h1>신청 현황</h1><span></span></div><div id="applyStatusBody"></div></section>
+
+<section id="raceDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>상세 내용</h1><span></span></div><div id="raceDetailBody"></div></section>
+<section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
+
+<section id="mypage" class="page"><h1 class="title">마이페이지</h1><div class="profile"><div class="bigav">MS</div><div><h2 id="myName">민선</h2><p>TEAM EYSL · 2026.03 가입</p></div></div><div class="section"><h2>내 활동 요약</h2></div><div class="summary" onclick="showPage('activity')"><div class="meta">2026.08</div><h3>8월 활동 리포트</h3><div class="metrics"><div class="metric"><b>4회</b><span>훈련 참여</span></div><div class="metric"><b>2개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div><div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
 
 <section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
 <section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">대회</button><button onclick="setRecordMajor('fin',this)">핀대회</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
-<section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage(window.myStatusBackTarget||'mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
+<section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 
 <section id="media" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1 id="mediaTitle">미디어</h1><span></span></div><div id="mediaRoot"><div class="actions"><button class="btn primary" onclick="createFolder()">＋ 폴더 만들기</button></div><div id="folderGrid" class="folderGrid"></div></div><div id="folderView" style="display:none"><div class="actions"><button class="btn outline" onclick="closeFolder()">← 폴더 목록</button><button class="btn primary" onclick="document.getElementById('folderUpload').click()">＋ 파일 올리기</button><input id="folderUpload" type="file" multiple hidden onchange="uploadToFolder(this)"></div><div id="folderFiles" class="list"></div></div></section>
@@ -369,7 +298,7 @@ body{background:#eef0f3}
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">활동 신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -383,8 +312,10 @@ const dbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KE
 const today='2026-08-22';
 let authRole='member';
 let currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
-let unreadNoticeIds=new Set();
-let currentNoticeId=null;
+let directoryMembers=[];
+const signedUrlCache=new Map();
+let unreadNoticeIds=new Set([1,2]);
+let currentNoticeId=1;
 let noticeAttachments=[];
 let mediaItems=[];
 let scheduleFilter='all'; let recordMajor='meet'; let currentFolder=null;
@@ -395,194 +326,62 @@ let selectedTrainingId='t829';
 let currentStatusKind='training',currentStatusFilter='all';
 let summaryMonth=8;
 let attendanceType='all',attendanceState='all';
-let directoryMembers=[]; let operatingActivities=[]; let editingActivityId=null; let editingNoticeId=null; const signedUrlCache=new Map();
 
-let notices=[];
+const notices=[
+ {id:1,date:'2026.08.22',title:'9월 훈련 일정 및 신청 안내',body:'9월 정기훈련 일정이 등록되었습니다.\\n\\n훈련 신청은 스케줄 또는 훈련 메뉴에서 진행해주세요.',comments:[{name:'희선',time:'15:20',text:'확인했습니다! 🙌'}],attachments:[]},
+ {id:2,date:'2026.08.19',title:'배럴 대회 참가 신청 안내',body:'배럴 스프린트 챔피언십 신청을 시작합니다.\\n\\n개인종목과 단체전 참가 정보를 선택해주세요.',comments:[],attachments:[]},
+ {id:3,date:'2026.08.15',title:'훈련팀 운영 규칙 업데이트',body:'주요 운영 공지는 앱 공지를 기준으로 확인해주세요.',comments:[],attachments:[]}
+];
 
-let members=[];
+const members=[
+ {name:'민선',birth:'97',gender:'여',level:'상급',join:'2026.03',att:16,late:1,blocked:false,pb:{자유형:'37.41',배영:'52.82',평영:'48.07',접영:'38.26'},races:['제6회 성북구청장배','2026 수원 연맹회장배'],trains:['8/22 정기훈련','8/15 정기훈련','7/18 정기훈련']},
+ {name:'희선',birth:'98',gender:'여',level:'연수',join:'2026.03',att:4,late:0,blocked:false,pb:{자유형:'40.12',배영:'-',평영:'52.24',접영:'42.56'},races:['2026 수원 연맹회장배'],trains:['8/22 정기훈련','8/15 정기훈련']},
+ {name:'승희',birth:'95',gender:'여',level:'상급',join:'2026.06',att:8,late:2,blocked:false,pb:{자유형:'39.21',배영:'51.40',평영:'49.82',접영:'41.73'},races:['제6회 성북구청장배'],trains:['8/22 정기훈련','8/15 정기훈련','7/18 정기훈련']},
+ {name:'준석',birth:'94',gender:'남',level:'연수',join:'2026.01',att:7,late:1,blocked:false,pb:{자유형:'41.69',배영:'-',평영:'51.97',접영:'-'},races:['제7회 성동구 연맹회장배'],trains:['6/27 정기훈련','6/13 정기훈련']},
+ {name:'태영',birth:'88',gender:'남',level:'상급',join:'2026.07',att:1,late:0,blocked:false,pb:{자유형:'33.37',배영:'-',평영:'41.23',접영:'35.65'},races:[],trains:['7/25 정기훈련']}
+];
 
-let trainings={};
+const trainings={
+ t829:{id:'t829',title:'8/29 정기 훈련',date:'2026-08-29',start:'10:00',end:'12:00',place:'남부터미널 수영장',coach:'창호',gear:'개인 수영장비',lane:'A레인 10명 / B레인 10명',info:'기록측정 및 스프린트 중심 훈련',capacity:20,participants:['민선','희선','승희','재연','태영','혜진','예진','유빈','나연','광섭','종명','세령','민지','하나','창호','우철','성근','서희','예진2','혜진2'],waitlist:[{name:'하린',order:1},{name:'도이',order:2},{name:'경현',order:3}],offer:null,plan:'W-up 400m\n자유형 드릴 8×25m\n50m 스프린트 6회\nC-down 200m',planBy:'창호',planDate:'2026.08.28'},
+ t906:{id:'t906',title:'9/6 정기 훈련',date:'2026-09-06',start:'10:00',end:'12:00',place:'남부터미널 수영장',coach:'창호',gear:'개인 수영장비',lane:'A레인 10명 / B레인 10명',info:'스프린트 중심 훈련',capacity:20,participants:['민선','희선','승희','재연','태영','혜진','예진','유빈','나연','광섭'],waitlist:[],offer:null},
+ t919:{id:'t919',title:'9/19 정기 훈련',date:'2026-09-19',start:'10:00',end:'12:00',place:'남부터미널 수영장',coach:'태진',gear:'개인 수영장비',lane:'A레인 10명 / B레인 10명',info:'스타트 및 스프린트',capacity:20,participants:['종명','희선','승희','재연','태영','광섭'],waitlist:[{name:'민선',order:1}],offer:null}
+};
 
 let raceApplication=null;
-let race=null;
-let events=[];
+const race={id:'barrel',title:'2026 배럴 스프린트 챔피언십',date:'2026-09-12',endDate:'2026-09-13',place:'김천실내수영장',participants:['희선','승희','재연','태영','혜진','유빈','나연','광섭'],detail:'대회 집결 시간은 오전 7시 30분입니다.\\n\\n팀원들은 TEAM EYSL 단체복을 착용해주세요.\\n개인전 출전 시간 및 단체전 순서는 추후 공지합니다.',relays:['계영','혼계영','혼성계영','혼성 혼계영']};
+const events=[{id:'e927',title:'9월 TEAM EYSL 정모',date:'2026-09-27',start:'18:00',end:'21:00',place:'추후 공지',participants:['민선','희선','승희']},{id:'e718',title:'7월 TEAM EYSL 회식',date:'2026-07-18',start:'18:00',end:'21:00',place:'강남',participants:['민선','희선','승희','재연'],done:true}];
 
-let attendanceHistory=[];
+const attendanceHistory=[
+ {date:'2026-08-22',title:'정기훈련',status:'출석'},{date:'2026-08-19',title:'기록측정 훈련',status:'출석'},{date:'2026-08-17',title:'스타트 특훈',status:'출석'},{date:'2026-08-15',title:'정기훈련',status:'출석'},{date:'2026-07-18',title:'정기훈련',status:'출석'},{date:'2026-06-06',title:'정기훈련',status:'출석'},{date:'2026-05-09',title:'정기훈련',status:'출석'},{date:'2026-04-11',title:'정기훈련',status:'출석'},{date:'2026-03-28',title:'정기훈련',status:'출석'}
+];
 
-let attRecords={};
+const attRecords={
+ t829:{민선:{status:'출석'},희선:{status:'출석'},승희:{status:'지각',paid:true},재연:{status:'지각',paid:false},태영:{status:'불참'}},
+ t906:{},
+ barrel:{},
+ e718:{민선:{status:'출석'},희선:{status:'지각',paid:true}}
+};
 
 let groupMessages=[];
 let dmMessages={};
 
-
-function isAdmin(){return currentUser.role==='admin'&&currentUser.actualRole==='admin'}
-function closeAllKebab(except=null){
- document.querySelectorAll('.kebabMenu.open').forEach(x=>{if(x!==except)x.classList.remove('open')});
-}
-function toggleKebab(e,id){
- e.stopPropagation();
- const el=document.getElementById(id);
- closeAllKebab(el);
- el?.classList.toggle('open');
-}
-document.addEventListener('click',()=>closeAllKebab());
-
-function fmtKDate(ts){
- const d=new Date(ts); if(Number.isNaN(d.getTime()))return String(ts||'');
- return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
-}
-function fmtChatTime(ts){
- const d=new Date(ts); return d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
-}
-function safeFileName(name){return name.replace(/[^\p{L}\p{N}._ -]/gu,'_').slice(0,120)}
-function attachmentKind(mime=''){return mime.startsWith('image/')?'image':mime.startsWith('video/')?'video':'file'}
-async function signedTeamFile(path,ttl=3600){
- if(!path)return null;
- const cached=signedUrlCache.get(path);
- if(cached&&cached.expires>Date.now()+60000)return cached.url;
- const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,ttl);
- if(error){console.error(error);return null}
- signedUrlCache.set(path,{url:data.signedUrl,expires:Date.now()+ttl*1000});
- return data.signedUrl;
-}
-async function uploadTeamFile(file,area){
- const path=`${currentUser.memberId}/${area}/${Date.now()}-${crypto.randomUUID()}--${encodeURIComponent(safeFileName(file.name))}`;
- const {error}=await dbClient.storage.from('team-files').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});
- if(error)throw error;
- return path;
-}
-async function loadDirectoryMembers(){
- if(!currentUser.memberId)return [];
- const {data,error}=await dbClient.from('members').select('id,nickname,birth_year,gender,role,status').eq('status','approved').order('nickname');
- if(error){console.error(error);return []}
- directoryMembers=(data||[]).filter(m=>m.id!==currentUser.memberId);
- return directoryMembers;
-}
-async function memberNameMap(ids){
- const unique=[...new Set((ids||[]).filter(Boolean))], map={};
- if(!unique.length)return map;
- const {data,error}=await dbClient.from('members').select('id,nickname').in('id',unique);
- if(error){console.error(error);return map}
- (data||[]).forEach(m=>map[m.id]=m.nickname); return map;
-}
-async function normalizeMessageRows(rows){
- const names=await memberNameMap(rows.flatMap(r=>[r.sender_id,r.recipient_id]));
- const out=[];
- for(const r of rows){
-  let attachment=null;
-  if(r.attachment_path){
-   const url=await signedTeamFile(r.attachment_path);
-   const raw=r.attachment_path.split('--').slice(1).join('--')||r.attachment_path.split('/').pop();
-   attachment={name:decodeURIComponent(raw),url,kind:attachmentKind(r.attachment_type||''),size:''};
-  }
-  out.push({id:r.id,name:names[r.sender_id]||'회원',text:r.body||'',time:fmtChatTime(r.created_at),me:r.sender_id===currentUser.memberId,attachment});
- }
- return out;
-}
-
-async function loadActivities(){
- if(!currentUser.memberId)return [];
- const {data,error}=await dbClient.from('activities').select('*').order('activity_date',{ascending:true});
- if(error){console.error('activities',error);operatingActivities=[];return []}
- operatingActivities=data||[];
- trainings={}; events=[]; race=null;
- operatingActivities.forEach(a=>{
-   const d=a.details||{};
-   if(a.kind==='training')trainings[a.id]={id:a.id,title:a.title,date:a.activity_date,start:(a.start_time||'').slice(0,5),end:(a.end_time||'').slice(0,5),place:a.place||'',coach:d.coach||'-',gear:d.gear||'-',lane:d.lane||'-',info:d.info||'',capacity:a.capacity||20,participants:[],waitlist:[],offer:null,plan:d.plan||'',planBy:d.planBy||'',planDate:a.activity_date};
-   else if(a.kind==='event')events.push({id:a.id,title:a.title,date:a.activity_date,start:(a.start_time||'').slice(0,5),end:(a.end_time||'').slice(0,5),place:a.place||'',participants:[],detail:d.info||'',done:a.activity_date<today});
-   else if(a.kind==='race'&&!race)race={id:a.id,title:a.title,date:a.activity_date,endDate:d.endDate||a.activity_date,place:a.place||'',participants:[],detail:d.info||'',relays:d.relays||[]};
- });
- return operatingActivities;
-}
-function activityMenu(a){
- if(!isAdmin())return '';
- return `<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'actMenu-${a.id}')">⋯</button><div id="actMenu-${a.id}" class="kebabMenu"><button onclick="event.stopPropagation();editActivity('${a.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteActivity('${a.id}')">삭제</button></div></div>`;
-}
-async function deleteActivity(id){
- closeAllKebab();
- const a=operatingActivities.find(x=>x.id===id); if(!a)return;
- if(!confirm(`'${a.title}' 일정을 삭제할까요?\n신청 내역이 연결되어 있다면 함께 삭제될 수 있습니다.`))return;
- const {error}=await dbClient.from('activities').delete().eq('id',id);
- if(error){console.error(error);return toast('일정을 삭제하지 못했습니다.')}
- await loadActivities(); await renderHome(); renderCalendar(); renderTrainingList(); renderRaceList(); toast('일정을 삭제했습니다.');
-}
-function editActivity(id){
- closeAllKebab();
- const a=operatingActivities.find(x=>x.id===id); if(!a)return;
- editingActivityId=id;
- const d=a.details||{};
- showPage('adminSchedule');
- document.getElementById('aType').value=a.kind;
- document.getElementById('aType').disabled=true;
- document.getElementById('aTitle').value=a.title||'';
- document.getElementById('aDate').value=a.activity_date||'';
- document.getElementById('aStart').value=(a.start_time||'').slice(0,5);
- document.getElementById('aEnd').value=(a.end_time||'').slice(0,5);
- document.getElementById('aPlace').value=a.place||'';
- document.getElementById('aCoach').value=d.coach||'';
- document.getElementById('aGear').value=d.gear||'';
- document.getElementById('aCapacity').value=d.lane||a.capacity||'';
- document.getElementById('aPlan').value=d.plan||'';
- document.getElementById('aDetail').value=d.info||'';
- document.getElementById('aLink').value=d.link||'';
- renderAdminFields();
- const btn=document.querySelector('#adminSchedule button[onclick="registerSchedule()"]');
- if(btn)btn.textContent='수정 완료';
-}
-function resetActivityEditor(){
- editingActivityId=null;
- const type=document.getElementById('aType'); if(type)type.disabled=false;
- ['aTitle','aDate','aStart','aEnd','aPlace','aCoach','aGear','aCapacity','aPlan','aDetail','aLink'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
- const btn=document.querySelector('#adminSchedule button[onclick="registerSchedule()"]');if(btn)btn.textContent='일정 등록';
-}
-
-async function loadNotices(){
- if(!currentUser.memberId)return [];
- const {data,error}=await dbClient.from('notices').select('*').order('created_at',{ascending:false});
- if(error){console.error(error);notices=[];return []}
- notices=data||[]; return notices;
-}
-function noticeMenu(n){
- if(!isAdmin())return '';
- return `<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'noticeMenu-${n.id}')">⋯</button><div id="noticeMenu-${n.id}" class="kebabMenu"><button onclick="event.stopPropagation();editNotice('${n.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteNotice('${n.id}')">삭제</button></div></div>`;
-}
-function editNotice(id){
- closeAllKebab(); const n=notices.find(x=>x.id===id); if(!n)return;
- editingNoticeId=id; showPage('noticeWrite');
- document.getElementById('nwTitle').value=n.title||'';document.getElementById('nwBody').value=n.body||'';
- const btn=document.querySelector('#noticeWrite button[onclick="saveNotice()"]');if(btn)btn.textContent='수정 완료';
-}
-async function deleteNotice(id){
- closeAllKebab(); const n=notices.find(x=>x.id===id);if(!n)return;
- if(!confirm(`'${n.title}' 공지를 삭제할까요?`))return;
- const {error}=await dbClient.from('notices').delete().eq('id',id);
- if(error){console.error(error);return toast('공지를 삭제하지 못했습니다.')}
- await renderNotices(); toast('공지를 삭제했습니다.');
-}
-function resetNoticeEditor(){
- editingNoticeId=null;document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';
- const btn=document.querySelector('#noticeWrite button[onclick="saveNotice()"]');if(btn)btn.textContent='공지 등록';
-}
-
 function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- if(id==='home')renderHome();
+ window.scrollTo(0,0);
  if(id==='notice')renderNotices();
+ if(id==='home')renderHome();
  if(id==='chat'){renderGroup();renderDmList()}
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
- if(id==='mypage')applyRole();
- if(id==='attendance'){initAttendanceOptions();renderAttendance()}
- if(id==='activity')renderActivity();
+ if(id==='mypage')document.getElementById('myName').textContent=currentUser.nickname;
+ if(id==='records')showRecord('personal',document.querySelector('.recordTabs button'));
+ if(id==='attendance')renderAttendance();
  if(id==='memberAdmin')renderMembers();
- if(id==='memberDirectory')renderMemberDirectory();
- if(id==='memberApproval')renderApprovalRequests();
+ if(id==='memberApproval')renderApprovalRequests();if(id==='memberDirectory')renderMemberDirectory();
  if(id==='attendanceAdmin')renderAttendanceAdmin();
- if(id==='media')renderFolders();
- if(id==='files')renderFiles();
- window.scrollTo(0,0);
+ if(id==='media')renderMedia('all');
 }
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
 function now(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
@@ -623,13 +422,13 @@ async function callAuthFunction(name,body){
 async function signupMember(){
  const nickname=document.getElementById('authNickname')?.value.trim()||'';
  const password=document.getElementById('authPassword')?.value||'';
- if(nickname.length<2)return setAuthMessage('닉네임은 2자 이상 입력해주세요.','error');
+ if(nickname.length<2)return setAuthMessage('아이디는 2자 이상 입력해주세요.','error');
  if(password.length<8)return setAuthMessage('비밀번호는 8자 이상으로 입력해주세요.','error');
  setAuthBusy(true);setAuthMessage('회원가입 요청을 등록하고 있어요.');
  try{
    const result=await callAuthFunction('register-member',{nickname,password,role:authRole});
    if(!result.ok)return setAuthMessage(result.data.error||'회원가입 요청에 실패했습니다.','error');
-   setAuthMessage('가입 요청 완료! 관리자 승인 후 같은 닉네임과 비밀번호로 로그인해주세요.','success');
+   setAuthMessage('가입 요청 완료! 관리자 승인 후 같은 아이디와 비밀번호로 로그인해주세요.','success');
  }catch(e){
    console.error(e);setAuthMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.','error');
  }finally{setAuthBusy(false)}
@@ -638,7 +437,7 @@ async function signupMember(){
 async function loginOperatingMember(){
  const nickname=document.getElementById('authNickname')?.value.trim()||'';
  const password=document.getElementById('authPassword')?.value||'';
- if(!nickname||!password)return setAuthMessage('닉네임과 비밀번호를 입력해주세요.','error');
+ if(!nickname||!password)return setAuthMessage('아이디와 비밀번호를 입력해주세요.','error');
  setAuthBusy(true);setAuthMessage('로그인 중이에요.');
  try{
    const identity=await callAuthFunction('resolve-login-identity',{nickname});
@@ -653,7 +452,7 @@ async function loginOperatingMember(){
      password
    });
    if(signInError||!signIn.session){
-     return setAuthMessage('닉네임 또는 비밀번호가 올바르지 않습니다.','error');
+     return setAuthMessage('아이디 또는 비밀번호가 올바르지 않습니다.','error');
    }
 
    const {data:memberRows,error:memberError}=await dbClient.rpc('get_my_member');
@@ -683,9 +482,7 @@ async function loginOperatingMember(){
    setAuthMessage('');
    applyRole();
    await loadDirectoryMembers();
-   await loadActivities();
-   await loadNotices();
-   await renderHome();
+   renderHome();
    showPage('home');
  }catch(e){
    console.error('TEAM EYSL login:',e);
@@ -807,117 +604,243 @@ async function manageMemberApproval(memberId,action){
  }catch(e){console.error(e);toast('회원 승인 처리 중 오류가 발생했습니다.')}
 }
 
-async function renderHome(){
- if(!currentUser.memberId)return;
- await loadActivities();
- const now=today;
- const upcoming=operatingActivities.filter(a=>a.activity_date>=now).sort((a,b)=>a.activity_date.localeCompare(b.activity_date)).slice(0,4);
- const next=upcoming[0];
- const nextEl=document.getElementById('nextEl'),upcomingEl=document.getElementById('upcomingEl');
- if(nextEl)nextEl.innerHTML=next?`<div class="row" onclick="showPage('schedule')"><div class="icon">${next.kind==='training'?'🏊':next.kind==='race'?'🏆':'🎉'}</div><div class="grow"><b>${next.title}</b><p>${next.activity_date} · ${next.place||''}</p></div><span>›</span></div>`:'<div class="emptyState">참여 예정인 다음 일정이 없습니다.</div>';
- if(upcomingEl)upcomingEl.innerHTML=upcoming.length?upcoming.map(a=>`<div class="row" onclick="showPage('schedule')"><div class="icon">${a.kind==='training'?'🏊':a.kind==='race'?'🏆':'🎉'}</div><div class="grow"><b>${a.title}</b><p>${a.activity_date} · ${a.place||''}</p></div>${activityMenu(a)}</div>`).join(''):'<div class="emptyState">등록된 예정 일정이 없습니다.</div>';
- const content=document.querySelector('.summary');
- if(content&&content.closest('#home')){ /* legacy card is left visually but no fake numbers are injected here */ }
+function renderHome(){
+ const userName=(currentUser&&currentUser.nickname)||'민선';
+ const noticeEl=document.getElementById('homeNotice');
+ const mineEl=document.getElementById('homeMine');
+ const upcomingEl=document.getElementById('homeUpcoming');
+ if(!noticeEl||!mineEl||!upcomingEl)return;
+ const sortedNotices=[...notices].sort((a,b)=>b.id-a.id);
+ const n=notices.filter(x=>unreadNoticeIds.has(x.id)).sort((a,b)=>b.id-a.id)[0]||sortedNotices[0];
+ const unread=notices.filter(x=>unreadNoticeIds.has(x.id)).length;
+ if(n){noticeEl.innerHTML=`<small>${unread?'UNREAD NOTICE · '+unread+'건':'LATEST NOTICE'}</small><h1>${n.title}</h1><p>${String(n.body||'').split('\n')[0]}</p>`;noticeEl.onclick=()=>openNotice(n.id)}
+ else{noticeEl.innerHTML='<small>LATEST NOTICE</small><h1>등록된 공지가 없습니다.</h1><p>새 공지가 등록되면 여기에 표시됩니다.</p>';noticeEl.onclick=null}
+ const mine=Object.values(trainings).filter(t=>(t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName)).sort((a,b)=>a.date.localeCompare(b.date))[0];
+ mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start}–${mine.end} · ${mine.place}</p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'wait':'ok'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 일정이 없어요.</div>`;
+ const upcoming=[{type:'training',id:'t906',title:'9/6 정기 훈련',date:'9/6',place:'남부터미널'},{type:'race',id:'barrel',title:race.title,date:'9/12–13',place:'김천'},{type:'event',id:'e927',title:'9월 TEAM EYSL 정모',date:'9/27',place:'미정'}];
+ upcomingEl.innerHTML=upcoming.map(x=>{let status='신청 가능';if(x.type==='training'){const t=trainings[x.id];if(t)status=(t.participants||[]).includes(userName)?'신청완료':(t.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청 가능'}if(x.type==='race')status=raceApplication?'신청완료':'신청 가능';if(x.type==='event'){const e=events.find(e=>e.id===x.id);status=e&&(e.participants||[]).includes(userName)?'신청완료':'신청 가능'}const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;return `<div class="row" onclick="${action}"><div class="icon">${x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉'}</div><div class="grow"><b>${x.title}</b><p>${x.date} · ${x.place} · ${status}</p></div><span class="tag ${status==='대기완료'?'wait':status==='신청완료'?'ok':''}">${status}</span></div>`}).join('');
 }
 
-async function renderNotices(){
- await loadNotices();
- const box=document.getElementById('noticeList');
- box.innerHTML=notices.map(n=>`<div class="notice" onclick="openNotice('${n.id}')"><div class="adminInlineHead"><div class="grow"><div class="date">${fmtKDate(n.created_at)}</div><h3>${n.title}</h3><p>${(n.body||'').split('\n')[0]}</p></div>${noticeMenu(n)}</div></div>`).join('')||'<div class="emptyState">등록된 공지가 없습니다.<br>관리자가 공지를 등록하면 여기에 표시돼요.</div>';
-}
-function openNotice(id){
- const n=notices.find(x=>x.id===id);if(!n)return;
- currentNoticeId=id;showPage('noticeDetail');
- document.getElementById('noticeDetailBody').innerHTML=`<div class="card"><div class="adminInlineHead"><div class="grow"><div class="meta">${fmtKDate(n.created_at)}</div><h2 style="margin:6px 0 12px">${n.title}</h2></div>${noticeMenu(n)}</div><div style="white-space:pre-wrap;line-height:1.75;font-size:12px">${n.body||''}</div></div>`;
-}
+function renderNotices(){document.getElementById('noticeList').innerHTML=notices.map(n=>`<div class="notice" onclick="openNotice(${n.id})"><div class="date">${n.date}${unreadNoticeIds.has(n.id)?' · NEW':''}</div><h3>${n.title}</h3><p>${n.body.split('\\n')[0]}</p></div>`).join('')}
+function openNotice(id){currentNoticeId=id;unreadNoticeIds.delete(id);showPage('noticeDetail');renderNoticeDetail();renderHome()}
 function renderNoticeDetail(){const n=notices.find(x=>x.id===currentNoticeId);document.getElementById('noticeArticle').innerHTML=`<div class="article"><div class="meta">${n.date}</div><h2>${n.title}</h2><p>${n.body}</p>${n.attachments?.length?`<div class="section"><h2>첨부</h2></div>${n.attachments.map(a=>`<div class="fileRow" onclick="openAttachment('${a.url}','${a.type}')"><div class="icon">${a.type.startsWith('image')?'🖼️':a.type.startsWith('video')?'🎬':'📎'}</div><div class="grow"><b>${a.name}</b></div></div>`).join('')}`:''}</div>`;document.getElementById('comments').innerHTML=n.comments.map(c=>`<div class="comment"><b>${c.name}</b><span>${c.time}</span><p>${c.text}</p></div>`).join('')||'<div class="card meta">아직 댓글이 없습니다.</div>'}
 function addComment(){const i=document.getElementById('commentInput');if(!i.value.trim())return;notices.find(x=>x.id===currentNoticeId).comments.push({name:currentUser.nickname,time:now(),text:i.value.trim()});i.value='';renderNoticeDetail()}
 function collectNoticeFiles(inp){[...inp.files].forEach(f=>noticeAttachments.push({name:f.name,type:f.type,url:URL.createObjectURL(f)}));document.getElementById('noticeFileChips').innerHTML=noticeAttachments.map(a=>`<span class="chip">${a.name}</span>`).join('')}
-async function saveNotice(){
- if(!isAdmin())return toast('관리자만 공지를 등록할 수 있습니다.');
- const title=document.getElementById('nwTitle').value.trim(),body=document.getElementById('nwBody').value.trim();
- if(!title||!body)return toast('제목과 본문을 입력해주세요');
- const wasEditing=!!editingNoticeId;
- let error;
- if(wasEditing)({error}=await dbClient.from('notices').update({title,body,updated_at:new Date().toISOString()}).eq('id',editingNoticeId));
- else ({error}=await dbClient.from('notices').insert({title,body,created_by:currentUser.memberId}));
- if(error){console.error(error);return toast('공지를 저장하지 못했습니다.')}
- resetNoticeEditor();noticeAttachments=[];document.getElementById('noticeFileChips').innerHTML='';
- await renderNotices();showPage('notice');toast(wasEditing?'공지를 수정했습니다.':'공지가 등록됐습니다');
-}
+function saveNotice(){const t=document.getElementById('nwTitle').value.trim(),b=document.getElementById('nwBody').value.trim();if(!t||!b)return toast('제목과 본문을 입력해주세요');const id=Math.max(...notices.map(x=>x.id))+1;notices.unshift({id,date:today,title:t,body:b,comments:[],attachments:[...noticeAttachments]});unreadNoticeIds.add(id);noticeAttachments=[];document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';document.getElementById('noticeFileChips').innerHTML='';showPage('notice');toast('공지가 등록됐습니다')}
 function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('video'))openModal(url,type);else window.open(url,'_blank')}
+
+
+function fmtChatTime(ts){
+ const d=new Date(ts);
+ return d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function fmtDate(ts){
+ const d=new Date(ts);
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function safeFileName(name){return name.replace(/[^\p{L}\p{N}._ -]/gu,'_').slice(0,120)}
+function attachmentKind(mime=''){
+ if(mime.startsWith('image/'))return 'image';
+ if(mime.startsWith('video/'))return 'video';
+ return 'file';
+}
+async function signedTeamFile(path,ttl=3600){
+ if(!path)return null;
+ const cached=signedUrlCache.get(path);
+ if(cached&&cached.expires>Date.now()+60000)return cached.url;
+ const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,ttl);
+ if(error){console.error('signed url',error);return null}
+ signedUrlCache.set(path,{url:data.signedUrl,expires:Date.now()+ttl*1000});
+ return data.signedUrl;
+}
+async function loadDirectoryMembers(){
+ if(!currentUser.memberId)return [];
+ const {data,error}=await dbClient.from('members').select('id,nickname,birth_year,gender,role,status').eq('status','approved').order('nickname');
+ if(error){console.error('directory',error);return []}
+ directoryMembers=(data||[]).filter(m=>m.id!==currentUser.memberId);
+ return directoryMembers;
+}
+async function memberNameMap(ids){
+ const unique=[...new Set(ids.filter(Boolean))];
+ const map={};
+ if(!unique.length)return map;
+ const {data,error}=await dbClient.from('members').select('id,nickname').in('id',unique);
+ if(error){console.error('member map',error);return map}
+ (data||[]).forEach(m=>map[m.id]=m.nickname);
+ return map;
+}
+async function normalizeMessageRows(rows){
+ const names=await memberNameMap(rows.flatMap(r=>[r.sender_id,r.recipient_id]));
+ const out=[];
+ for(const r of rows){
+   let attachment=null;
+   if(r.attachment_path){
+     const url=await signedTeamFile(r.attachment_path);
+     const fileName=decodeURIComponent(r.attachment_path.split('--').slice(1).join('--')||r.attachment_path.split('/').pop());
+     attachment={name:fileName,url,kind:attachmentKind(r.attachment_type||''),size:''};
+   }
+   out.push({
+     id:r.id,
+     name:names[r.sender_id]||'회원',
+     peerName:names[r.sender_id===currentUser.memberId?r.recipient_id:r.sender_id]||'회원',
+     text:r.body||'',
+     time:fmtChatTime(r.created_at),
+     me:r.sender_id===currentUser.memberId,
+     attachment
+   });
+ }
+ return out;
+}
+async function uploadTeamFile(file,area){
+ const safe=safeFileName(file.name);
+ const path=`${currentUser.memberId}/${area}/${Date.now()}-${crypto.randomUUID()}--${encodeURIComponent(safe)}`;
+ const {error}=await dbClient.storage.from('team-files').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});
+ if(error)throw error;
+ return path;
+}
 
 async function renderGroup(){
  if(!currentUser.memberId){groupChatBody.innerHTML='';return}
- const {data,error}=await dbClient.from('messages').select('*').eq('room_type','group').order('created_at',{ascending:true}).limit(300);
- if(error){console.error(error);groupChatBody.innerHTML='<div class="emptyState">채팅을 불러오지 못했습니다.</div>';return}
+ groupChatBody.innerHTML='<div class="card meta">채팅을 불러오는 중...</div>';
+ const {data,error}=await dbClient.from('messages').select('id,sender_id,recipient_id,room_type,body,attachment_path,attachment_type,created_at').eq('room_type','group').order('created_at',{ascending:true}).limit(300);
+ if(error){console.error(error);groupChatBody.innerHTML='<div class="card meta">채팅을 불러오지 못했습니다.</div>';return}
  groupMessages=await normalizeMessageRows(data||[]);
- groupChatBody.innerHTML=groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('')||'<div class="emptyState">아직 채팅이 없습니다.</div>';
+ groupChatBody.innerHTML=groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('')||'<div class="card meta">아직 채팅이 없습니다.</div>';
  groupChatBody.scrollTop=groupChatBody.scrollHeight;
 }
 async function sendGroup(){
- const i=groupInput,text=i.value.trim();if(!text||!currentUser.memberId)return;
- const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,room_type:'group',body:text});
- if(error){console.error(error);return toast('메시지를 보내지 못했습니다.')}
- i.value='';await renderGroup();
+ const i=document.getElementById('groupInput'),text=i.value.trim();
+ if(!text||!currentUser.memberId)return;
+ i.disabled=true;
+ const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:null,room_type:'group',body:text});
+ i.disabled=false;
+ if(error){console.error(error);toast('메시지를 보내지 못했습니다.');return}
+ i.value='';
+ await renderGroup();
 }
 function switchChat(mode){document.getElementById('groupTab').classList.toggle('active',mode==='group');document.getElementById('dmTab').classList.toggle('active',mode==='dm');document.getElementById('groupView').style.display=mode==='group'?'block':'none';document.getElementById('dmView').style.display=mode==='dm'?'block':'none';if(mode==='dm')renderDmList()}
 async function renderDmList(){
- if(!currentUser.memberId)return;
+ const box=document.getElementById('dmList');
+ if(!currentUser.memberId){box.innerHTML='';return}
+ box.innerHTML='<div class="card meta">회원목록을 불러오는 중...</div>';
  await loadDirectoryMembers();
- dmList.innerHTML=directoryMembers.map(m=>`<div class="dmRow" onclick="startDm('${m.nickname}')"><div class="dmAv">${m.nickname.slice(0,1)}</div><div class="grow"><b>${m.nickname}</b><p>1:1 채팅하기</p></div><span>›</span></div>`).join('')||'<div class="emptyState">채팅 가능한 회원이 없습니다.</div>';
+ const {data:rows,error}=await dbClient.from('messages').select('sender_id,recipient_id,body,attachment_path,created_at').eq('room_type','dm').order('created_at',{ascending:false}).limit(500);
+ if(error)console.error(error);
+ const latest={};
+ (rows||[]).forEach(r=>{
+   const peer=r.sender_id===currentUser.memberId?r.recipient_id:r.sender_id;
+   if(!latest[peer])latest[peer]=r;
+ });
+ box.innerHTML=directoryMembers.map(m=>{
+   const r=latest[m.id],preview=r?(r.body||(r.attachment_path?'첨부파일':'')):'아직 대화가 없습니다.';
+   return `<div class="dmRow" onclick="startDm('${m.nickname}')"><div class="dmAv">${m.nickname.slice(0,1)}</div><div class="grow"><b>${m.nickname}</b><p>${preview}</p></div><span>›</span></div>`;
+ }).join('')||'<div class="card meta">표시할 회원이 없습니다.</div>';
 }
-function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');renderDm()}
+function startDm(name){
+ currentDm=name;
+ document.getElementById('dmTitle').textContent=name;
+ showPage('dmChat');
+ renderDm();
+}
 async function renderDm(){
- if(!currentDm)return;
+ if(!currentUser.memberId||!currentDm){dmBody.innerHTML='<div class="card meta">대화 상대를 선택해주세요.</div>';return}
  if(!directoryMembers.length)await loadDirectoryMembers();
- const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
- const {data,error}=await dbClient.from('messages').select('*').eq('room_type','dm').or(`and(sender_id.eq.${currentUser.memberId},recipient_id.eq.${peer.id}),and(sender_id.eq.${peer.id},recipient_id.eq.${currentUser.memberId})`).order('created_at',{ascending:true}).limit(300);
- if(error){console.error(error);dmBody.innerHTML='<div class="emptyState">대화를 불러오지 못했습니다.</div>';return}
- const rows=await normalizeMessageRows(data||[]);dmMessages[currentDm]=rows;
- dmBody.innerHTML=rows.map(m=>renderChatMessage(m,m.me?'나':currentDm)).join('')||'<div class="emptyState">첫 메시지를 보내보세요.</div>';dmBody.scrollTop=dmBody.scrollHeight;
+ const peer=directoryMembers.find(m=>m.nickname===currentDm);
+ if(!peer){dmBody.innerHTML='<div class="card meta">회원 정보를 찾지 못했습니다.</div>';return}
+ dmBody.innerHTML='<div class="card meta">대화를 불러오는 중...</div>';
+ const {data,error}=await dbClient.from('messages').select('id,sender_id,recipient_id,room_type,body,attachment_path,attachment_type,created_at').eq('room_type','dm').or(`and(sender_id.eq.${currentUser.memberId},recipient_id.eq.${peer.id}),and(sender_id.eq.${peer.id},recipient_id.eq.${currentUser.memberId})`).order('created_at',{ascending:true}).limit(300);
+ if(error){console.error(error);dmBody.innerHTML='<div class="card meta">대화를 불러오지 못했습니다.</div>';return}
+ const normalized=await normalizeMessageRows(data||[]);
+ dmMessages[currentDm]=normalized;
+ dmBody.innerHTML=normalized.map(m=>renderChatMessage(m,m.me?'나':currentDm)).join('')||'<div class="card meta">첫 메시지를 보내보세요.</div>';
+ dmBody.scrollTop=dmBody.scrollHeight;
 }
 async function sendDm(){
- const text=dmInput.value.trim();if(!text||!currentDm)return;
- if(!directoryMembers.length)await loadDirectoryMembers();const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
+ const i=document.getElementById('dmInput'),text=i.value.trim();
+ if(!text||!currentDm||!currentUser.memberId)return;
+ if(!directoryMembers.length)await loadDirectoryMembers();
+ const peer=directoryMembers.find(m=>m.nickname===currentDm);
+ if(!peer)return toast('회원 정보를 찾지 못했습니다.');
+ i.disabled=true;
  const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:peer.id,room_type:'dm',body:text});
- if(error){console.error(error);return toast('메시지를 보내지 못했습니다.')}
- dmInput.value='';await renderDm();
+ i.disabled=false;
+ if(error){console.error(error);toast('메시지를 보내지 못했습니다.');return}
+ i.value='';
+ await renderDm();
+ await renderDmList();
 }
 
 function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
-async function renderCalendar(){
- if(!currentUser.memberId)return;
- await loadActivities();
- const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
- calTitle.textContent=`${y}년 ${m+1}월`;calendarDays.innerHTML='';
- const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
- for(let i=0;i<first;i++)calendarDays.innerHTML+='<div></div>';
- for(let d=1;d<=last;d++){
-  const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const hits=operatingActivities.filter(a=>a.activity_date===ds&&(scheduleFilter==='all'||a.kind===scheduleFilter));
-  calendarDays.innerHTML+=`<button class="day" onclick="selectDay('${ds}')">${d}<div class="dots">${hits.slice(0,3).map(a=>`<i class="dot ${a.kind==='race'?'race':a.kind==='event'?'event':''}"></i>`).join('')}</div></button>`;
- }
- dayInfo.innerHTML='<div class="emptyState" style="margin-top:10px">날짜를 선택하면 등록된 일정을 볼 수 있어요.</div>';
+function renderCalendar(){
+ const y=currentMonth.getFullYear(),m=currentMonth.getMonth();document.getElementById('calTitle').textContent=`${y}년 ${m+1}월`;
+ const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();let html='';for(let i=0;i<first;i++)html+='<div></div>';
+ const allEvents=[...Object.values(trainings).map(t=>({date:t.date,type:'training',id:t.id})),{date:race.date,type:'race',id:'barrel'},...events.map(e=>({date:e.date,type:'event',id:e.id}))].filter(e=>scheduleFilter==='all'||e.type===scheduleFilter);
+ for(let d=1;d<=last;d++){const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const ev=allEvents.filter(e=>e.date===ds);html+=`<div class="day" onclick="selectDay('${ds}',this)">${d}${ev.length?`<div class="dots">${ev.map(e=>`<i class="dot ${e.type==='race'?'race':e.type==='event'?'event':''}"></i>`).join('')}</div>`:''}</div>`}document.getElementById('calendarDays').innerHTML=html;document.getElementById('dayInfo').innerHTML='';
 }
-function selectDay(ds){
- document.querySelectorAll('.day').forEach(x=>x.classList.remove('selected'));
- const list=operatingActivities.filter(a=>a.activity_date===ds&&(scheduleFilter==='all'||a.kind===scheduleFilter));
- dayInfo.innerHTML=list.length?list.map(a=>`<div class="statusCard" style="margin-top:10px"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)} · ${a.place||''}</p></div>${activityMenu(a)}</div></div>`).join(''):`<div class="emptyState" style="margin-top:10px">${ds} 등록 일정 없음${isAdmin()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`;
-}
+function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));if(race.date===ds)list.push({type:'대회',title:race.title,time:'09:00 시작',place:race.place,status:raceApplication?'신청완료':'신청 가능',action:`showPage('raceList')`});events.filter(e=>e.date===ds).forEach(e=>list.push({type:'이벤트',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${currentUser.role==='admin'?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
 
-async function renderTrainingList(){
- await loadActivities();
- const list=operatingActivities.filter(a=>a.kind==='training').sort((a,b)=>a.activity_date.localeCompare(b.activity_date));
- trainingCards.innerHTML=list.map(a=>`<div class="statusCard"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)} · ${a.place||''}<br>${a.capacity?`정원 ${a.capacity}명`:'정원 미설정'}</p></div>${activityMenu(a)}</div><div class="actions"><button class="btn outline" onclick="openTraining('${a.id}')">훈련 상세</button><button class="btn primary" onclick="openTraining('${a.id}')">참석 신청</button></div></div>`).join('')||'<div class="emptyState">등록된 훈련이 없습니다.</div>';
+function renderTrainingList(){
+ const list=Object.values(trainings).sort((a,b)=>a.date.localeCompare(b.date));
+ trainingCards.innerHTML=list.map(t=>{
+   const inP=t.participants.includes(currentUser.nickname);
+   const w=t.waitlist.find(x=>x.name===currentUser.nickname);
+   const state=inP?'신청완료':w?`대기 ${w.order}번`:'신청 전';
+   const badgeClass=inP?'':w?'wait':'idle';
+
+   const seatBlocked=t.participants.length>=t.capacity || t.waitlist.length>0 || !!t.offer;
+   let action='';
+   if(inP){
+     action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">참석 취소</button>`;
+   }else if(w){
+     action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">대기 취소</button>`;
+   }else{
+     action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${t.id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
+   }
+
+   return `<div class="statusCard">
+     <div class="statusTop">
+       <div><h3>${t.title}</h3><p>${t.start}–${t.end} · ${t.place}<br>${t.participants.length}/${t.capacity} · ${state}</p></div>
+       <span class="statusPill ${badgeClass}">${state}</span>
+     </div>
+     <div class="actions">
+       ${action}
+       <button class="btn outline" onclick="openTraining('${t.id}')">훈련 상세</button>
+       <button class="btn outline" onclick="openApplyStatus('${t.id}')">신청현황</button>
+     </div>
+   </div>`;
+ }).join('');
 }
 function applyTraining(id){const t=trainings[id];if(t.participants.length<t.capacity)t.participants.push(currentUser.nickname);else t.waitlist.push({name:currentUser.nickname,order:t.waitlist.length+1});renderTrainingList();renderHome();toast(`${t.title.split(' ')[0]} 훈련 ${t.participants.includes(currentUser.nickname)?'신청완료':'대기 신청완료'}`)}
-async function openTraining(id){
- if(!Object.keys(trainings).length)await loadActivities();
- const t=trainings[id];if(!t)return toast('훈련을 찾지 못했습니다.');
- selectedTrainingId=id;showPage('trainingDetail');
- const a=operatingActivities.find(x=>x.id===id);
- trainingDetailBody.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${a?activityMenu(a):''}</div><div class="detailrow"><b>훈련명</b><span>${t.title}</span></div><div class="detailrow"><b>날짜</b><span>${t.date}</span></div><div class="detailrow"><b>시간</b><span>${t.start}–${t.end}</span></div><div class="detailrow"><b>장소</b><span>${t.place}</span></div><div class="detailrow"><b>코치</b><span>${t.coach}</span></div><div class="detailrow"><b>준비물</b><span>${t.gear}</span></div><div class="detailrow"><b>훈련 정보</b><span>${t.info||'-'}</span></div></div>${t.plan?`<div class="section"><h2>훈련표</h2></div><div class="card"><div class="trainingPlan">${t.plan}</div></div>`:''}<div class="actions"><button class="btn primary" onclick="toast('신청 DB 연결은 다음 단계에서 활성화됩니다.')">참석 신청</button></div>`;
+function openTraining(id){
+ selectedTrainingId=id;
+ showPage('trainingDetail');
+ const t=trainings[id];
+ const inP=t.participants.includes(currentUser.nickname);
+ const w=t.waitlist.find(x=>x.name===currentUser.nickname);
+ const mine=inP?'신청완료':w?`대기 ${w.order}번`:'신청 전';
+ const plan=t.plan||'';
+ const seatBlocked=t.participants.length>=t.capacity || t.waitlist.length>0 || !!t.offer;
+
+ let action='';
+ if(inP) action=`<button class="btn amber" onclick="cancelTraining('${id}')">참석 취소</button>`;
+ else if(w) action=`<button class="btn amber" onclick="cancelTraining('${id}')">대기 취소</button>`;
+ else action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${id}');openTraining('${id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
+
+ trainingDetailBody.innerHTML=`<div class="detail">
+   <div class="detailrow"><b>훈련명</b><span>${t.title}</span></div>
+   <div class="detailrow"><b>날짜</b><span>${t.date}</span></div>
+   <div class="detailrow"><b>시간</b><span>${t.start}–${t.end}</span></div>
+   <div class="detailrow"><b>장소</b><span>${t.place}</span></div>
+   <div class="detailrow"><b>코치</b><span>${t.coach}</span></div>
+   <div class="detailrow"><b>준비물</b><span>${t.gear}</span></div>
+   <div class="detailrow"><b>훈련 정보</b><span>${t.info}</span></div>
+   <div class="detailrow"><b>내 신청 상태</b><span>${mine}</span></div>
+ </div>
+ ${plan?`<div class="section"><h2>훈련표</h2></div><div class="card"><div class="trainingPlan">${plan}</div><div class="smallLine">작성 · ${t.planBy||t.coach} · ${t.planDate||t.date}</div></div>`:''}
+ <div class="actions">
+   ${action}
+   <button class="btn outline" onclick="openApplyStatus('${id}')">신청현황</button>
+ </div>`;
 }
 function openTrainingEdit(id){const t=trainings[id],inP=t.participants.includes(currentUser.nickname);showPage('trainingDetail');document.getElementById('trainingDetailBody').innerHTML=`<div class="section"><h2>${t.title} 신청 변경</h2></div><div class="card"><p style="font-size:12px">현재 상태: <b>${inP?'신청완료':'대기중'}</b></p><div class="formrow"><label>변경할 상태</label><select id="trainingEditState"><option value="attend" ${inP?'selected':''}>참석 신청</option><option value="wait" ${!inP?'selected':''}>대기 신청</option></select></div><button class="btn primary" style="width:100%" onclick="saveTrainingEdit('${id}')">수정 완료</button></div>`}
 function saveTrainingEdit(id){const t=trainings[id],v=document.getElementById('trainingEditState').value;t.participants=t.participants.filter(n=>n!==currentUser.nickname);t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);if(v==='attend'&&t.participants.length<t.capacity)t.participants.push(currentUser.nickname);else t.waitlist.push({name:currentUser.nickname,order:t.waitlist.length+1});normalizeWait(t);renderTrainingList();openApplyStatus(id);toast('수정 내용이 반영됐습니다')}
@@ -964,11 +887,7 @@ function remaining(ex){const ms=Math.max(0,ex-Date.now());return `${Math.floor(m
 function acceptOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.participants.push(currentUser.nickname);t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);renderApplyStatus();renderHome();toast('신청완료')}
 function declineOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);if(t.waitlist.length)t.offer={name:t.waitlist[0].name,expiresAt:Date.now()+86400000};renderApplyStatus();toast('다음 대기자에게 기회가 넘어갔습니다')}
 
-async function renderRaceList(){
- await loadActivities();
- const races=operatingActivities.filter(a=>a.kind==='race').sort((a,b)=>a.activity_date.localeCompare(b.activity_date));
- raceCards.innerHTML=races.map(a=>`<div class="statusCard"><div class="statusTop"><div class="grow"><h3>${a.title}</h3><p>${a.activity_date} · ${a.place||''}</p></div>${activityMenu(a)}</div><div class="actions"><button class="btn outline" onclick="openRaceActivity('${a.id}')">상세 내용</button><button class="btn primary" onclick="openRaceActivity('${a.id}')">신청하기</button></div></div>`).join('')||'<div class="emptyState">등록된 대회가 없습니다.</div>';
-}
+function renderRaceList(){document.getElementById('raceCards').innerHTML=`<div class="statusCard"><div class="statusTop"><div><h3>${race.title}</h3><p>${race.date}–${race.endDate} · ${race.place}<br>${raceApplication?'신청완료':'신청 가능'}</p></div><span class="tag">${raceApplication?'신청완료':'대회'}</span></div><div class="section" style="margin:12px 0 6px"><h2>신청 ${race.participants.length+(raceApplication?1:0)}명</h2></div><div class="names">${[...race.participants,...(raceApplication?[currentUser.nickname]:[])].join(' · ')}</div><div class="actions"><button class="btn outline" onclick="openRaceDetail()">상세 내용</button><button class="btn primary" onclick="openRaceApply()">${raceApplication?'신청 수정':'신청하기'}</button></div></div>`}
 function openRaceDetail(){showPage('raceDetail');document.getElementById('raceDetailBody').innerHTML=`<div class="article"><div class="meta">관리자 작성 내용</div><h2>${race.title}</h2><p>${race.detail}</p></div><div class="section"><h2>첨부 사진</h2></div><div class="mediaGrid"><div class="mediaTile" onclick="openSampleImage('swim')">🏊‍♀️</div><div class="mediaTile" onclick="openSampleImage('trophy')">🏆</div></div><div class="section"><h2>첨부 파일</h2></div><div class="fileRow" onclick="openSampleFile()"><div class="icon">📄</div><div class="grow"><b>2026 배럴 상세 내용</b><span>첨부파일 열기</span></div><b>›</b></div><div class="section"><h2>링크</h2></div><div class="fileRow" onclick="window.open('https://www.google.com/search?q=배럴+스프린트+챔피언십','_blank')"><div class="grow"><b>배럴 공식 대회 페이지</b></div><b>↗</b></div>`}
 function openSampleImage(type){const svg=type==='swim'?`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="100%" height="100%" fill="#eef3f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="180">🏊‍♀️</text></svg>`:`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="100%" height="100%" fill="#fff4d8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="180">🏆</text></svg>`;openModal('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),'image/svg+xml')}
 function openSampleFile(){const blob=new Blob(['2026 배럴 스프린트 챔피언십 상세 내용\\n\\n집결 07:30 / 김천실내수영장'],{type:'text/plain'});window.open(URL.createObjectURL(blob),'_blank')}
@@ -977,125 +896,102 @@ function toggleRelay(b){document.getElementById('noRelay').classList.remove('on'
 function selectNoRelay(){document.querySelectorAll('#relayChoices .bigChoice').forEach(b=>b.classList.remove('on'));document.getElementById('noRelay').classList.add('on')}
 function submitRace(){const noRelay=document.getElementById('noRelay').classList.contains('on');raceApplication={group:raceGroup.value,s1:raceS1.value,s2:raceS2.value,relays:noRelay?[]:[...document.querySelectorAll('#relayChoices .on')].map(b=>b.textContent),noRelay};renderRaceList();renderMyStatus('race');toast('신청 내용이 저장됐습니다')}
 function cancelRace(){raceApplication=null;renderRaceList();renderMyStatus('race');toast('대회 신청을 취소했습니다')}
-function renderMyStatus(kind,backTarget='mypage'){
- currentStatusKind=kind;currentStatusFilter='all';
- window.myStatusBackTarget=backTarget||'mypage';
- showPage('myStatus');
+function renderMyStatus(kind){
+ currentStatusKind=kind;currentStatusFilter='all';showPage('myStatus');
  document.querySelectorAll('#myStatus .filters button').forEach((b,i)=>b.classList.toggle('active',i===0));
- const title=kind==='race'?'나의 대회 신청 내역':kind==='training'?'나의 훈련 신청 내역':kind==='event'?'나의 이벤트 신청 내역':'나의 전체 신청 내역';
- myStatusTitle.textContent=title;
+ myStatusTitle.textContent=kind==='race'?'나의 대회 신청 내역':kind==='training'?'나의 훈련 신청 내역':kind==='event'?'나의 이벤트 신청 내역':'나의 전체 신청 내역';
  renderMyStatusList();
 }
 function filterMyStatus(f,b){currentStatusFilter=f;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMyStatusList()}
-function renderMyStatusList(){
- document.getElementById('myStatusList').innerHTML='<div class="emptyState">아직 저장된 신청 내역이 없습니다.<br>실제 신청 DB 연결 후 신청한 활동만 여기에 표시됩니다.</div>';
-}
+function renderMyStatusList(){let rows=[];if(currentStatusKind==='training'){rows=[{id:'old1',title:'8/15 정기훈련',date:'2026-08-15',time:'10:00–12:00',place:'남부터미널',state:'done',status:'종료'},...Object.values(trainings).filter(t=>t.participants.includes(currentUser.nickname)||t.waitlist.some(w=>w.name===currentUser.nickname)).map(t=>({id:t.id,title:t.title,date:t.date,time:`${t.start}–${t.end}`,place:t.place,state:t.date<today?'done':'upcoming',status:t.date<today?'종료':t.participants.includes(currentUser.nickname)?'신청완료':`대기 ${t.waitlist.find(w=>w.name===currentUser.nickname).order}번`}))]};if(currentStatusKind==='race'){rows=[{id:'rOld',title:'2026 수원 연맹회장배',date:'2026-04-12',state:'done',status:'종료'},...(raceApplication?[{id:'barrel',title:race.title,date:race.date,state:'upcoming',status:'신청완료',extra:`${raceApplication.group} · ${raceApplication.s1} / ${raceApplication.s2} · 단체전: ${raceApplication.noRelay?'참가 안 함':raceApplication.relays.join(', ')||'미선택'}`}]:[])]};if(currentStatusKind==='event'){rows=events.filter(e=>e.participants.includes(currentUser.nickname)).map(e=>({id:e.id,title:e.title,date:e.date,time:`${e.start}–${e.end}`,place:e.place,state:e.done?'done':'upcoming',status:e.done?'종료':'신청완료'}))};rows=rows.filter(r=>currentStatusFilter==='all'||r.state===currentStatusFilter).sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('myStatusList').innerHTML=rows.map(r=>`<div class="statusCard"><div class="statusTop"><div><h3>${r.title}</h3><p>${r.date}${r.time?` · ${r.time}`:''}${r.place?`<br>${r.place}`:''}${r.extra?`<br>${r.extra}`:''}</p></div><span class="tag ${r.state==='done'?'done':r.status.startsWith('대기')?'wait':'ok'}">${r.status}</span></div><div class="actions">${r.state==='upcoming'&&currentStatusKind==='race'?`<button class="btn outline" onclick="openRaceApply()">신청 변경</button><button class="btn amber" onclick="cancelRace()">신청 취소</button>`:r.state==='upcoming'&&currentStatusKind==='training'?`<button class="btn amber" onclick="cancelTraining('${r.id}')">${r.status.startsWith('대기')?'대기 취소':'참석 취소'}</button>`:''}<button class="btn ghost" onclick="${currentStatusKind==='training'?`openTraining('${r.id}')`:currentStatusKind==='race'?`openRaceDetail()`:`openEventDetail('${r.id}')`}">상세보기</button></div></div>`).join('')||'<div class="card meta">해당 신청 내역이 없습니다.</div>'}
 function openEventDetail(id){const e=events.find(x=>x.id===id);showPage('myStatus');document.getElementById('myStatusTitle').textContent='이벤트 상세';document.getElementById('myStatusList').innerHTML=`<div class="detail"><div class="detailrow"><b>이벤트</b><span>${e.title}</span></div><div class="detailrow"><b>일시</b><span>${e.date} · ${e.start}–${e.end}</span></div><div class="detailrow"><b>장소</b><span>${e.place}</span></div><div class="detailrow"><b>신청현황</b><span>${e.participants.join(' · ')}</span></div></div><div class="actions"><button class="btn outline" onclick="renderMyStatus('event')">목록으로</button></div>`}
 
 function changeSummaryMonth(n){summaryMonth=Math.max(1,Math.min(12,summaryMonth+n));renderActivity()}
-function renderActivity(){
- document.getElementById('activityBody').innerHTML='<div class="emptyState">아직 집계된 활동 데이터가 없습니다.<br>실제 출석·신청 기록이 쌓이면 월간 요약이 생성됩니다.</div>';
-}
-
-
-function openEventActivity(id){
- const a=(operatingActivities||[]).find(x=>x.id===id);if(!a)return;
- showPage('eventDetail');
- const box=document.getElementById('eventDetailBody');
- if(!box)return;
- const d=a.details||{};
- box.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${typeof activityMenu==='function'?activityMenu(a):''}</div>
- <div class="detailrow"><b>이벤트명</b><span>${a.title}</span></div>
- <div class="detailrow"><b>일자</b><span>${a.activity_date}</span></div>
- <div class="detailrow"><b>시간</b><span>${(a.start_time||'').slice(0,5)}–${(a.end_time||'').slice(0,5)}</span></div>
- <div class="detailrow"><b>장소</b><span>${a.place||'-'}</span></div>
- <div class="detailrow"><b>상세</b><span>${d.info||'-'}</span></div></div>
- <div class="actions"><button class="btn primary" onclick="toast('이벤트 신청 기능은 운영 DB 연결 중입니다.')">참석 신청</button></div>`;
-}
-
-function openRaceActivity(id){
- const a=operatingActivities.find(x=>x.id===id);if(!a)return;
- showPage('raceDetail');const d=a.details||{};
- raceDetailBody.innerHTML=`<div class="detail"><div class="adminInlineHead"><div class="grow"></div>${activityMenu(a)}</div><div class="detailrow"><b>대회명</b><span>${a.title}</span></div><div class="detailrow"><b>일자</b><span>${a.activity_date}${d.endDate&&d.endDate!==a.activity_date?` ~ ${d.endDate}`:''}</span></div><div class="detailrow"><b>장소</b><span>${a.place||'-'}</span></div><div class="detailrow"><b>상세</b><span>${d.info||'-'}</span></div></div><div class="actions"><button class="btn primary" onclick="toast('대회 신청 DB 연결은 다음 단계에서 활성화됩니다.')">대회 신청하기</button></div>`;
-}
-
+function renderActivity(){document.getElementById('summaryMonth').textContent=`2026년 ${summaryMonth}월`;let data=summaryMonth===8?{train:4,race:1,event:0,att:100,pb:2,late:0,prevTrain:2}:{train:2,race:0,event:1,att:90,pb:0,late:1,prevTrain:2};let messages=[];if(data.train>data.prevTrain)messages.push(`이번 달 훈련 참여가 지난달보다 ${data.train-data.prevTrain}회 늘었어요.`);if(data.pb>0)messages.push(`이번 달 ${data.pb}개의 PB를 갱신했어요.`);if(data.att===100)messages.push('이번 달 신청한 일정에 모두 출석했어요.');if(!messages.length)messages.push(`${summaryMonth}월에는 훈련 ${data.train}회, 대회 ${data.race}회, 이벤트 ${data.event}회에 참여했어요.`);document.getElementById('activityBody').innerHTML=`<div class="summary"><div class="metrics"><div class="metric"><b>${data.train}회</b><span>훈련 참여</span></div><div class="metric"><b>${data.race}회</b><span>대회 참가</span></div><div class="metric"><b>${data.event}회</b><span>이벤트</span></div><div class="metric"><b>${data.att}%</b><span>출석률</span></div></div></div><div class="section"><h2>이번 달 요약</h2></div><div class="list">${messages.map(m=>`<div class="row"><div class="icon">✨</div><div class="grow"><b>${m}</b></div></div>`).join('')}</div>`}
 function setRecordMajor(v,b){recordMajor=v;document.querySelectorAll('#recordMajor button').forEach(x=>x.classList.remove('active'));b.classList.add('active');const minor=document.getElementById('recordMinor');if(v==='meet'||v==='fin')minor.innerHTML=`<button class="active" onclick="showRecord('personal',this)">개인전</button><button onclick="showRecord('relay',this)">단체전</button>`;else minor.innerHTML=`<button class="active" onclick="showRecord('measure',this)">기록측정</button><button onclick="showRecord('other',this)">기타</button>`;showRecord(v==='other'?'measure':'personal',minor.querySelector('button'))}
-function showRecord(type,btn){
- document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
- document.getElementById('recordBody').innerHTML='<div class="emptyState">아직 등록된 기록이 없습니다.</div>';
-}
+function showRecord(type,btn){document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');const body=document.getElementById('recordBody');if(recordMajor==='meet'&&type==='personal')body.innerHTML=`<div class="section"><h2>MY PB · 50m</h2></div><div class="pbgrid"><div class="pb"><div class="stroke">자유형</div><div class="time">37.41</div></div><div class="pb"><div class="stroke">배영</div><div class="time">52.82</div></div><div class="pb"><div class="stroke">평영</div><div class="time">48.07</div></div><div class="pb"><div class="stroke">접영</div><div class="time">38.26</div></div></div>${recordHist('자유형',[['37.41','제6회 성북구청장배','▼ 0.31초'],['37.72','2025 배럴 스프린트','첫 기록']])}`;else if(type==='relay')body.innerHTML=`<div class="section"><h2>${recordMajor==='fin'?'핀대회 ':''}단체전 히스토리</h2></div><div class="history"><div class="hist"><div class="topline"><b>혼성계영 200m · 2:15.88</b><span class="good">▼ 1.22초</span></div><span>2026 성북구청장배</span><div class="smallLine">출전 · 민선 · 희선 · 승희 · 태영</div></div><div class="hist"><div class="topline"><b>혼계영 200m · 2:32.14</b><span>첫 기록</span></div><span>2026 수원 연맹회장배</span><div class="smallLine">출전 · 민선 · 재연 · 혜진 · 광섭</div></div></div>`;else if(recordMajor==='fin')body.innerHTML=`<div class="section"><h2>핀대회 개인전</h2></div>${recordHist('핀 자유형 50m',[['31.82','2026 핀수영 마스터즈','▼ 0.74초'],['32.56','2025 핀수영 챌린지','첫 기록']])}`;else if(type==='measure')body.innerHTML=`<div class="section"><h2>기록측정</h2></div>${recordHist('자유형 50m',[['39.12','8/19 기록측정','측정'],['40.01','7/25 기록측정','측정']])}`;else body.innerHTML='<div class="card meta">기타 기록이 없습니다.</div>'}
 function recordHist(stroke,rows){return `<div class="section"><h2>${stroke} 히스토리</h2></div><div class="history">${rows.map(r=>`<div class="hist"><div class="topline"><b>${r[0]}초</b><span class="${r[2].startsWith('▼')?'good':''}">${r[2]}</span></div><span>${r[1]}</span></div>`).join('')}</div>`}
-function initAttendanceOptions(){
- const y=attYear,m=attMonth,now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
- y.innerHTML='';for(let yr=cy;yr>=2024;yr--)y.innerHTML+=`<option value="${yr}" ${yr===cy?'selected':''}>${yr}년</option>`;
- m.innerHTML='';for(let mo=1;mo<=12;mo++)m.innerHTML+=`<option value="${String(mo).padStart(2,'0')}" ${mo===cm?'selected':''}>${mo}월</option>`;
-}
-function renderAttendance(){
- const box=document.getElementById('attList')||document.getElementById('attendanceList');
- if(box)box.innerHTML='<div class="emptyState">아직 저장된 출석 기록이 없습니다.</div>';
- const stats=document.querySelector('#attendance .stats');if(stats)stats.innerHTML='<div class="stat"><strong>0회</strong><span>누적 출석</span></div><div class="stat"><strong>0회</strong><span>이번 달 출석</span></div>';
-}
+function initAttendanceOptions(){const y=attYear,m=attMonth,now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;y.innerHTML='';for(let yr=cy;yr>=2024;yr--)y.innerHTML+=`<option value="${yr}" ${yr===cy?'selected':''}>${yr}년</option>`;m.innerHTML='';for(let mo=1;mo<=12;mo++)m.innerHTML+=`<option value="${String(mo).padStart(2,'0')}" ${mo===cm?'selected':''}>${mo}월</option>`}
+function renderAttendance(){const y=attYear.value,m=attMonth.value;const rows=attendanceHistory.filter(x=>x.date.startsWith(y)&&x.date.slice(5,7)===m).sort((a,b)=>b.date.localeCompare(a.date));const allAtt=attendanceHistory.filter(x=>x.status==='출석'||x.status==='지각').length,yearAtt=attendanceHistory.filter(x=>x.date.startsWith(y)&&(x.status==='출석'||x.status==='지각')).length,monthAtt=rows.filter(x=>x.status==='출석'||x.status==='지각').length;const allLate=1,yearLate=y==='2026'?1:0,monthLate=(y==='2026'&&m==='08')?1:0;attSix.innerHTML=`<div class="attMini"><strong>${allAtt}</strong><span>누적 출석</span></div><div class="attMini"><strong>${yearAtt}</strong><span>연간 출석</span></div><div class="attMini"><strong>${monthAtt}</strong><span>이번 달 출석</span></div><div class="attMini"><strong>${allLate}</strong><span>누적 지각</span></div><div class="attMini"><strong>${yearLate}</strong><span>연간 지각</span></div><div class="attMini"><strong>${monthLate}</strong><span>이번 달 지각</span></div>`;attList.innerHTML=rows.map(x=>`<div class="row"><div class="grow"><b>${x.date} ${x.title}</b></div><span class="tag ok">${x.status}</span></div>`).join('')||'<div class="card meta">해당 기간 출석 내역이 없습니다.</div>'}
 
 async function renderFolders(){
- if(!currentUser.memberId)return;
- const {data:fs,error}=await dbClient.from('media_folders').select('*').order('created_at',{ascending:false});
- if(error){console.error(error);folderGrid.innerHTML='<div class="emptyState">폴더를 불러오지 못했습니다.</div>';return}
- const {data:files}=await dbClient.from('media_files').select('*').order('created_at',{ascending:false});
- const names=await memberNameMap([...(fs||[]).map(x=>x.created_by),...(files||[]).map(x=>x.uploader_id)]);
- mediaFolders=(fs||[]).map(f=>({id:f.id,name:f.name,creator:names[f.created_by]||'회원',creatorId:f.created_by,date:fmtKDate(f.created_at),files:(files||[]).filter(x=>x.folder_id===f.id).map(x=>({id:x.id,name:x.file_name,type:attachmentKind(x.mime_type||''),mime:x.mime_type||'',uploader:names[x.uploader_id]||'회원',uploaderId:x.uploader_id,date:fmtKDate(x.created_at),path:x.storage_path,url:null}))}));
- folderGrid.innerHTML=mediaFolders.map(f=>`<div class="folder" onclick="openFolder('${f.id}')"><div class="adminInlineHead"><div class="grow"><div class="emoji">📁</div><b>${f.name}</b><span>만든 사람 · ${f.creator}<br>${f.date} · ${f.files.length}개 파일</span></div>${isAdmin()?`<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'folderMenu-${f.id}')">⋯</button><div id="folderMenu-${f.id}" class="kebabMenu"><button onclick="event.stopPropagation();renameFolder('${f.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteFolder('${f.id}')">삭제</button></div></div>`:''}</div></div>`).join('')||'<div class="emptyState">생성된 폴더가 없습니다.</div>';
+ if(!currentUser.memberId){folderGrid.innerHTML='';return}
+ folderGrid.innerHTML='<div class="card meta">폴더를 불러오는 중...</div>';
+ const {data:folders,error}=await dbClient.from('media_folders').select('id,name,created_by,created_at').order('created_at',{ascending:false});
+ if(error){console.error(error);folderGrid.innerHTML='<div class="card meta">폴더를 불러오지 못했습니다.</div>';return}
+ const {data:files,error:fileErr}=await dbClient.from('media_files').select('id,folder_id,uploader_id,file_name,storage_path,mime_type,created_at').order('created_at',{ascending:false});
+ if(fileErr)console.error(fileErr);
+ const names=await memberNameMap([...(folders||[]).map(f=>f.created_by),...(files||[]).map(f=>f.uploader_id)]);
+ mediaFolders=(folders||[]).map(f=>({
+   id:f.id,name:f.name,creator:names[f.created_by]||'회원',creatorId:f.created_by,date:fmtDate(f.created_at),
+   files:(files||[]).filter(x=>x.folder_id===f.id).map(x=>({id:x.id,name:x.file_name,type:attachmentKind(x.mime_type||''),mime:x.mime_type||'',uploader:names[x.uploader_id]||'회원',uploaderId:x.uploader_id,date:fmtDate(x.created_at),path:x.storage_path,url:null}))
+ }));
+ folderGrid.innerHTML=mediaFolders.map(f=>`<div class="folder" onclick="openFolder('${f.id}')"><div class="emoji">📁</div><b>${f.name}</b><span>만든 사람 · ${f.creator}<br>${f.date} · ${f.files.length}개 파일</span></div>`).join('')||'<div class="card meta">폴더가 없습니다.</div>';
 }
 async function createFolder(){
- const name=prompt('폴더명을 입력해주세요');if(!name?.trim())return;
+ const name=prompt('폴더명을 입력해주세요');
+ if(!name||!name.trim()||!currentUser.memberId)return;
  const {error}=await dbClient.from('media_folders').insert({name:name.trim().slice(0,80),created_by:currentUser.memberId});
- if(error){console.error(error);return toast('폴더를 만들지 못했습니다.')}await renderFolders();toast('폴더를 만들었습니다');
+ if(error){console.error(error);return toast('폴더를 만들지 못했습니다.')}
+ await renderFolders();toast('폴더를 만들었습니다');
 }
 async function openFolder(id){
- currentFolder=id;if(!mediaFolders.length)await renderFolders();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
+ currentFolder=id;
+ if(!mediaFolders.length)await renderFolders();
+ const f=mediaFolders.find(x=>x.id===id);
+ if(!f)return toast('폴더를 찾지 못했습니다.');
  mediaTitle.textContent=f.name;mediaRoot.style.display='none';folderView.style.display='block';await renderFolderFiles();
 }
 function closeFolder(){currentFolder=null;mediaTitle.textContent='미디어';mediaRoot.style.display='block';folderView.style.display='none';renderFolders()}
 async function uploadToFolder(inp){
- const files=[...inp.files];if(!files.length||!currentFolder)return;
+ const files=[...inp.files],f=mediaFolders.find(x=>x.id===currentFolder);
+ if(!f||!files.length)return;
  try{
-  for(const file of files){
-   const path=await uploadTeamFile(file,`media/${currentFolder}`);
-   const {error}=await dbClient.from('media_files').insert({folder_id:currentFolder,uploader_id:currentUser.memberId,file_name:file.name,storage_path:path,mime_type:file.type||'application/octet-stream'});
-   if(error){await dbClient.storage.from('team-files').remove([path]);throw error}
-  }
-  await renderFolders();currentFolder=currentFolder;await renderFolderFiles();toast('파일을 공유했습니다.');
- }catch(e){console.error(e);toast('파일 업로드에 실패했습니다.')}finally{inp.value=''}
+   for(const file of files){
+     const path=await uploadTeamFile(file,`media/${currentFolder}`);
+     const {error}=await dbClient.from('media_files').insert({
+       folder_id:currentFolder,uploader_id:currentUser.memberId,file_name:file.name.slice(0,255),storage_path:path,mime_type:file.type||'application/octet-stream'
+     });
+     if(error){await dbClient.storage.from('team-files').remove([path]);throw error}
+   }
+   await renderFolders();
+   currentFolder=f.id;
+   const updated=mediaFolders.find(x=>x.id===currentFolder);
+   if(updated)mediaTitle.textContent=updated.name;
+   await renderFolderFiles();
+   toast('파일을 공유했습니다.');
+ }catch(e){console.error(e);toast('파일 업로드에 실패했습니다.')}
+ finally{inp.value=''}
 }
 async function renderFolderFiles(){
- const f=mediaFolders.find(x=>x.id===currentFolder);if(!f)return;
- const rows=[];
+ const f=mediaFolders.find(x=>x.id===currentFolder);
+ if(!f){folderFiles.innerHTML='<div class="card meta">폴더를 찾지 못했습니다.</div>';return}
+ const cards=[];
  for(let i=0;i<f.files.length;i++){
-  const x=f.files[i];x.url=await signedTeamFile(x.path);
-  let preview='<div class="folderPreview">📄</div>';
-  if(x.type==='image'&&x.url)preview=`<div class="folderPreview"><img src="${x.url}"></div>`;
-  if(x.type==='video'&&x.url)preview=`<div class="folderPreview"><video src="${x.url}" muted></video></div>`;
-  const menu=isAdmin()?`<div class="adminKebab"><button class="kebabBtn" onclick="toggleKebab(event,'fileMenu-${x.id}')">⋯</button><div id="fileMenu-${x.id}" class="kebabMenu"><button onclick="event.stopPropagation();renameMediaFile('${x.id}')">수정</button><button class="danger" onclick="event.stopPropagation();deleteMediaFile('${x.id}')">삭제</button></div></div>`:'';
-  rows.push(`<div class="folderFileRow" onclick="openFolderFile('${f.id}',${i})">${preview}<div class="grow"><b>${x.name}</b><span>올린 사람 · ${x.uploader} · ${x.date}</span></div>${menu}</div>`);
+   const x=f.files[i];
+   let preview=`<div class="folderPreview">📄</div>`;
+   if((x.type==='image'||x.type==='video')&&x.path){
+     x.url=await signedTeamFile(x.path);
+     if(x.type==='image'&&x.url)preview=`<div class="folderPreview"><img src="${x.url}" alt=""></div>`;
+     if(x.type==='video'&&x.url)preview=`<div class="folderPreview"><video src="${x.url}" muted playsinline></video></div>`;
+   }
+   cards.push(`<div class="folderFileRow" onclick="openFolderFile('${f.id}',${i})">${preview}<div class="grow"><b>${x.name}</b><span>올린 사람 · ${x.uploader} · ${x.date}</span></div><b>›</b></div>`);
  }
- folderFiles.innerHTML=rows.join('')||'<div class="emptyState">아직 공유된 파일이 없습니다.</div>';
+ folderFiles.innerHTML=cards.join('')||'<div class="card meta">아직 공유된 파일이 없습니다.</div>';
 }
 async function openFolderFile(fid,i){
- const x=mediaFolders.find(f=>f.id===fid)?.files?.[i];if(!x)return;
- const url=x.url||await signedTeamFile(x.path);if(!url)return toast('파일을 열지 못했습니다.');
- if(x.type==='image'||x.type==='video')openModal(url,x.type,x.name);else{const a=document.createElement('a');a.href=url;a.download=x.name;a.target='_blank';a.click()}
+ const f=mediaFolders.find(f=>f.id===fid),x=f?.files?.[i];
+ if(!x)return;
+ const url=x.url||await signedTeamFile(x.path);
+ if(!url)return toast('파일을 열지 못했습니다.');
+ if(x.type==='image'||x.type==='video')openModal(url,x.type,x.name);
+ else{
+   const a=document.createElement('a');a.href=url;a.download=x.name;a.target='_blank';a.click();
+ }
 }
 function openTextFile(name,text){const b=new Blob([text],{type:'text/plain'});window.open(URL.createObjectURL(b),'_blank')}
 function addEmoji(id){const el=document.getElementById(id);el.value+=' 😊';el.focus()}
-function renderChatMessage(m,label){
- let content='';
- if(m.attachment){
-  const a=m.attachment;
-  if(a.kind==='image'&&a.url)content=`<div class="chatMedia" onclick="openModal('${a.url}','image','${a.name}')"><img src="${a.url}" alt="${a.name}"></div>`;
-  else if(a.kind==='video'&&a.url)content=`<div class="chatMedia" onclick="openModal('${a.url}','video','${a.name}')"><video src="${a.url}" muted playsinline></video><div class="play">▶</div></div>`;
-  else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${a.name}</b><small>${a.size||''}</small>${a.url?`<a class="saveLink" href="${a.url}" download="${a.name}" onclick="event.stopPropagation()">저장</a>`:''}</div></div>`;
- }else content=`<div class="bubble">${m.text||''}</div>`;
- return `<div class="bubbleRow ${m.me?'me':''}"><div><div class="bubbleName" style="${m.me?'text-align:right':''}">${label}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${m.time||''}</span></div></div></div>`;
-}
+function renderChatMessage(m,label){let content='';if(m.attachment){const a=m.attachment;if(a.kind==='image')content=`<div class="chatMedia" onclick="openModal('${a.url}','image','${a.name}')"><img src="${a.url}" alt="${a.name}"></div>`;else if(a.kind==='video')content=`<div class="chatMedia" onclick="openModal('${a.url}','video','${a.name}')"><video src="${a.url}" muted playsinline></video><div class="play">▶</div></div>`;else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${a.name}</b><small>${a.size||''}</small><a class="saveLink" href="${a.url}" download="${a.name}" onclick="event.stopPropagation()">저장</a></div></div>`}else content=`<div class="bubble">${m.text||''}</div>`;return `<div class="bubbleRow ${m.me?'me':''}"><div><div class="bubbleName" style="${m.me?'text-align:right':''}">${label}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${m.time}</span></div></div></div>`}
 const emojiChoices=['😀','😆','😂','🥹','😭','😍','😘','😎','🤩','🥳','👍','👏','🙌','🙏','💪','🔥','❤️','🩵','✨','🎉','👀','🏊‍♀️','🏊‍♂️','💦','🫧','🏆','🥇','📣'];
 function toggleEmojiPanel(kind){
  const panelId=kind==='group'?'groupEmojiPanel':'dmEmojiPanel';
@@ -1115,27 +1011,58 @@ function toggleEmojiPanel(kind){
 }
 async function sendEmoji(kind,e){
  if(kind==='group'){
-  const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,room_type:'group',body:e});
-  if(error)return toast('이모티콘을 보내지 못했습니다.');groupEmojiPanel.classList.remove('open');await renderGroup();
+   const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:null,room_type:'group',body:e});
+   if(error)return toast('이모티콘을 보내지 못했습니다.');
+   document.getElementById('groupEmojiPanel')?.classList.remove('open');
+   await renderGroup();
  }else if(currentDm){
-  if(!directoryMembers.length)await loadDirectoryMembers();const peer=directoryMembers.find(m=>m.nickname===currentDm);if(!peer)return;
-  const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:peer.id,room_type:'dm',body:e});
-  if(error)return toast('이모티콘을 보내지 못했습니다.');dmEmojiPanel.classList.remove('open');await renderDm();
+   if(!directoryMembers.length)await loadDirectoryMembers();
+   const peer=directoryMembers.find(m=>m.nickname===currentDm);
+   if(!peer)return;
+   const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:peer.id,room_type:'dm',body:e});
+   if(error)return toast('이모티콘을 보내지 못했습니다.');
+   document.getElementById('dmEmojiPanel')?.classList.remove('open');
+   await renderDm();await renderDmList();
+ }
+}
+ if(kind==='group'){
+   groupMessages.push({name:currentUser.nickname,text:e,time:now(),me:true});
+   renderGroup();
+   const p=document.getElementById('groupEmojiPanel');
+   if(p)p.classList.remove('open');
+ }else if(currentDm){
+   dmMessages[currentDm].push({me:true,text:e,time:now()});
+   renderDm();
+   const p=document.getElementById('dmEmojiPanel');
+   if(p)p.classList.remove('open');
  }
 }
 
 async function chatAttach(inp,kind){
- const files=[...inp.files];if(!files.length)return;
+ const files=[...inp.files];
+ if(!files.length||!currentUser.memberId)return;
  try{
-  if(kind==='dm'&&!directoryMembers.length)await loadDirectoryMembers();
-  const peer=kind==='dm'?directoryMembers.find(m=>m.nickname===currentDm):null;if(kind==='dm'&&!peer)return;
-  for(const f of files){
-   const path=await uploadTeamFile(f,kind==='group'?'chat/group':`chat/dm/${peer.id}`);
-   const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:kind==='group'?null:peer.id,room_type:kind,attachment_path:path,attachment_type:f.type||'application/octet-stream'});
-   if(error){await dbClient.storage.from('team-files').remove([path]);throw error}
-  }
-  if(kind==='group')await renderGroup();else await renderDm();
- }catch(e){console.error(e);toast('첨부파일 업로드에 실패했습니다.')}finally{inp.value=''}
+   if(kind==='dm'&&!directoryMembers.length)await loadDirectoryMembers();
+   const peer=kind==='dm'?directoryMembers.find(m=>m.nickname===currentDm):null;
+   if(kind==='dm'&&!peer)return toast('회원 정보를 찾지 못했습니다.');
+   for(const f of files){
+     const path=await uploadTeamFile(f,kind==='group'?'chat/group':`chat/dm/${peer.id}`);
+     const {error}=await dbClient.from('messages').insert({
+       sender_id:currentUser.memberId,
+       recipient_id:kind==='group'?null:peer.id,
+       room_type:kind==='group'?'group':'dm',
+       body:null,
+       attachment_path:path,
+       attachment_type:f.type||'application/octet-stream'
+     });
+     if(error){
+       await dbClient.storage.from('team-files').remove([path]);
+       throw error;
+     }
+   }
+   if(kind==='group')await renderGroup();else{await renderDm();await renderDmList()}
+ }catch(e){console.error(e);toast('첨부파일 업로드에 실패했습니다.')}
+ finally{inp.value=''}
 }
 function setScheduleFilter(v,b){scheduleFilter=v;document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCalendar()}
 
@@ -1146,81 +1073,20 @@ function openModal(url,type,name='TEAM-EYSL-file'){modalContent.innerHTML=type.s
 function closeModal(){document.getElementById('modal').classList.remove('open');document.getElementById('modalContent').innerHTML=''}
 
 function renderAdminFields(){document.getElementById('trainingFields').style.display=document.getElementById('aType').value==='training'?'block':'none'}
-async function registerSchedule(){
- if(!isAdmin())return toast('관리자만 일정을 등록할 수 있습니다.');
- const title=aTitle.value.trim(),date=aDate.value,start=aStart.value,end=aEnd.value,place=aPlace.value.trim(),kind=aType.value;
- if(!title||!date||!start||!end||!place)return toast('필수 항목을 입력해주세요');
- let capacity=null,lane=(aCapacity.value||'').trim();
- const numeric=lane.match(/\d+/); if(numeric)capacity=Number(numeric[0]);
- const details={coach:aCoach.value||'',gear:aGear.value||'',lane,plan:aPlan.value||'',info:aDetail.value||'',link:aLink.value||'',planBy:currentUser.nickname};
- const payload={kind,title,activity_date:date,start_time:start,end_time:end,place,capacity,details,updated_at:new Date().toISOString()};
- const wasEditing=!!editingActivityId;
- let data,error;
- if(wasEditing)({data,error}=await dbClient.from('activities').update(payload).eq('id',editingActivityId).select().single());
- else ({data,error}=await dbClient.from('activities').insert({...payload,created_by:currentUser.memberId}).select().single());
- if(error){console.error(error);return toast('일정을 저장하지 못했습니다.')}
- resetActivityEditor();await loadActivities();renderCalendar();renderTrainingList();renderRaceList();await renderHome();
- showPage('schedule');toast(wasEditing?'일정을 수정했습니다.':'일정을 등록했습니다.');
-}
+function registerSchedule(){const title=document.getElementById('aTitle').value.trim(),date=document.getElementById('aDate').value,start=document.getElementById('aStart').value,end=document.getElementById('aEnd').value,place=document.getElementById('aPlace').value.trim(),type=document.getElementById('aType').value;if(!title||!date||!start||!end||!place)return toast('필수 항목을 입력해주세요');const detail={type,title,date,start,end,place,coach:document.getElementById('aCoach').value,gear:document.getElementById('aGear').value,capacity:document.getElementById('aCapacity').value,info:document.getElementById('aDetail').value,link:document.getElementById('aLink').value};if(type==='training'){const id='new'+Date.now();trainings[id]={id,title,date,start,end,place,coach:detail.coach||'-',gear:detail.gear||'-',lane:detail.capacity||'-',info:detail.info||'-',capacity:20,participants:[],waitlist:[],offer:null,plan:(document.getElementById('aPlan')?.value||''),planBy:currentUser.nickname,planDate:date}}document.getElementById('adminScheduleDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>종류</b><span>${type==='training'?'훈련':type==='race'?'대회':'이벤트'}</span></div><div class="detailrow"><b>제목</b><span>${title}</span></div><div class="detailrow"><b>날짜 / 시간</b><span>${date}<br>${start}–${end}</span></div><div class="detailrow"><b>장소</b><span>${place}</span></div>${type==='training'?`<div class="detailrow"><b>코치</b><span>${detail.coach||'-'}</span></div><div class="detailrow"><b>준비물</b><span>${detail.gear||'-'}</span></div><div class="detailrow"><b>레인별 마감</b><span>${detail.capacity||'-'}</span></div>`:''}<div class="detailrow"><b>상세 내용</b><span>${detail.info||'-'}</span></div></div><div class="actions"><button class="btn outline" onclick="showPage('adminSchedule')">수정</button><button class="btn outline" onclick="showPage('schedule')">스케줄에서 보기</button></div>`;showPage('adminScheduleDetail');toast('일정이 등록됐습니다')}
 
-
-async function renameFolder(id){
- closeAllKebab();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
- const name=prompt('폴더명을 수정해주세요',f.name);if(!name?.trim()||name.trim()===f.name)return;
- const {error}=await dbClient.from('media_folders').update({name:name.trim().slice(0,80)}).eq('id',id);
- if(error)return toast('폴더명을 수정하지 못했습니다.');await renderFolders();toast('폴더명을 수정했습니다.');
-}
-async function deleteFolder(id){
- closeAllKebab();const f=mediaFolders.find(x=>x.id===id);if(!f)return;
- if(!confirm(`'${f.name}' 폴더와 안의 파일을 모두 삭제할까요?`))return;
- const paths=f.files.map(x=>x.path).filter(Boolean);if(paths.length)await dbClient.storage.from('team-files').remove(paths);
- const {error}=await dbClient.from('media_folders').delete().eq('id',id);if(error)return toast('폴더를 삭제하지 못했습니다.');
- closeFolder();await renderFolders();toast('폴더를 삭제했습니다.');
-}
-async function renameMediaFile(id){
- closeAllKebab();const f=mediaFolders.find(x=>x.id===currentFolder),x=f?.files.find(v=>v.id===id);if(!x)return;
- const name=prompt('파일 표시명을 수정해주세요',x.name);if(!name?.trim()||name.trim()===x.name)return;
- const {error}=await dbClient.from('media_files').update({file_name:name.trim().slice(0,255)}).eq('id',id);
- if(error)return toast('파일명을 수정하지 못했습니다.');await renderFolders();await openFolder(currentFolder);toast('파일명을 수정했습니다.');
-}
-async function deleteMediaFile(id){
- closeAllKebab();const f=mediaFolders.find(x=>x.id===currentFolder),x=f?.files.find(v=>v.id===id);if(!x)return;
- if(!confirm(`'${x.name}' 파일을 삭제할까요?`))return;
- await dbClient.storage.from('team-files').remove([x.path]);
- const {error}=await dbClient.from('media_files').delete().eq('id',id);if(error)return toast('파일을 삭제하지 못했습니다.');
- await renderFolders();await openFolder(currentFolder);toast('파일을 삭제했습니다.');
-}
-
-async function renderMemberDirectory(){
- if(typeof loadDirectoryMembers==='function')await loadDirectoryMembers();
- const box=document.getElementById('memberDirectoryList');if(!box)return;
- const rows=(directoryMembers||[]).filter(m=>m.id!==currentUser.memberId);
- box.innerHTML=rows.map(m=>`<div class="memberSimpleRow"><div class="grow"><b>${m.nickname}</b><p>${m.birth_year?m.birth_year+'년생':'생년 미등록'} · ${m.gender||'성별 미등록'}</p></div><button class="btn outline" onclick="startDm('${m.nickname}')">1:1 채팅</button></div>`).join('')||'<div class="emptyState">등록된 회원이 없습니다.</div>';
-}
-async function renderMembers(){
- if(!isAdmin())return;
- const {data,error}=await dbClient.from('members').select('id,nickname,birth_year,gender,role,status,created_at').order('created_at',{ascending:false});
- if(error){console.error(error);return}
- const active=(data||[]).filter(m=>m.status==='approved'),blocked=(data||[]).filter(m=>m.status==='blocked');
- memberCount.textContent=active.length;
- memberList.innerHTML=active.map(m=>`<div class="memberrow"><div class="grow"><b>${m.nickname} · ${m.birth_year||'-'} · ${m.gender||'-'}</b><p>${m.role==='admin'?'관리자':'회원'} · 가입 ${fmtKDate(m.created_at)}</p></div></div>`).join('')||'<div class="emptyState">승인된 회원이 없습니다.</div>';
- blockedList.innerHTML=blocked.map(m=>`<div class="memberrow"><div class="grow"><b>${m.nickname}</b><p>내보내기 처리됨</p></div></div>`).join('')||'<div class="emptyState">내보낸 회원이 없습니다.</div>';
-}
+function renderMemberDirectory(){const active=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname);memberDirectoryList.innerHTML=active.map(m=>`<div class="memberSimpleRow"><div class="grow"><b>${m.name}</b><p>${m.birth}년생 · ${m.gender}</p></div><button class="btn outline" onclick="startDm('${m.name}')">1:1 채팅</button></div>`).join('')||'<div class="card meta">표시할 회원이 없습니다.</div>'}
+function renderMembers(){const active=members.filter(m=>!m.blocked),blocked=members.filter(m=>m.blocked);document.getElementById('memberCount').textContent=active.length;document.getElementById('memberList').innerHTML=active.map(m=>`<div class="memberrow" onclick="openMember('${m.name}')"><div class="grow"><b>${m.name} · ${m.birth} · ${m.gender}</b><p>가입 ${m.join} · ${m.level} · 출석 ${m.att}회</p></div><span>›</span></div>`).join('');document.getElementById('blockedList').innerHTML=blocked.map(m=>`<div class="memberrow"><div class="grow"><b>${m.name}</b><p>내보내기 처리됨</p></div><button class="btn outline" onclick="event.stopPropagation();restoreMember('${m.name}')">복구</button></div>`).join('')||'<div class="card meta">내보낸 회원이 없습니다.</div>'}
 function openMember(name){const m=members.find(x=>x.name===name);showPage('memberDetail');document.getElementById('memberDetailBody').innerHTML=`<div class="profile"><div class="bigav">${name.slice(0,1)}</div><div class="grow"><h2>${name}</h2><p>${m.birth} · ${m.gender} · ${m.level}</p></div><button class="btn outline" onclick="startDm('${name}')">1:1 채팅</button></div><div class="section"><h2>기본 정보</h2></div><div class="detail"><div class="detailrow"><b>가입일</b><span>${m.join}</span></div><div class="detailrow"><b>수력</b><span>2년+</span></div></div><div class="section"><h2>출석</h2></div><div class="stats"><div class="stat"><strong>${m.att}회</strong><span>누적 출석</span></div><div class="stat"><strong>${m.late}회</strong><span>지각</span></div></div><div class="section"><h2>영법별 PB</h2></div><div class="pbgrid">${Object.entries(m.pb).map(([s,t])=>`<div class="pb"><div class="stroke">${s}</div><div class="time">${t}</div></div>`).join('')}</div><div class="section"><h2>대회 이력</h2></div><div class="list">${m.races.map((r,i)=>`<div class="row"><div class="grow"><b>${r}</b><p>신청종목 · ${i===0?'자유형 50m · 접영 50m · 혼성계영 200m':'배영 50m · 자유형 50m · 단체전 참가 안 함'}</p></div></div>`).join('')||'<div class="card meta">참가 대회 없음</div>'}</div><div class="section"><h2>훈련 이력</h2></div><div class="list">${m.trains.map(r=>`<div class="row"><div class="grow"><b>${r}</b></div></div>`).join('')||'<div class="card meta">참가 훈련 없음</div>'}</div>${currentUser.role==='admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${name}')">회원 내보내기</button></div>`:''}`}
 function kickMember(name){const m=members.find(x=>x.name===name);m.blocked=true;showPage('memberAdmin');renderMembers();toast(`${name} 회원을 내보냈습니다`)}
 function restoreMember(name){members.find(x=>x.name===name).blocked=false;renderMembers();toast(`${name} 회원을 복구했습니다`)}
 
-function renderApplicationAdmin(kind='training',btn){
- if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
- applicationAdminBody.innerHTML='<div class="emptyState">아직 실제 신청 데이터가 없습니다.</div>';
-}
+function renderApplicationAdmin(kind='training',btn){if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}let html='';if(kind==='training'){html=Object.values(trainings).sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="statusCard" style="margin-bottom:9px"><h3>${t.title}</h3><p class="meta">${t.date} · 신청 ${t.participants.length}명 · 대기 ${t.waitlist.length}명</p><div class="card" style="margin-top:9px">${t.participants.map(n=>`<div class="adminAggRow"><b>${n}</b><p>참석 신청</p></div>`).join('')}${t.waitlist.map(w=>`<div class="adminAggRow"><b>${w.name}</b><p>대기 ${w.order}번</p></div>`).join('')}</div></div>`).join('')}else if(kind==='race'){const people=[...race.participants,...(raceApplication?[currentUser.nickname]:[])];html=`<div class="statusCard"><h3>${race.title}</h3><p class="meta">${race.date} · 신청 ${people.length}명</p><div class="card" style="margin-top:9px">${people.map(n=>`<div class="adminAggRow"><b>${n}</b><p>${n===currentUser.nickname&&raceApplication?`${raceApplication.s1} · ${raceApplication.s2} · ${raceApplication.noRelay?'단체전 참가 안 함':raceApplication.relays.join(' · ')}`:'신청 종목 확인 가능'}</p></div>`).join('')}</div></div>`}else{html=events.sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`<div class="statusCard" style="margin-bottom:9px"><h3>${e.title}</h3><p class="meta">${e.date} · 신청 ${e.participants.length}명</p><div class="card" style="margin-top:9px">${e.participants.map(n=>`<div class="adminAggRow"><b>${n}</b><p>참가 신청</p></div>`).join('')}</div></div>`).join('')}applicationAdminBody.innerHTML=html||'<div class="card meta">신청 내역이 없습니다.</div>'}
 
 function setAttType(v,b){attendanceType=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
 function setAttState(v,b){attendanceState=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
 function attEvents(){return [...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,people:t.participants,state:t.date<today?'done':'upcoming'})),{id:'barrel',type:'race',label:'대회',title:race.title,date:race.date,people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:'upcoming'},...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,people:e.participants,state:e.done?'done':'upcoming'}))]}
-function renderAttendanceAdmin(){
- attAdminList.innerHTML='<div class="emptyState">아직 실제 출석 데이터가 없습니다.</div>';
-}
+function renderAttendanceAdmin(){const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState));document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>신청</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>'}
 function attCounts(e){const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;e.people.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});return {present,late,absent}}
 function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
 function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>신청 인원</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>신청자 체크</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
@@ -1233,37 +1099,17 @@ function drawerGo(id){closeDrawer();showPage(id)}
 function toggleSub(id){document.getElementById(id).classList.toggle('open')}
 
 window.addEventListener('load',async()=>{
- closeDrawer();
  const loggedIn=await initAuth();
- initAttendanceOptions();
- if(!loggedIn)return;
- try{
-  await loadDirectoryMembers();
-  await loadActivities();
-  await loadNotices();
-  await renderHome();
-  await renderNotices();
-  await renderGroup();
-  await renderDmList();
-  await renderCalendar();
-  await renderTrainingList();
-  await renderRaceList();
-  renderActivity();
-  renderAttendance();
-  await renderMemberDirectory();
-  if(isAdmin()){await renderMembers();renderAttendanceAdmin();renderApplicationAdmin('training')}
-  await renderFolders();
-  setRecordMajor('meet',document.querySelector('#recordMajor button'));
- }catch(err){console.error('TEAM EYSL operating init:',err)}
+ const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders,()=>renderApplicationAdmin('training')];
+ boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
+ if(loggedIn){try{renderHome()}catch(err){console.error('TEAM EYSL home:',err)}}
 });
 </script>
-
 <script>
 window.addEventListener('pageshow',()=>{try{closeDrawer()}catch(e){}});
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final2').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final3').catch(()=>{}));
 }
 </script>
-
 </body>
 </html>
