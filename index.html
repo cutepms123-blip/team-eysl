@@ -210,6 +210,32 @@ body{background:#eef0f3}
   .app{min-height:100dvh}
 }
 
+
+/* ===== PWA drawer v2: always closed until explicitly opened ===== */
+.drawer{
+  position:fixed!important;
+  top:0!important;
+  bottom:0!important;
+  left:max(0px,calc(50% - 360px))!important;
+  width:min(86vw,340px)!important;
+  transform:translateX(-110%)!important;
+  transition:transform .22s ease!important;
+  z-index:220!important;
+  box-shadow:0 12px 40px rgba(0,0,0,.16)!important;
+}
+.drawer.open{transform:translateX(0)!important}
+.drawerOverlay{
+  position:fixed!important;
+  inset:0!important;
+  display:none!important;
+  background:rgba(0,0,0,.28)!important;
+  z-index:210!important;
+}
+.drawerOverlay.open{display:block!important}
+@media (max-width:760px){
+  .drawer{left:0!important;width:min(86vw,340px)!important}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -228,7 +254,6 @@ body{background:#eef0f3}
 
 </head>
 <body>
-<div id="drawerBackdrop" class="drawerBackdrop" onclick="closeDrawerMobile()"></div>
 <div id="auth" class="auth">
  <div class="authbox">
   <h1>TEAM EYSL</h1><small>TRAINING CLUB</small>
@@ -302,7 +327,7 @@ body{background:#eef0f3}
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="drawerGo('eventList')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">신청 취합</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -1189,41 +1214,45 @@ window.addEventListener('load',async()=>{
  }catch(err){console.error('TEAM EYSL operating init:',err)}
 });
 </script>
+
+
 <script>
-function closeDrawerMobile(){
-  const d=document.querySelector('.drawer');
-  const b=document.getElementById('drawerBackdrop');
-  d?.classList.remove('open'); b?.classList.remove('open');
-}
-function openDrawerMobile(){
-  const d=document.querySelector('.drawer');
-  const b=document.getElementById('drawerBackdrop');
-  d?.classList.add('open'); b?.classList.add('open');
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  if(window.innerWidth<=760) closeDrawerMobile();
-  const drawer=document.querySelector('.drawer');
-  if(drawer){
-    drawer.addEventListener('click',(e)=>{
-      const t=e.target.closest('.ditem,.drawer a,.drawer button');
-      if(t && window.innerWidth<=760 && !t.closest('.drawerClose')) setTimeout(closeDrawerMobile,100);
+(function(){
+  function forceDrawerClosed(){
+    const drawer=document.getElementById('drawer');
+    const overlay=document.getElementById('drawerOverlay');
+    if(drawer) drawer.classList.remove('open');
+    if(overlay) overlay.classList.remove('open');
+  }
+  window.addEventListener('pageshow', forceDrawerClosed);
+  document.addEventListener('DOMContentLoaded', forceDrawerClosed);
+
+  // Keep the original functions, but guarantee predictable behavior.
+  const originalOpen=window.openDrawer;
+  window.openDrawer=function(){
+    const drawer=document.getElementById('drawer');
+    const overlay=document.getElementById('drawerOverlay');
+    if(drawer) drawer.classList.add('open');
+    if(overlay) overlay.classList.add('open');
+  };
+  window.closeDrawer=function(){
+    const drawer=document.getElementById('drawer');
+    const overlay=document.getElementById('drawerOverlay');
+    if(drawer) drawer.classList.remove('open');
+    if(overlay) overlay.classList.remove('open');
+  };
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape') window.closeDrawer();
+  });
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
     });
   }
-  const menuBtn=[...document.querySelectorAll('button')].find(b=>{
-    const t=(b.getAttribute('aria-label')||'')+' '+(b.textContent||'');
-    return /메뉴|☰|menu/i.test(t);
-  });
-  if(menuBtn){
-    menuBtn.addEventListener('click',(e)=>{
-      if(window.innerWidth<=760){
-        e.preventDefault();e.stopImmediatePropagation();openDrawerMobile();
-      }
-    },true);
-  }
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js').catch(console.error);
-  }
-});
+})();
 </script>
+
 </body>
 </html>
