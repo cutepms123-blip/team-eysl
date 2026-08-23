@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL37 auth/profile/avatar */
+/* FINAL39 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL37: chat stays inside one phone screen */
+/* FINAL39: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL37 CHAT ONLY FIX ===== */
+/* ===== FINAL39 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL37 CHAT RESTORE ===== */
+/* ===== FINAL39 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,7 +549,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* FINAL37 approval queue render */
+/* FINAL39 approval queue render */
 #pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
 .approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .approvalRow h3{margin:0 0 6px;font-size:16px}
@@ -557,7 +557,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 
-/* FINAL37 CHAT UI */
+/* FINAL39 CHAT UI */
 .emojiPanel{
   display:none!important;
   position:absolute!important;
@@ -636,7 +636,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   display:flex!important;align-items:center!important;justify-content:center!important;
 }
 
-/* FINAL37 CHAT VIEW FIX */
+/* FINAL39 CHAT VIEW FIX */
 #groupView{
   flex:1 1 auto!important;
   min-height:0!important;
@@ -666,7 +666,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   overflow-y:auto!important;
 }
 
-/* FINAL37 CHAT FINAL OVERRIDES */
+/* FINAL39 CHAT FINAL OVERRIDES */
 #groupView[style*="display: none"]{display:none!important}
 #dmView[style*="display: block"]{display:block!important}
 #dmChat.page.active{
@@ -693,7 +693,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   transform:none!important;
 }
 
-/* ===== FINAL37 requested UI fixes ===== */
+/* ===== FINAL39 requested UI fixes ===== */
 
 /* Chat bottom area: reduce nav/composer gap and overall nav height */
 .nav{
@@ -765,7 +765,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .memberInfoDetail .detailrow b{font-size:10px!important;color:#8b9096!important}
 .memberInfoDetail .detailrow span{font-size:12px!important;line-height:1.4!important;text-align:left!important}
 
-/* ===== FINAL37 reviewed fixes ===== */
+/* ===== FINAL39 reviewed fixes ===== */
 .nav{
   height:72px!important;
   padding-bottom:max(5px,env(safe-area-inset-bottom))!important;
@@ -800,7 +800,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordUploadRow p{font-size:9px;color:#999;margin:3px 0 0}
 .recordUploadRow span{font-size:10px;color:#2f80ed}
 
-/* ===== FINAL37 fixes ===== */
+/* ===== FINAL39 fixes ===== */
 .chatModeHidden{display:none!important}
 #groupView:not(.chatModeHidden){display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important}
 #dmView:not(.chatModeHidden){display:block!important;flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important}
@@ -810,18 +810,52 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .aggregationPeople{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 #recordUploadSection[style*="display: none"],#recordUploadCard[style*="display: none"]{display:none!important}
 
-/* ===== FINAL37 fixes ===== */
+/* ===== FINAL39 fixes ===== */
 .statusPill.done,.tag.done{background:#eceff2!important;color:#7f8790!important}
 .chatModeHidden{display:none!important}
 #groupView.chatModeHidden,#dmView.chatModeHidden{display:none!important}
 
-/* ===== FINAL37 result import ===== */
+/* ===== FINAL39 result import ===== */
 .recordImportStatus{margin-top:10px}
 .recordImportWorking,.recordImportResult{display:flex;flex-direction:column;gap:4px;border-radius:12px;padding:10px 12px;font-size:10px}
 .recordImportWorking{background:#f3f6fb;color:#677383}
 .recordImportResult.ok{background:#eef9f3;color:#257a51}
 .recordImportResult.warn{background:#fff6e8;color:#9b6a19}
 .recordImportWorking b,.recordImportResult b{font-size:11px;color:inherit}
+
+/* ===== FINAL39 small fixes ===== */
+#chat.page.active,#dmChat.page.active{
+  bottom:calc(68px + env(safe-area-inset-bottom))!important;
+}
+#groupView>.chatInput,#dmChat>.chatInput{
+  padding:2px 0 0!important;
+  margin-bottom:0!important;
+}
+.nav{
+  height:68px!important;
+  padding-top:2px!important;
+}
+
+/* ===== FINAL39 record UX ===== */
+.recordQuickGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.recordQuickCard{border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.recordQuickCard b{display:block;font-size:14px}
+.recordQuickCard span{display:block;color:#9298a0;font-size:10px;margin-top:5px;line-height:1.35}
+.recordQuickCard strong{font-size:20px;font-weight:500}
+.recordUploadManagerCard{padding:16px}
+.uploadManagerIntro{margin-bottom:14px}
+.uploadManagerIntro b{font-size:14px}
+.uploadManagerIntro p{font-size:10px;color:#8e949b;line-height:1.5;margin:5px 0 0}
+.recordUploadManagerRow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:8px}
+.recordUploadManagerRow b{font-size:11px;overflow-wrap:anywhere}
+.recordUploadManagerRow p{font-size:9px;color:#999;margin:4px 0 0}
+.uploadRowActions{display:flex;gap:6px;flex:0 0 auto}
+.uploadRowActions .btn{padding:8px 10px;font-size:9px}
+.recordPageSummary{margin:0 0 14px}
+.cleanRecordRow strong{font-variant-numeric:tabular-nums}
+@media(max-width:360px){
+ .recordQuickGrid{grid-template-columns:1fr}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -922,14 +956,14 @@ if(window.pdfjsLib){
   <div id="realNameSaved" class="compactSavedText"></div>
 </div>
 
-<div class="section"><h2>내 기록</h2></div>
-<div id="myRecordSummary" class="recordSummaryGrid"></div>
-<div id="myRecordList" class="recordList"></div>
-<div id="recordUploadSection" class="section recordUploadSection"><h2>기록지 업로드</h2><span class="meta">EYSL 팀명 + 회원 실명 자동 매칭</span></div>
-<div id="recordUploadCard" class="card recordUploadCard">
-  <button class="btn outline" type="button" onclick="document.getElementById('recordSheetInput').click()">＋ 엑셀 / PDF 결과지 업로드</button>
-  <input id="recordSheetInput" type="file" accept=".pdf,.xlsx,.xls,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden onchange="uploadRecordSheet(this)">
-  <div id="recordImportStatus" class="recordImportStatus"></div><div id="recordUploadList" class="recordUploadList"></div>
+<div class="section"><h2>기록</h2></div>
+<div class="recordQuickGrid">
+  <button class="recordQuickCard" type="button" onclick="showPage('records')">
+    <div><b>내 기록</b><span>종목별 기록 · PB · 대회 기록</span></div><strong>›</strong>
+  </button>
+  <button id="recordUploadQuickBtn" class="recordQuickCard" type="button" onclick="openRecordUploadManager()">
+    <div><b>결과지 업로드</b><span>EYSL 결과지 자동 반영</span></div><strong>›</strong>
+  </button>
 </div>
 
 <div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div>
@@ -938,6 +972,23 @@ if(window.pdfjsLib){
 
 <section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
 <section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">대회</button><button onclick="setRecordMajor('fin',this)">핀대회</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
+<section id="recordUploadManager" class="page">
+  <div class="pagehead">
+    <button class="back" onclick="showPage('mypage')">←</button>
+    <h1>결과지 업로드</h1><span></span>
+  </div>
+  <div class="card recordUploadManagerCard">
+    <div class="uploadManagerIntro">
+      <b>EYSL 결과지 자동 반영</b>
+      <p>엑셀/PDF에서 팀명 EYSL + 회원 실명을 찾아 기록을 자동 저장합니다.</p>
+    </div>
+    <button class="btn primary" type="button" onclick="document.getElementById('recordSheetInput').click()">＋ 엑셀 / PDF 결과지 업로드</button>
+    <input id="recordSheetInput" type="file" accept=".pdf,.xlsx,.xls,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden onchange="uploadRecordSheet(this)">
+    <div id="recordImportStatus" class="recordImportStatus"></div>
+  </div>
+  <div class="section"><h2>업로드한 결과지</h2><span class="meta">필요하면 다시 분석할 수 있어요.</span></div>
+  <div id="recordUploadList" class="recordUploadList"></div>
+</section>
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 
@@ -1289,7 +1340,8 @@ function showPage(id){
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
  if(id==='mypage'){renderMyProfile();refreshPushStatus();const tr=document.getElementById('masterPushTestRow');if(tr)tr.style.display=isMasterAdmin()?'flex':'none';}
- if(id==='records')showRecord('personal',document.querySelector('.recordTabs button'));
+ if(id==='records'){setRecordMajor('meet',document.querySelector('#recordMajor button'));}
+ if(id==='recordUploadManager'){if(!canManageRecordUploads()){toast('접근 권한이 없습니다.');return showPage('mypage')}renderRecordUploads();}
  if(id==='attendance')renderAttendance();
  if(id==='memberAdmin'){void (async()=>{await renderMembers();await renderRoleManagement();})()}
  if(id==='memberApproval'){if(!isMasterAdmin()){toast('총관리자만 회원 승인을 관리할 수 있습니다.');return showPage('home')}renderApprovalRequests();}if(id==='memberDirectory')renderMemberDirectory();
@@ -1742,7 +1794,12 @@ async function loadPersistentChat(){
     nextDm[otherName].push(msg);
    }
   }
-  groupMessages=nextGroup;dmMessages=nextDm;cacheChatState();void hydrateChatAttachments();
+  groupMessages=nextGroup;dmMessages=nextDm;cacheChatState();
+  Object.entries(dmMessages).forEach(([name,arr])=>{
+    const last=arr?.[arr.length-1];
+    if(last)setDmPreview(name,last.attachment?'첨부파일':(last.text||'최근 대화가 있습니다.'));
+  });
+  void hydrateChatAttachments();
  }catch(err){
   console.error('chat_list_v4:',err);
   if(!groupMessages.length&&!Object.keys(dmMessages).length)toast('채팅 불러오기 실패');
@@ -1875,13 +1932,28 @@ function switchChat(mode){
  if(mode==='group')renderGroup();
  else void renderDmList();
 }
+function getDmPreviewCache(){
+ try{return JSON.parse(localStorage.getItem('eysl-dm-preview-cache')||'{}')}catch(_){return {}}
+}
+function setDmPreview(name,text){
+ if(!name)return;
+ const cache=getDmPreviewCache();
+ cache[name]={text:String(text||''),at:Date.now()};
+ try{localStorage.setItem('eysl-dm-preview-cache',JSON.stringify(cache))}catch(_){}
+}
 async function renderDmList(){
  if(!members.length)await refreshMemberDirectoryFromDb();
  const box=document.getElementById('dmList');if(!box)return;
+ const previewCache=getDmPreviewCache();
  const names=members.filter(m=>m.status==='approved'&&!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name);
  box.innerHTML=names.map(n=>{
    const arr=dmMessages[n]||[],last=arr[arr.length-1];
-   const preview=last?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.')):'아직 대화가 없습니다.';
+   const cached=previewCache[n];
+   const preview=last
+    ?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.'))
+    :cached?.text
+      ?escHtml(cached.text)
+      :'아직 대화가 없습니다.';
    return `<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${preview}</p></div><span>›</span></div>`;
  }).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>';
 }
@@ -1905,7 +1977,7 @@ async function sendDm(){
  const targetName=currentDm;
  const localMsg=makeLocalChatMessage({text,dmTarget:targetName});
  input.value='';
- appendLocalDmMessage(localMsg,targetName);cacheChatState();
+ appendLocalDmMessage(localMsg,targetName);cacheChatState();setDmPreview(targetName,text);
 
  try{
    await chatApi({
@@ -1927,32 +1999,54 @@ async function sendDm(){
 }
 
 function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
-function getScheduleItems(){
- const y=currentMonth.getFullYear(),m=currentMonth.getMonth()+1;
- const prefix=`${y}-${String(m).padStart(2,'0')}`;
+function getScheduleItems(monthPrefix=''){
+ const prefix=monthPrefix||document.getElementById('calTitle')?.dataset.monthPrefix||`${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}`;
  const rows=[
   ...Object.values(trainings).map(t=>({type:'training',label:'훈련',id:t.id,title:t.title,date:t.date,place:t.place||'-',start:t.start||'',item:t})),
   ...(race.id?[{type:'race',label:'대회',id:race.id,title:race.title,date:race.date,place:race.place||'-',start:race.start||'',item:race}]:[]),
   ...events.map(e=>({type:'event',label:'이벤트',id:e.id,title:e.title,date:e.date,place:e.place||'-',start:e.start||'',item:e}))
  ];
- return rows.filter(x=>String(x.date).startsWith(prefix)&&(scheduleFilter==='all'||x.type===scheduleFilter))
+ return rows
+  .filter(x=>String(x.date||'').slice(0,7)===prefix)
+  .filter(x=>scheduleFilter==='all'||x.type===scheduleFilter)
   .sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
 }
-function renderScheduleList(){
+function renderScheduleList(monthPrefix=''){
  const box=document.getElementById('scheduleList');if(!box)return;
- const rows=getScheduleItems();
+ const prefix=monthPrefix||document.getElementById('calTitle')?.dataset.monthPrefix||'';
+ const rows=getScheduleItems(prefix);
+ box.dataset.renderedMonth=prefix;
  box.innerHTML=rows.length?rows.map(x=>{
   const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;
   const ended=activityHasStarted(x.item);
-  return `<div class="statusCard scheduleListCard" onclick="${action}"><div class="statusTop"><div><h3>${escHtml(x.title)}</h3><p>${escHtml(x.date)} · ${escHtml(x.place)}</p></div><span class="tag ${ended?'done':''}">${ended?'종료':x.label}</span></div></div>`;
- }).join(''):'<div class="card meta">현재 표시된 월에는 조건에 맞는 일정이 없습니다.</div>';
+  return `<div class="statusCard scheduleListCard" onclick="${action}" data-date="${escAttr(x.date)}"><div class="statusTop"><div><h3>${escHtml(x.title)}</h3><p>${escHtml(x.date)} · ${escHtml(x.place)}</p></div><span class="tag ${ended?'done':''}">${ended?'종료':x.label}</span></div></div>`;
+ }).join(''):`<div class="card meta">${prefix.replace('-','년 ')}월에는 조건에 맞는 일정이 없습니다.</div>`;
 }
 function renderCalendar(){
- const y=currentMonth.getFullYear(),m=currentMonth.getMonth();document.getElementById('calTitle').textContent=`${y}년 ${m+1}월`;
- const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();let html='';for(let i=0;i<first;i++)html+='<div></div>';
- const allEvents=[...Object.values(trainings).map(t=>({date:t.date,type:'training',id:t.id})),...(race.id?[{date:race.date,type:'race',id:race.id}]:[]),...events.map(e=>({date:e.date,type:'event',id:e.id}))].filter(e=>scheduleFilter==='all'||e.type===scheduleFilter);
- for(let d=1;d<=last;d++){const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const ev=allEvents.filter(e=>e.date===ds);html+=`<div class="day" onclick="selectDay('${ds}',this)">${d}${ev.length?`<div class="dots">${ev.map(e=>`<i class="dot ${e.type==='race'?'race':e.type==='event'?'event':''}"></i>`).join('')}</div>`:''}</div>`}document.getElementById('calendarDays').innerHTML=html;document.getElementById('dayInfo').innerHTML='';
-;renderScheduleList();}
+ const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
+ const prefix=`${y}-${String(m+1).padStart(2,'0')}`;
+ const title=document.getElementById('calTitle');
+ if(title){
+   title.textContent=`${y}년 ${m+1}월`;
+   title.dataset.monthPrefix=prefix;
+ }
+ const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
+ let html='';
+ for(let i=0;i<first;i++)html+='<div></div>';
+ const allEvents=[
+  ...Object.values(trainings).map(t=>({date:t.date,type:'training',id:t.id})),
+  ...(race.id?[{date:race.date,type:'race',id:race.id}]:[]),
+  ...events.map(e=>({date:e.date,type:'event',id:e.id}))
+ ].filter(e=>(scheduleFilter==='all'||e.type===scheduleFilter)&&String(e.date).startsWith(prefix));
+ for(let d=1;d<=last;d++){
+   const ds=`${prefix}-${String(d).padStart(2,'0')}`;
+   const ev=allEvents.filter(e=>e.date===ds);
+   html+=`<div class="day" onclick="selectDay('${ds}',this)">${d}${ev.length?`<div class="dots">${ev.map(e=>`<i class="dot ${e.type==='race'?'race':e.type==='event'?'event':''}"></i>`).join('')}</div>`:''}</div>`;
+ }
+ document.getElementById('calendarDays').innerHTML=html;
+ document.getElementById('dayInfo').innerHTML='';
+ renderScheduleList(prefix);
+}
 function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));if(race.id&&race.date===ds)list.push({type:'대회',title:race.title,time:'09:00 시작',place:race.place,status:raceApplication?'신청완료':'신청 가능',action:`showPage('raceList')`});events.filter(e=>e.date===ds).forEach(e=>list.push({type:'이벤트',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
 
 function renderTrainingList(){
@@ -2168,21 +2262,50 @@ function changeSummaryMonth(n){summaryMonth=Math.max(1,Math.min(12,summaryMonth+
 function renderActivity(){const now=new Date(),year=now.getFullYear(),mm=String(summaryMonth).padStart(2,'0'),prefix=`${year}-${mm}`;document.getElementById('summaryMonth').textContent=`${year}년 ${summaryMonth}월`;const tr=Object.values(trainings).filter(t=>String(t.date).startsWith(prefix)&&(t.participants||[]).includes(currentUser.nickname)).length,ra=(race.id&&String(race.date).startsWith(prefix)&&raceApplication)?1:0,ev=events.filter(x=>String(x.date).startsWith(prefix)&&(x.participants||[]).includes(currentUser.nickname)).length,ar=attendanceHistory.filter(x=>String(x.date).startsWith(prefix)&&(!x.name||x.name===currentUser.nickname)),att=ar.length?Math.round(ar.filter(x=>x.status==='출석'||x.status==='지각').length/ar.length*100):0,total=tr+ra+ev;activityBody.innerHTML=`<div class="summary"><div class="metrics"><div class="metric"><b>${tr}회</b><span>훈련 참여</span></div><div class="metric"><b>${ra}회</b><span>대회 참가</span></div><div class="metric"><b>${ev}회</b><span>이벤트</span></div><div class="metric"><b>${att}%</b><span>출석률</span></div></div></div><div class="section"><h2>이번 달 요약</h2></div><div class="row"><div class="grow"><b>${total?`${summaryMonth}월에는 훈련 ${tr}회, 대회 ${ra}회, 이벤트 ${ev}회에 참여했어요.`:'이번 달 등록된 활동 내역이 없습니다.'}</b></div></div>`}
 function setRecordMajor(v,b){recordMajor=v;document.querySelectorAll('#recordMajor button').forEach(x=>x.classList.remove('active'));b.classList.add('active');const minor=document.getElementById('recordMinor');if(v==='meet'||v==='fin')minor.innerHTML=`<button class="active" onclick="showRecord('personal',this)">개인전</button><button onclick="showRecord('relay',this)">단체전</button>`;else minor.innerHTML=`<button class="active" onclick="showRecord('measure',this)">기록측정</button><button onclick="showRecord('other',this)">기타</button>`;showRecord(v==='other'?'measure':'personal',minor.querySelector('button'))}
 async function showRecord(type,btn){
- document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
- const labels={personal:'개인전',relay:'단체전',measure:'기록측정',other:'기타'},box=document.getElementById('recordBody');
+ document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ const labels={personal:'개인전',relay:'단체전',measure:'기록측정',other:'기타'};
+ const box=document.getElementById('recordBody');
  box.innerHTML=`<div class="section"><h2>${labels[type]||'기록'}</h2></div><div class="card meta">기록 불러오는 중...</div>`;
  if(!currentUser.memberId){box.innerHTML='<div class="card meta">회원 정보를 확인할 수 없습니다.</div>';return}
- const {data,error}=await dbClient.from('records').select('id,category,subcategory,stroke,event_name,result,event_date,teammates,metadata,created_at').eq('member_id',currentUser.memberId).order('event_date',{ascending:false});
+
+ const {data,error}=await dbClient.from('records')
+  .select('id,category,subcategory,stroke,event_name,result,event_date,teammates,metadata,created_at')
+  .eq('member_id',currentUser.memberId)
+  .order('event_date',{ascending:false});
+
  if(error){console.error(error);box.innerHTML='<div class="card meta">앱 기록 DB를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';return}
- const rows=(data||[]).filter(r=>{
+
+ const all=(data||[]).filter(r=>(recordSeconds(r.result)??0)>0);
+ const rows=all.filter(r=>{
   if(type==='personal')return !r.subcategory||r.subcategory==='personal';
   if(type==='relay')return r.subcategory==='relay';
   if(type==='measure')return r.category==='measure'||r.subcategory==='measure';
   return r.category==='other'||r.subcategory==='other';
  });
+
  const header=`<div class="section"><h2>${labels[type]||'기록'}</h2></div>`;
- const sync=currentUser.realName?`<div class="card meta">마이랭킹 연동 실명 <b>${escHtml(currentUser.realName)}</b> · 팀명 <b>EYSL</b></div>`:`<div class="card meta">마이페이지에서 실명을 저장하면 마이랭킹 자동 기록 연동 준비가 완료됩니다.</div>`;
- box.innerHTML=header+sync+(rows.length?rows.map(r=>`<div class="statusCard"><div class="statusTop"><div><h3>${escHtml([r.stroke,r.metadata?.distance].filter(Boolean).join(' ')||r.event_name||'기록')}</h3><p>${escHtml(r.event_name||'')}${r.event_date?` · ${r.event_date}`:''}</p></div><span class="tag ok">${escHtml(r.result||'-')}</span></div></div>`).join(''):'<div class="card meta">아직 저장된 기록이 없습니다.</div>');
+ const sync=currentUser.realName
+  ?`<div class="card meta">연동 실명 <b>${escHtml(currentUser.realName)}</b> · 팀명 <b>EYSL</b></div>`
+  :`<div class="card meta">마이페이지에서 실명을 저장하면 결과지 자동 매칭이 가능합니다.</div>`;
+
+ const pbRows=type==='personal'
+  ?['자유형','배영','평영','접영'].map(st=>{
+     const r=bestRecordByStroke(rows,st);
+     return `<div class="pbCard"><span>${st}</span><b>${r?formatSwimResult(r.result):'-'}</b></div>`;
+   }).join('')
+  :'';
+
+ const list=rows.length?rows.map(r=>`
+  <div class="recordRow cleanRecordRow">
+    <div>
+      <b>${escHtml(recordEventTitle(r))}</b>
+      <p>${[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ')||'기록'}</p>
+    </div>
+    <strong>${escHtml(formatSwimResult(r.result))}</strong>
+  </div>`).join(''):'<div class="card meta">아직 저장된 기록이 없습니다.</div>';
+
+ box.innerHTML=header+sync+(pbRows?`<div class="recordSummaryGrid recordPageSummary">${pbRows}</div>`:'')+`<div class="recordList">${list}</div>`;
 }
 function recordHist(stroke,rows){return `<div class="section"><h2>${stroke} 히스토리</h2></div><div class="history">${rows.map(r=>`<div class="hist"><div class="topline"><b>${r[0]}초</b><span class="${r[2].startsWith('▼')?'good':''}">${r[2]}</span></div><span>${r[1]}</span></div>`).join('')}</div>`}
 function initAttendanceOptions(){const y=attYear,m=attMonth,now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;y.innerHTML='';for(let yr=cy;yr>=2024;yr--)y.innerHTML+=`<option value="${yr}" ${yr===cy?'selected':''}>${yr}년</option>`;m.innerHTML='';for(let mo=1;mo<=12;mo++)m.innerHTML+=`<option value="${String(mo).padStart(2,'0')}" ${mo===cm?'selected':''}>${mo}월</option>`}
@@ -2238,12 +2361,8 @@ function renderMyProfile(){
  const rn=document.getElementById('myRealName'),saved=document.getElementById('realNameSaved');
  if(rn)rn.value=currentUser.realName||'';
  if(saved)saved.textContent=currentUser.realName?`${currentUser.realName} · EYSL 기록 연동`:'';
- const canUpload=canManageRecordUploads();
- const rus=document.getElementById('recordUploadSection'),ruc=document.getElementById('recordUploadCard');
- if(rus)rus.style.display=canUpload?'flex':'none';
- if(ruc)ruc.style.display=canUpload?'block':'none';
- void renderMyPageRecords();
- if(canUpload)void renderRecordUploads();
+ const uploadBtn=document.getElementById('recordUploadQuickBtn');
+ if(uploadBtn)uploadBtn.style.display=canManageRecordUploads()?'flex':'none';
 }
 
 
@@ -2303,13 +2422,15 @@ function detectHeaderIndex(row,keys){
 }
 function normalizeResultCandidate(c){
  if(!c?.memberId||!c.stroke||!c.result)return null;
+ const normalizedResult=normalizeResultForStorage(c.result);
+ if(!normalizedResult)return null;
  return {
   member_id:c.memberId,
   category:'meet',
   subcategory:'personal',
   stroke:c.stroke,
   event_name:c.eventName||'결과지 업로드',
-  result:String(c.result),
+  result:normalizedResult,
   event_date:c.eventDate||new Date().toISOString().slice(0,10),
   metadata:{
    distance:c.distance||null,
@@ -2383,8 +2504,24 @@ async function extractExcelResults(file){
  const all=[];
  for(const sheetName of wb.SheetNames){
   const ws=wb.Sheets[sheetName];
-  const matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,defval:''});
-  const documentText=matrix.flat().join(' ');
+  const formatted=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,defval:''});
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+  const matrix=formatted.map((row,r)=>row.map((value,c)=>{
+    const rawVal=raw?.[r]?.[c];
+    if(typeof rawVal==='number'&&Number.isFinite(rawVal)){
+      // Excel time values are fractions of one day. Keep hundredths of a second.
+      if(rawVal>0&&rawVal<1){
+        const seconds=rawVal*86400;
+        if(seconds>0&&seconds<3600)return seconds.toFixed(2);
+      }
+      // Some result sheets store seconds directly as a numeric value.
+      if(rawVal>0&&rawVal<3600 && /^\s*\d+(?:[.,]\d+)?\s*$/.test(String(value||rawVal))){
+        return Number(rawVal).toFixed(2);
+      }
+    }
+    return value;
+  }));
+  const documentText=formatted.flat().join(' ');
   all.push(...parseMatrixResults(matrix,{
    sourceFile:file.name,sourceSheet:sheetName,documentText,
    eventDate:parseResultDate(documentText,parseResultDate(file.name)),
@@ -2447,15 +2584,17 @@ async function saveParsedRecords(rows){
  let saved=0,skipped=0;const errors=[];
  for(const r of rows){
   try{
+   if((recordSeconds(r.result)??0)<=0){skipped++;continue}
+   const distance=Number(r.metadata?.distance||0);
    const {data:existing,error:readError}=await dbClient.from('records')
-    .select('id')
+    .select('id,result,metadata')
     .eq('member_id',r.member_id)
     .eq('stroke',r.stroke)
-    .eq('result',r.result)
     .eq('event_date',r.event_date)
-    .limit(1);
+    .limit(50);
    if(readError)throw readError;
-   if(existing?.length){skipped++;continue}
+   const same=(existing||[]).some(x=>Number(x.metadata?.distance||0)===distance && Math.abs((recordSeconds(x.result)||0)-(recordSeconds(r.result)||0))<0.005);
+   if(same){skipped++;continue}
    const {error}=await dbClient.from('records').insert(r);
    if(error)throw error;
    saved++;
@@ -2477,6 +2616,11 @@ async function parseAndImportResultFile(file){
  if(!parsed.length)return {parsed:0,saved:0,skipped:0,errors:['EYSL + 실명 + 종목 + 기록을 찾지 못했습니다.']};
  const result=await saveParsedRecords(parsed);
  return {parsed:parsed.length,...result};
+}
+function openRecordUploadManager(){
+ if(!canManageRecordUploads())return toast('총관리자·부관리자·코치만 결과지를 업로드할 수 있습니다.');
+ showPage('recordUploadManager');
+ renderRecordUploads();
 }
 function canManageRecordUploads(){return isAdminUser()||String(currentUser.teamRole||'')==='코치'}
 async function uploadRecordSheet(input){
@@ -2516,78 +2660,103 @@ async function uploadRecordSheet(input){
   toast('결과지 처리에 실패했습니다.');
  }
 }
-async function renderRecordUploads(){
+async function reanalyzeRecordUpload(url,fileName,mimeType=''){
+ if(!url)return toast('파일을 다시 불러올 수 없습니다.');
+ const status=document.getElementById('recordImportStatus');
+ try{
+  if(status)status.innerHTML=`<div class="recordImportWorking"><b>${escHtml(fileName)}</b><span>원본 결과지 다시 분석 중...</span></div>`;
+  const res=await fetch(url);if(!res.ok)throw new Error('원본 파일을 불러오지 못했습니다.');
+  const blob=await res.blob();
+  const file=new File([blob],fileName,{type:mimeType||blob.type||''});
+  const imported=await parseAndImportResultFile(file);
+  const msg=imported.saved
+   ?`기록 ${imported.saved}건 추가 반영${imported.skipped?` · 중복 ${imported.skipped}건 제외`:''}`
+   :imported.parsed
+    ?`기록 ${imported.parsed}건 확인 · 새로 추가할 기록 없음`
+    :'EYSL + 실명 + 종목 + 기록을 찾지 못했습니다.';
+  if(status)status.innerHTML=`<div class="recordImportResult ${imported.saved?'ok':'warn'}"><b>${escHtml(fileName)}</b><span>${escHtml(msg)}</span></div>`;
+  toast(imported.saved?'결과지를 다시 분석해 기록을 반영했습니다.':'재분석이 완료됐습니다.');
+ }catch(err){
+  console.error('reanalyze result:',err);
+  if(status)status.innerHTML=`<div class="recordImportResult warn"><b>${escHtml(fileName)}</b><span>${escHtml(String(err?.message||err))}</span></div>`;
+  toast('결과지 재분석에 실패했습니다.');
+ }
+}async function renderRecordUploads(){
  const box=document.getElementById('recordUploadList');if(!box)return;
  const {data,error}=await dbClient.rpc('list_record_uploads_v1');
  if(error){console.error('record uploads:',error);box.innerHTML='<div class="meta">업로드 목록을 불러오지 못했습니다.</div>';return}
  const rows=data||[];
- if(!rows.length){box.innerHTML='<div class="meta">아직 업로드한 기록지가 없습니다.</div>';return}
+ if(!rows.length){box.innerHTML='<div class="card meta">아직 업로드한 결과지가 없습니다.</div>';return}
  const rendered=await Promise.all(rows.map(async r=>{
   let url='';try{url=await signedTeamFile(r.storage_path)}catch(_){}
   const date=r.created_at?new Date(r.created_at).toLocaleDateString('ko-KR'):'';
-  return `<a class="recordUploadRow" ${url?`href="${escAttr(url)}" target="_blank" rel="noopener"`:''}>
-    <div class="grow"><b>${escHtml(r.file_name)}</b><p>${escHtml(date)}</p></div><span>열기 ›</span>
-  </a>`;
+  return `<div class="recordUploadManagerRow">
+    <div class="grow"><b>${escHtml(r.file_name)}</b><p>${escHtml(date)}</p></div>
+    <div class="uploadRowActions">
+      ${url?`<button class="btn outline" type="button" onclick="window.open('${escAttr(url)}','_blank')">열기</button>`:''}
+      ${url?`<button class="btn primary" type="button" onclick="reanalyzeRecordUpload('${escAttr(url)}','${escAttr(r.file_name)}','${escAttr(r.mime_type||'')}')">다시 분석</button>`:''}
+    </div>
+  </div>`;
  }));
  box.innerHTML=rendered.join('');
 }
+function normalizeRecordDisplaySeconds(v){
+ const sec=recordSeconds(v);
+ if(sec==null||!Number.isFinite(sec)||sec<=0)return null;
+ return sec;
+}
+function formatSwimResult(v){
+ const sec=normalizeRecordDisplaySeconds(v);
+ if(sec==null)return '-';
+ if(sec<60)return sec.toFixed(2);
+ const min=Math.floor(sec/60),rest=sec-min*60;
+ return `${min}:${rest.toFixed(2).padStart(5,'0')}`;
+}
+function recordEventTitle(r){
+ const stroke=String(r?.stroke||'').trim();
+ const dist=Number(r?.metadata?.distance||0);
+ if(stroke&&dist)return `${stroke} ${dist}m`;
+ return stroke||r?.event_name||'기록';
+}
+function normalizeResultForStorage(v){
+ const sec=recordSeconds(v);
+ if(sec==null||!Number.isFinite(sec)||sec<=0)return '';
+ return sec<60?sec.toFixed(2):`${Math.floor(sec/60)}:${(sec%60).toFixed(2).padStart(5,'0')}`;
+}
 function recordSeconds(v){
-  if(v==null)return null;
-  const s=String(v).trim();
-  const parts=s.split(':');
-  if(parts.length===2){
-    const m=Number(parts[0]),sec=Number(parts[1]);
-    if(Number.isFinite(m)&&Number.isFinite(sec))return m*60+sec;
-  }
-  const n=Number(s.replace(/[^\d.]/g,''));
-  return Number.isFinite(n)?n:null;
+ if(v==null)return null;
+ const s=String(v).trim().replace(/,/g,'.');
+ if(!s)return null;
+ let m=s.match(/^(\d+):(\d{1,2})(?:\.(\d{1,3}))?$/);
+ if(m){
+  const min=Number(m[1]),sec=Number(m[2]),frac=m[3]?Number(`0.${m[3]}`):0;
+  return Number.isFinite(min)&&Number.isFinite(sec)?min*60+sec+frac:null;
+ }
+ m=s.match(/^(\d{1,4})초\s*(\d{1,3})?$/);
+ if(m){
+  const sec=Number(m[1]),frac=m[2]?Number(`0.${m[2]}`):0;
+  return sec+frac;
+ }
+ const n=Number(s.replace(/[^\d.]/g,''));
+ return Number.isFinite(n)?n:null;
 }
 function bestRecordByStroke(rows,stroke){
-  const filtered=rows.filter(r=>String(r.stroke||'').includes(stroke));
-  if(!filtered.length)return null;
-  return filtered.sort((a,b)=>(recordSeconds(a.result)??9999)-(recordSeconds(b.result)??9999))[0];
+ const filtered=rows.filter(r=>String(r.stroke||'').includes(stroke))
+  .filter(r=>(recordSeconds(r.result)??0)>0);
+ if(!filtered.length)return null;
+ return filtered.sort((a,b)=>(recordSeconds(a.result)??9999)-(recordSeconds(b.result)??9999))[0];
 }
 async function renderMyPageRecords(){
-  const summary=document.getElementById('myRecordSummary');
-  const list=document.getElementById('myRecordList');
-  if(!summary||!list||!currentUser.memberId)return;
-
-  summary.innerHTML='<div class="recordLoading">기록 불러오는 중...</div>';
-  list.innerHTML='';
-
-  const {data,error}=await dbClient
-    .from('records')
-    .select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at')
-    .eq('member_id',currentUser.memberId)
-    .order('event_date',{ascending:false});
-
-  if(error){
-    console.error('mypage records',error);
-    summary.innerHTML='<div class="recordEmpty">기록을 불러오지 못했습니다.</div>';
-    return;
-  }
-
-  const rows=data||[];
-  if(!rows.length){
-    summary.innerHTML='<div class="recordEmpty">아직 등록된 기록이 없습니다.</div>';
-    return;
-  }
-
-  const strokes=['자유형','배영','평영','접영'];
-  summary.innerHTML=strokes.map(st=>{
-    const r=bestRecordByStroke(rows,st);
-    return `<div class="pbCard"><span>${st}</span><b>${r?escHtml(r.result||'-'):'-'}</b></div>`;
-  }).join('');
-
-  list.innerHTML=rows.map(r=>{
-    const distance=r.metadata?.distance?`${escHtml(String(r.metadata.distance))} `:'';
-    const title=`${distance}${escHtml(r.stroke||r.event_name||'기록')}`;
-    const meta=[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ');
-    return `<div class="recordRow">
-      <div><b>${title}</b><p>${meta||'기록'}</p></div>
-      <strong>${escHtml(r.result||'-')}</strong>
-    </div>`;
-  }).join('');
+ const summary=document.getElementById('myRecordSummary'),list=document.getElementById('myRecordList');
+ if(!summary||!list||!currentUser.memberId)return;
+ const {data,error}=await dbClient.from('records')
+  .select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at')
+  .eq('member_id',currentUser.memberId).order('event_date',{ascending:false});
+ if(error)return;
+ const rows=(data||[]).filter(r=>(recordSeconds(r.result)??0)>0);
+ const strokes=['자유형','배영','평영','접영'];
+ summary.innerHTML=strokes.map(st=>{const r=bestRecordByStroke(rows,st);return `<div class="pbCard"><span>${st}</span><b>${r?formatSwimResult(r.result):'-'}</b></div>`}).join('');
+ list.innerHTML=rows.map(r=>`<div class="recordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join('');
 }
 async function saveMyRealName(){
  const input=document.getElementById('myRealName'),name=(input?.value||'').trim();
@@ -2948,10 +3117,11 @@ function renderApplicationAdmin(kind='all',btn=null){
  if(btn)btn.classList.add('active');else{
   [...document.querySelectorAll('#aggFilters button')].find(x=>x.getAttribute('onclick')?.includes(`'${kind}'`))?.classList.add('active');
  }
- const rows=attEvents().filter(e=>kind==='all'||e.type===kind).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ const rows=attEvents().filter(e=>kind==='all'||e.type===kind).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
  box.innerHTML=rows.length?rows.map(e=>{
   const people=[...new Set(e.people||[])];
-  return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(e.title)}</h3><p>${escHtml(e.date)} · ${escHtml(e.label)}</p></div><span class="tag">${escHtml(e.label)}</span></div><div class="aggregationPeople">${people.length?people.map(n=>`<span class="tag">${escHtml(n)}</span>`).join(''):'<span class="meta">신청/참여 회원 없음</span>'}</div></div>`;
+  const ended=e.state==='done';
+  return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(e.title)}</h3><p>${escHtml(e.date)} · ${escHtml(e.label)}</p></div><span class="tag ${ended?'done':''}">${ended?'종료':escHtml(e.label)}</span></div><div class="aggregationPeople">${people.length?people.map(n=>`<span class="tag">${escHtml(n)}</span>`).join(''):'<span class="meta">신청/참여 회원 없음</span>'}</div></div>`;
  }).join(''):'<div class="card meta">조건에 맞는 활동이 없습니다.</div>';
 }
 function setAttType(v,b){
@@ -3023,7 +3193,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final37').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final39').catch(()=>{}));
 }
 </script>
 </body>
