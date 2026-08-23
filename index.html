@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL24 auth/profile/avatar */
+/* FINAL25 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL24: chat stays inside one phone screen */
+/* FINAL25: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL24 CHAT ONLY FIX ===== */
+/* ===== FINAL25 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL24 CHAT RESTORE ===== */
+/* ===== FINAL25 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,6 +549,14 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .chatFile .saveLink{display:block;font-size:10px;margin-top:3px}
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
+
+/* FINAL25 approval queue render */
+#pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
+.approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.approvalRow h3{margin:0 0 6px;font-size:16px}
+.approvalRow p{margin:0;color:#8e8e93;font-size:11px;line-height:1.5}
+.approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -1035,46 +1043,118 @@ async function logout(){try{await dbClient.auth.signOut()}catch(e){console.error
 function isAdminUser(){return ['admin','master_admin'].includes(currentUser.actualRole)}
 function isMasterAdmin(){return currentUser.actualRole==='master_admin'}
 
+function approvalStatusLabel(status){
+ if(status==='approved')return '승인 완료';
+ if(status==='blocked')return '내보내기';
+ if(status==='rejected')return '거절';
+ return '처리 완료';
+}
+function memberRoleLabel(role){
+ if(role==='master_admin')return '총관리자';
+ if(role==='admin')return '부관리자';
+ return '일반회원';
+}
+function makeApprovalCard(member,isPending){
+ const card=document.createElement('div');
+ card.className='approvalRow';
+
+ const title=document.createElement('h3');
+ title.textContent=member.nickname||'회원';
+ card.appendChild(title);
+
+ const meta=document.createElement('p');
+ if(isPending){
+   const pieces=['가입 승인 대기'];
+   if(member.birth_year)pieces.push(`${member.birth_year}년생`);
+   if(member.gender)pieces.push(String(member.gender));
+   meta.textContent=pieces.join(' · ');
+ }else{
+   const when=member.approved_at||member.created_at;
+   const dateText=when?new Date(when).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+   meta.textContent=[approvalStatusLabel(member.status),memberRoleLabel(member.role),dateText].filter(Boolean).join(' · ');
+ }
+ card.appendChild(meta);
+
+ if(isPending){
+   const actions=document.createElement('div');
+   actions.className='actions';
+
+   const approve=document.createElement('button');
+   approve.className='btn primary';
+   approve.type='button';
+   approve.textContent='승인';
+   approve.addEventListener('click',()=>manageMemberApproval(member.id,'approve'));
+
+   const reject=document.createElement('button');
+   reject.className='btn outline';
+   reject.type='button';
+   reject.textContent='거절';
+   reject.addEventListener('click',()=>manageMemberApproval(member.id,'reject'));
+
+   actions.append(approve,reject);
+   card.appendChild(actions);
+ }
+ return card;
+}
 async function renderApprovalRequests(){
  if(!isMasterAdmin())return;
- const pendingBox=document.getElementById('pendingMemberList'),
-       processedBox=document.getElementById('processedMemberList'),
-       count=document.getElementById('pendingCount');
+
+ const pendingBox=document.getElementById('pendingMemberList');
+ const processedBox=document.getElementById('processedMemberList');
+ const count=document.getElementById('pendingCount');
  if(!pendingBox||!processedBox)return;
 
- pendingBox.innerHTML='<div class="card meta">승인 대기 회원 불러오는 중...</div>';
+ pendingBox.replaceChildren();
+ processedBox.replaceChildren();
 
- const {data,error}=await dbClient.rpc('get_member_approval_queue');
- if(error){
-   console.error('get_member_approval_queue:',error);
-   pendingBox.innerHTML='<div class="approvalEmpty">승인 대기 목록을 불러오지 못했습니다.</div>';
+ const loading=document.createElement('div');
+ loading.className='card meta';
+ loading.textContent='승인 대기 회원 불러오는 중...';
+ pendingBox.appendChild(loading);
+
+ try{
+   const {data,error}=await dbClient.rpc('get_member_approval_queue');
+   if(error)throw error;
+
+   const rows=Array.isArray(data)?data:[];
+   const pending=rows.filter(x=>x&&x.status==='pending');
+   // 최근 처리 회원: 총관리자 본인은 제외하고, 최근 승인/처리된 회원 순으로 표시.
+   const processed=rows
+     .filter(x=>x&&x.status!=='pending'&&x.role!=='master_admin')
+     .sort((a,b)=>new Date(b.approved_at||b.created_at||0)-new Date(a.approved_at||a.created_at||0))
+     .slice(0,10);
+
+   if(count)count.textContent=`${pending.length}명`;
+
+   pendingBox.replaceChildren();
+   if(pending.length){
+     pending.forEach(member=>pendingBox.appendChild(makeApprovalCard(member,true)));
+   }else{
+     const empty=document.createElement('div');
+     empty.className='approvalEmpty';
+     empty.textContent='현재 승인 대기 회원이 없습니다.';
+     pendingBox.appendChild(empty);
+   }
+
+   processedBox.replaceChildren();
+   if(processed.length){
+     processed.forEach(member=>processedBox.appendChild(makeApprovalCard(member,false)));
+   }else{
+     const empty=document.createElement('div');
+     empty.className='approvalEmpty';
+     empty.textContent='최근 처리 회원이 없습니다.';
+     processedBox.appendChild(empty);
+   }
+ }catch(err){
+   console.error('approval queue render:',err);
+   pendingBox.replaceChildren();
+   const fail=document.createElement('div');
+   fail.className='approvalEmpty';
+   fail.textContent='승인 대기 목록을 불러오지 못했습니다.';
+   pendingBox.appendChild(fail);
+   processedBox.replaceChildren();
    if(count)count.textContent='';
-   return;
  }
-
- const rows=data||[];
- const pending=rows.filter(x=>x.status==='pending');
- const processed=rows.filter(x=>x.status!=='pending').slice(0,10);
-
- if(count)count.textContent=`${pending.length}명`;
-
- pendingBox.innerHTML=pending.length
-   ?pending.map(m=>`<div class="approvalRow">
-      <h3>${escHtml(m.nickname)}</h3>
-      <p>가입 승인 대기${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${escHtml(m.gender)}`:''}</p>
-      <div class="actions">
-        <button class="btn primary" onclick="manageMemberApproval('${m.id}','approve')">승인</button>
-        <button class="btn outline" onclick="manageMemberApproval('${m.id}','reject')">거절</button>
-      </div>
-    </div>`).join('')
-   :'<div class="approvalEmpty">현재 승인 대기 회원이 없습니다.</div>';
-
- processedBox.innerHTML=processed.length
-   ?processed.map(m=>`<div class="approvalRow">
-      <h3>${escHtml(m.nickname)}</h3>
-      <p>${m.status==='approved'?'승인 완료':m.status==='blocked'?'내보내기':'처리 완료'} · ${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'}</p>
-    </div>`).join('')
-   :'<div class="approvalEmpty">처리 내역이 없습니다.</div>';
 }
 async function manageMemberApproval(memberId,action){
  if(!isMasterAdmin())return toast('총관리자만 회원 승인을 처리할 수 있습니다.');
@@ -1958,7 +2038,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final24').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final25').catch(()=>{}));
 }
 </script>
 </body>
