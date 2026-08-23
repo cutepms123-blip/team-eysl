@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL32 auth/profile/avatar */
+/* FINAL33 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL32: chat stays inside one phone screen */
+/* FINAL33: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL32 CHAT ONLY FIX ===== */
+/* ===== FINAL33 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL32 CHAT RESTORE ===== */
+/* ===== FINAL33 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,7 +549,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* FINAL32 approval queue render */
+/* FINAL33 approval queue render */
 #pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
 .approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .approvalRow h3{margin:0 0 6px;font-size:16px}
@@ -557,7 +557,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 
-/* FINAL32 CHAT UI */
+/* FINAL33 CHAT UI */
 .emojiPanel{
   display:none!important;
   position:absolute!important;
@@ -636,7 +636,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   display:flex!important;align-items:center!important;justify-content:center!important;
 }
 
-/* FINAL32 CHAT VIEW FIX */
+/* FINAL33 CHAT VIEW FIX */
 #groupView{
   flex:1 1 auto!important;
   min-height:0!important;
@@ -666,7 +666,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   overflow-y:auto!important;
 }
 
-/* FINAL32 CHAT FINAL OVERRIDES */
+/* FINAL33 CHAT FINAL OVERRIDES */
 #groupView[style*="display: none"]{display:none!important}
 #dmView[style*="display: block"]{display:block!important}
 #dmChat.page.active{
@@ -693,7 +693,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   transform:none!important;
 }
 
-/* ===== FINAL32 requested UI fixes ===== */
+/* ===== FINAL33 requested UI fixes ===== */
 
 /* Chat bottom area: reduce nav/composer gap and overall nav height */
 .nav{
@@ -752,6 +752,18 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   align-items:center!important;
   min-height:62px!important;
 }
+
+.nav{height:68px!important;padding-bottom:max(4px,env(safe-area-inset-bottom))!important}
+#chat.page.active,#dmChat.page.active{bottom:calc(68px + env(safe-area-inset-bottom))!important}
+.chatInput{padding:3px 0 2px!important}
+#groupView .chatBody,#dmChat .chatBody{padding-bottom:2px!important}
+#groupView[style*="display: none"]{display:none!important}
+#dmView[style*="display: none"]{display:none!important}
+#dmView{position:relative!important;z-index:3!important}
+#dmList .dmRow{position:relative!important;z-index:4!important;cursor:pointer!important;pointer-events:auto!important}
+.memberInfoDetail .detailrow{display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;gap:12px!important;padding:9px 0!important}
+.memberInfoDetail .detailrow b{font-size:10px!important;color:#8b9096!important}
+.memberInfoDetail .detailrow span{font-size:12px!important;line-height:1.4!important;text-align:left!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -938,51 +950,126 @@ function fmtDbTime(v){return v?String(v).slice(0,5):''}
 function emptyRace(){return {id:null,title:'',date:'',endDate:'',place:'',participants:[],detail:'',relays:[]}}
 function mapActivityRow(row){const d=row.details||{};const base={id:row.id,title:row.title,date:row.activity_date,start:fmtDbTime(row.start_time),end:fmtDbTime(row.end_time),place:row.place||'',participants:Array.isArray(d.participants)?d.participants:[],waitlist:Array.isArray(d.waitlist)?d.waitlist:[],offer:d.offer||null};if(row.kind==='training')return {...base,kind:'training',coach:d.coach||'-',gear:d.gear||'-',lane:d.lane||'-',info:d.info||'-',capacity:Number(row.capacity||d.capacity||20),plan:d.plan||'',planBy:d.planBy||'',planDate:d.planDate||row.activity_date};if(row.kind==='race')return {...base,kind:'race',endDate:d.endDate||row.activity_date,detail:d.info||d.detail||'',relays:Array.isArray(d.relays)?d.relays:[]};return {...base,kind:'event',done:!!d.done,info:d.info||''}}
 async function signedTeamFile(path){if(!path)return null;const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,3600);if(error){console.error('signed url:',error);return null}return data?.signedUrl||null}
+function snapshotPlainData(){
+ try{
+  localStorage.setItem('eysl-core-cache-v33',JSON.stringify({
+   notices:notices.map(n=>({id:n.id,date:n.date,title:n.title,body:n.body,attachments:n.attachments||[],comments:n.comments||[]})).slice(0,30),
+   trainings,events,race,members:members.map(m=>({...m,avatarUrl:''})),attendanceHistory
+  }));
+ }catch(_){}
+}
+function restoreCoreSnapshot(){
+ try{
+  const raw=localStorage.getItem('eysl-core-cache-v33');if(!raw)return false;
+  const c=JSON.parse(raw);
+  if(Array.isArray(c.notices))notices=c.notices;
+  unreadNoticeIds=new Set(notices.map(n=>n.id));
+  if(c.trainings&&typeof c.trainings==='object')trainings=c.trainings;
+  if(Array.isArray(c.events))events=c.events;
+  if(c.race)race=c.race;
+  if(Array.isArray(c.members))members=c.members;
+  if(Array.isArray(c.attendanceHistory))attendanceHistory=c.attendanceHistory;
+  return true;
+ }catch(_){return false}
+}
+async function loadMediaContentInBackground(){
+ try{
+  const [folderRes,fileRes]=await Promise.all([
+   dbClient.from('media_folders').select('id,name,created_by,created_at').order('created_at',{ascending:false}),
+   dbClient.from('media_files').select('id,folder_id,uploader_id,file_name,storage_path,mime_type,created_at').order('created_at',{ascending:false})
+  ]);
+  const rawFiles=fileRes.data||[];
+  const fileMap=rawFiles.map(f=>({
+   id:f.id,folderId:f.folder_id,uploaderId:f.uploader_id,name:f.file_name,storagePath:f.storage_path,
+   mime:f.mime_type||'',type:(f.mime_type||'').startsWith('image')?'image':(f.mime_type||'').startsWith('video')?'video':'file',
+   date:fmtDateFromIso(f.created_at),url:''
+  }));
+  resourceFiles=fileMap.filter(f=>!f.folderId);
+  mediaFolders=(folderRes.data||[]).map(folder=>({
+   id:folder.id,name:folder.name,creatorId:folder.created_by,creator:'팀원',date:fmtDateFromIso(folder.created_at),
+   files:fileMap.filter(f=>f.folderId===folder.id)
+  }));
+  await Promise.all(fileMap.map(async f=>{try{f.url=await signedTeamFile(f.storagePath)}catch(_){}}));
+  if(document.getElementById('media')?.classList.contains('active'))renderFolders();
+  if(document.getElementById('files')?.classList.contains('active'))renderResourceFiles();
+ }catch(err){console.error('background media:',err)}
+}
+async function hydrateMemberAvatarsInBackground(){
+ const rows=members.filter(m=>m.avatarPath&&!m.avatarUrl);
+ if(!rows.length)return;
+ await Promise.all(rows.map(async m=>{try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}}));
+ if(document.getElementById('memberAdmin')?.classList.contains('active'))renderMembersFromCurrentData();
+}
+async function hydrateNoticeAttachmentsInBackground(){
+ const jobs=[];
+ notices.forEach(n=>(n.attachments||[]).forEach(a=>{
+  if(a?.storagePath&&!a.url)jobs.push((async()=>{try{a.url=await signedTeamFile(a.storagePath)}catch(_){}})());
+ }));
+ await Promise.all(jobs);
+}
 async function loadPersistentContent(){
- const [noticeRes,activityRes,folderRes,fileRes,memberRes,applicationRes]=await Promise.all([
+ const historyPromise=currentUser.memberId?dbClient.rpc('member_history_v4',{p_member_id:currentUser.memberId}):Promise.resolve({data:[],error:null});
+ const [noticeRes,activityRes,memberRes,applicationRes,historyRes]=await Promise.all([
   dbClient.from('notices').select('id,title,body,attachments,comments,created_by,created_at,updated_at').order('created_at',{ascending:false}),
   dbClient.from('activities').select('id,kind,title,activity_date,start_time,end_time,place,capacity,details,created_by,created_at,updated_at').order('activity_date',{ascending:true}),
-  dbClient.from('media_folders').select('id,name,created_by,created_at').order('created_at',{ascending:false}),
-  dbClient.from('media_files').select('id,folder_id,uploader_id,file_name,storage_path,mime_type,created_at').order('created_at',{ascending:false}),
-  dbClient.from('members').select('id,nickname,role,status,birth_year,gender,avatar_path,real_name,created_at').in('status',['approved','blocked']).order('created_at',{ascending:true}),
-  dbClient.from('activity_applications').select('id,activity_id,member_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at')
+  dbClient.rpc('member_directory_v4'),
+  dbClient.from('activity_applications').select('id,activity_id,member_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at'),
+  historyPromise
  ]);
- notices=await Promise.all((noticeRes.data||[]).map(async n=>({id:n.id,date:fmtDateFromIso(n.created_at),title:n.title,body:n.body,attachments:await Promise.all((Array.isArray(n.attachments)?n.attachments:[]).map(async a=>a?.storagePath?{...a,url:(await signedTeamFile(a.storagePath))||a.url||''}:a)),comments:Array.isArray(n.comments)?n.comments:[]})));
- unreadNoticeIds=new Set(notices.map(n=>n.id));
- trainings={};events=[];race=emptyRace();(activityRes.data||[]).forEach(row=>{const mapped=mapActivityRow(row);if(row.kind==='training')trainings[row.id]=mapped;else if(row.kind==='race'&&!race.id)race=mapped;else if(row.kind==='event')events.push(mapped)});
- const rawFiles=fileRes.data||[],urls=await Promise.all(rawFiles.map(f=>signedTeamFile(f.storage_path)));const fileMap=rawFiles.map((f,i)=>({id:f.id,folderId:f.folder_id,uploaderId:f.uploader_id,name:f.file_name,storagePath:f.storage_path,mime:f.mime_type||'',type:(f.mime_type||'').startsWith('image')?'image':(f.mime_type||'').startsWith('video')?'video':'file',date:fmtDateFromIso(f.created_at),url:urls[i]}));resourceFiles=fileMap.filter(f=>!f.folderId);mediaFolders=(folderRes.data||[]).map(folder=>({id:folder.id,name:folder.name,creatorId:folder.created_by,creator:'팀원',date:fmtDateFromIso(folder.created_at),files:fileMap.filter(f=>f.folderId===folder.id)}));
- members=memberRes.error?[]:await Promise.all((memberRes.data||[]).map(async m=>({id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',gender:m.gender||'-',join:m.created_at?String(m.created_at).slice(0,7).replace('-','.'):'-',joinDate:m.created_at||null,blocked:m.status==='blocked',role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:m.avatar_path?(await signedProfileImage(m.avatar_path)):'',att:0,late:0,pb:{},races:[],trains:[]})));
 
- // Merge persistent application rows into every activity.
+ notices=(noticeRes.data||[]).map(n=>({
+  id:n.id,date:fmtDateFromIso(n.created_at),title:n.title,body:n.body,
+  attachments:(Array.isArray(n.attachments)?n.attachments:[]).map(a=>({...a,url:a?.url||''})),
+  comments:Array.isArray(n.comments)?n.comments:[]
+ }));
+ unreadNoticeIds=new Set(notices.map(n=>n.id));
+
+ trainings={};events=[];race=emptyRace();
+ (activityRes.data||[]).forEach(row=>{
+  const mapped=mapActivityRow(row);
+  if(row.kind==='training')trainings[row.id]=mapped;
+  else if(row.kind==='race'&&!race.id)race=mapped;
+  else if(row.kind==='event')events.push(mapped);
+ });
+
+ members=memberRes.error?[]:(memberRes.data||[]).map(m=>({
+  id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,
+  birth:m.birth_year?String(m.birth_year).slice(-2):'-',gender:m.gender||'-',
+  join:m.join_date_text||(m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-'),joinDate:m.created_at||null,
+  blocked:m.status==='blocked',status:m.status,role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:'',
+  teamRole:m.team_role||'',shortName:m.short_name||'',joinReason:m.join_reason||'',birthDateText:m.birth_date_text||'',
+  lessonLevel:m.lesson_level||'',swimExperience:m.swim_experience||'',notes:m.notes||'',location:m.location||'',
+  att:Number(m.historical_attendance_count||0),late:Number(m.historical_late_count||0),pb:{},races:[],trains:[]
+ }));
+
+ attendanceHistory=(historyRes.data||[]).map(x=>({date:String(x.activity_date),title:'팀아이슬 훈련',status:x.status,name:currentUser.nickname}));
+
  const apps=applicationRes?.data||[];
  const byMemberId=id=>members.find(m=>m.id===id)?.name||null;
  Object.values(trainings).forEach(t=>{t.participants=[];t.waitlist=[]});
  events.forEach(e=>{e.participants=[]});
- race.participants=[];
- raceApplication=null;
-
+ race.participants=[];raceApplication=null;
  apps.forEach(a=>{
-   const name=byMemberId(a.member_id);
-   if(!name)return;
-   const t=trainings[a.activity_id];
-   if(t){
-     if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
-     else t.participants.push(name);
-     return;
-   }
-   if(race.id===a.activity_id){
-     race.participants.push(name);
-     if(a.member_id===currentUser.memberId)raceApplication=a.details||{};
-     return;
-   }
-   const e=events.find(x=>x.id===a.activity_id);
-   if(e)e.participants.push(name);
+  const name=byMemberId(a.member_id);if(!name)return;
+  const t=trainings[a.activity_id];
+  if(t){
+   if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
+   else t.participants.push(name);
+   return;
+  }
+  if(race.id===a.activity_id){race.participants.push(name);if(a.member_id===currentUser.memberId)raceApplication=a.details||{};return}
+  const e=events.find(x=>x.id===a.activity_id);if(e)e.participants.push(name);
  });
  Object.values(trainings).forEach(t=>{
- normalizeWait(t);
- const offered=t.waitlist.find(w=>w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
- t.offer=offered?{name:offered.name,memberId:offered.memberId,expiresAt:new Date(offered.offerExpiresAt).getTime()}:null;
-});
+  normalizeWait(t);
+  const offered=t.waitlist.find(w=>w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
+  t.offer=offered?{name:offered.name,memberId:offered.memberId,expiresAt:new Date(offered.offerExpiresAt).getTime()}:null;
+ });
+
+ snapshotPlainData();
+ void loadMediaContentInBackground();
+ void hydrateMemberAvatarsInBackground();
+ void hydrateNoticeAttachmentsInBackground();
 }
 
 
@@ -1180,6 +1267,9 @@ async function loginMember(){
   await setCurrentUserFromMember(member);
   document.getElementById('auth')?.classList.remove('open');
   applyRole();
+  restoreCoreSnapshot();restoreChatCache();
+  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList].forEach(fn=>{try{fn()}catch(_){}});
+  showPage('home');
   await loadPersistentContent();await loadPersistentChat();
   const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMembers,renderMemberDirectory,renderFolders,renderResourceFiles];
   boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
@@ -1445,102 +1535,91 @@ async function chatApi(payload){
 }
 function cacheChatState(){
  try{
-   sessionStorage.setItem('eysl-chat-cache',JSON.stringify({
-     group:groupMessages.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-120),
-     dm:Object.fromEntries(Object.entries(dmMessages).map(([k,v])=>[k,v.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-80)]))
-   }));
+  localStorage.setItem('eysl-chat-cache-v33',JSON.stringify({
+   group:groupMessages.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-150),
+   dm:Object.fromEntries(Object.entries(dmMessages).map(([k,v])=>[k,v.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-100)]))
+  }));
  }catch(_){}
 }
 function restoreChatCache(){
  if(groupMessages.length||Object.keys(dmMessages).length)return;
  try{
-   const raw=sessionStorage.getItem('eysl-chat-cache');if(!raw)return;
-   const c=JSON.parse(raw);
-   groupMessages=Array.isArray(c.group)?c.group:[];
-   dmMessages=c.dm&&typeof c.dm==='object'?c.dm:{};
+  const raw=localStorage.getItem('eysl-chat-cache-v33');if(!raw)return;
+  const c=JSON.parse(raw);
+  groupMessages=Array.isArray(c.group)?c.group:[];
+  dmMessages=c.dm&&typeof c.dm==='object'?c.dm:{};
  }catch(_){}
+}
+async function hydrateChatAttachments(){
+ const jobs=[];
+ const all=[...groupMessages,...Object.values(dmMessages).flat()];
+ all.forEach(m=>{
+  const a=m.attachment;
+  if(a?.path&&!a.url)jobs.push((async()=>{try{a.url=await signedTeamFile(a.path)}catch(_){}})());
+ });
+ await Promise.all(jobs);
+ if(document.getElementById('chat')?.classList.contains('active'))renderGroup();
+ if(document.getElementById('dmChat')?.classList.contains('active'))renderDm();
 }
 async function loadPersistentChat(){
  if(!currentUser.memberId){groupMessages=[];dmMessages={};return}
  restoreChatCache();
-
  try{
-   const {data,error}=await dbClient.rpc('chat_list_v3',{p_limit:300});
-   if(error)throw error;
-   const rows=(Array.isArray(data)?data:[]).slice().reverse();
-
-   const normalized=await Promise.all(rows.map(async row=>{
-     const isMe=row.sender_id===currentUser.memberId;
-     let attachment=null;
-     if(row.attachment_path){
-       let url='';
-       try{url=await signedTeamFile(row.attachment_path)}catch(_){}
-       const mime=row.attachment_type||'application/octet-stream';
-       attachment={
-         name:String(row.body||'첨부파일'),
-         url,
-         kind:mime.startsWith('image/')?'image':mime.startsWith('video/')?'video':'file',
-         path:row.attachment_path
-       };
-     }
-     return {
-       row,
-       msg:{
-         id:row.id,
-         name:row.sender_nickname||(isMe?currentUser.nickname:'회원'),
-         text:row.attachment_path?'':(row.body||''),
-         time:new Date(row.created_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),
-         me:isMe,
-         attachment
-       }
-     };
-   }));
-
-   const nextGroup=[],nextDm={};
-   for(const item of normalized){
-     const {row,msg}=item;
-     if(row.room_type==='group'){
-       nextGroup.push(msg);
-     }else{
-       const otherName=msg.me?(row.recipient_nickname||'회원'):(row.sender_nickname||'회원');
-       if(!nextDm[otherName])nextDm[otherName]=[];
-       nextDm[otherName].push(msg);
-     }
+  const {data,error}=await dbClient.rpc('chat_list_v4',{p_limit:200});
+  if(error)throw error;
+  const nextGroup=[],nextDm={};
+  for(const row of (data||[])){
+   const isMe=row.sender_id===currentUser.memberId;
+   const attachment=row.attachment_path?{
+    name:String(row.body||'첨부파일'),url:'',
+    kind:(row.attachment_type||'').startsWith('image/')?'image':(row.attachment_type||'').startsWith('video/')?'video':'file',
+    path:row.attachment_path
+   }:null;
+   const msg={id:row.id,name:row.sender_nickname||(isMe?currentUser.nickname:'회원'),text:row.attachment_path?'':(row.body||''),
+    time:new Date(row.created_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),me:isMe,attachment};
+   if(row.room_type==='group')nextGroup.push(msg);
+   else{
+    const otherName=isMe?(row.recipient_nickname||'회원'):(row.sender_nickname||'회원');
+    if(!nextDm[otherName])nextDm[otherName]=[];
+    nextDm[otherName].push(msg);
    }
-   groupMessages=nextGroup;
-   dmMessages=nextDm;
-   cacheChatState();
+  }
+  groupMessages=nextGroup;dmMessages=nextDm;cacheChatState();void hydrateChatAttachments();
  }catch(err){
-   console.error('chat_list_v3:',err);
-   if(!groupMessages.length&&!Object.keys(dmMessages).length)toast('채팅 불러오기 실패');
+  console.error('chat_list_v4:',err);
+  if(!groupMessages.length&&!Object.keys(dmMessages).length)toast('채팅 불러오기 실패');
  }
 }
 let chatRealtimeChannel=null;
 let chatRealtimeRefreshTimer=null;
 
+let chatPollTimer=null;
+function refreshVisibleChatViews(){
+ const chatPage=document.getElementById('chat'),dmPage=document.getElementById('dmChat');
+ if(chatPage?.classList.contains('active')){
+  renderGroup();
+  const dmView=document.getElementById('dmView');
+  if(dmView&&dmView.style.display!=='none')renderDmList();
+ }
+ if(dmPage?.classList.contains('active'))renderDm();
+}
 function ensureChatRealtime(){
- if(chatRealtimeChannel||!dbClient?.channel)return;
- try{
-   chatRealtimeChannel=dbClient
-     .channel(`eysl-chat-${currentUser.memberId||'member'}`)
-     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
-       if(payload?.new?.sender_id===currentUser.memberId)return;
-       clearTimeout(chatRealtimeRefreshTimer);
-       chatRealtimeRefreshTimer=setTimeout(async()=>{
-         await loadPersistentChat();
-         const chatPage=document.getElementById('chat');
-         const dmPage=document.getElementById('dmChat');
-         if(chatPage?.classList.contains('active')){
-           renderGroup();
-           const dmView=document.getElementById('dmView');
-           if(dmView&&dmView.style.display!=='none')renderDmList();
-         }
-         if(dmPage?.classList.contains('active'))renderDm();
-       },80);
-     })
-     .subscribe();
- }catch(err){
-   console.error('chat realtime:',err);
+ if(!chatRealtimeChannel&&dbClient?.channel){
+  try{
+   chatRealtimeChannel=dbClient.channel(`eysl-chat-${currentUser.memberId||'member'}`)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+     if(payload?.new?.sender_id===currentUser.memberId)return;
+     clearTimeout(chatRealtimeRefreshTimer);
+     chatRealtimeRefreshTimer=setTimeout(async()=>{await loadPersistentChat();refreshVisibleChatViews()},80);
+    }).subscribe();
+  }catch(err){console.error('chat realtime:',err)}
+ }
+ if(!chatPollTimer){
+  chatPollTimer=setInterval(async()=>{
+   const active=document.getElementById('chat')?.classList.contains('active')||document.getElementById('dmChat')?.classList.contains('active');
+   if(!active)return;
+   await loadPersistentChat();refreshVisibleChatViews();
+  },1800);
  }
 }
 
@@ -1625,22 +1704,13 @@ async function sendGroup(){
  }
 }
 function switchChat(mode){
- const g=document.getElementById('groupTab');
- const d=document.getElementById('dmTab');
- const gv=document.getElementById('groupView');
- const dv=document.getElementById('dmView');
-
- g?.classList.toggle('active',mode==='group');
- d?.classList.toggle('active',mode==='dm');
-
+ const g=document.getElementById('groupTab'),d=document.getElementById('dmTab'),gv=document.getElementById('groupView'),dv=document.getElementById('dmView');
+ g?.classList.toggle('active',mode==='group');d?.classList.toggle('active',mode==='dm');
  if(gv)gv.style.display=mode==='group'?'flex':'none';
  if(dv)dv.style.display=mode==='dm'?'block':'none';
-
- if(mode==='group'){
-   void loadPersistentChat().then(renderGroup);
- }else{
-   void loadPersistentChat().then(renderDmList);
- }
+ restoreChatCache();
+ if(mode==='group'){renderGroup();void loadPersistentChat().then(renderGroup)}
+ else{void renderDmList();void loadPersistentChat().then(renderDmList)}
 }
 async function renderDmList(){
  if(!members.length)await refreshMemberDirectoryFromDb();
@@ -2052,7 +2122,9 @@ function renderChatMessage(m,label){
 
  if(m.attachment){
    const a=m.attachment;
-   if(a.kind==='image'){
+   if(!a.url){
+     content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${safe(a.name)}</b><span class="saveLink">불러오는 중...</span></div></div>`;
+   }else if(a.kind==='image'){
      content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${safeAttr(a.url)}','image','${safeAttr(a.name)}')"><img src="${safeAttr(a.url)}" alt="${safeAttr(a.name)}"></button>`;
    }else if(a.kind==='video'){
      content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${safeAttr(a.url)}','video','${safeAttr(a.name)}')"><video src="${safeAttr(a.url)}" muted playsinline preload="metadata"></video><div class="play">▶</div></button>`;
@@ -2239,31 +2311,19 @@ function adminActivityActions(id){
 
 async function refreshMemberDirectoryFromDb(){
  try{
-   const {data,error}=await dbClient.rpc('member_directory_v3');
-   if(error){console.error('member_directory_v3:',error);return false}
-   const rows=data||[];
-   members=rows.map(m=>({
-     id:m.id,name:m.nickname,realName:m.real_name||'',
-     birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',
-     gender:m.gender||'-',
-     join:m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-',
-     joinDate:m.created_at||null,blocked:m.status==='blocked',
-     status:m.status,role:m.role||'member',
-     avatarPath:m.avatar_path||null,avatarUrl:'',
-     att:0,late:0,pb:{},races:[],trains:[]
-   }));
-   // Do not block member list on profile image signing.
-   Promise.all(members.filter(m=>m.avatarPath).map(async m=>{
-     try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}
-   })).then(()=>{
-     const page=document.getElementById('memberAdmin');
-     if(page?.classList.contains('active'))renderMembersFromCurrentData();
-   });
-   return true;
- }catch(err){
-   console.error('member directory v3:',err);
-   return false;
- }
+  const {data,error}=await dbClient.rpc('member_directory_v4');
+  if(error){console.error('member_directory_v4:',error);return false}
+  members=(data||[]).map(m=>({
+   id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',
+   gender:m.gender||'-',join:m.join_date_text||(m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-'),joinDate:m.created_at||null,
+   blocked:m.status==='blocked',status:m.status,role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:'',
+   teamRole:m.team_role||'',shortName:m.short_name||'',joinReason:m.join_reason||'',birthDateText:m.birth_date_text||'',
+   lessonLevel:m.lesson_level||'',swimExperience:m.swim_experience||'',notes:m.notes||'',location:m.location||'',
+   att:Number(m.historical_attendance_count||0),late:Number(m.historical_late_count||0),pb:{},races:[],trains:[]
+  }));
+  void hydrateMemberAvatarsInBackground();
+  return true;
+ }catch(err){console.error('member directory v4:',err);return false}
 }
 function renderMembersFromCurrentData(){
  const list=document.getElementById('memberList'),blockedList=document.getElementById('blockedList'),countEl=document.getElementById('memberCount');
@@ -2279,9 +2339,14 @@ function renderMembersFromCurrentData(){
  if(blockedList)blockedList.innerHTML=blocked.length?blocked.map(m=>`<div class="memberrow">${makeAvatar(m)}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div></div>`).join(''):'<div class="card meta">내보낸 회원이 없습니다.</div>';
 }
 async function renderMemberDirectory(){
- await refreshMemberDirectoryFromDb();
- const active=members.filter(m=>!m.blocked&&m.status==='approved'&&m.name!==currentUser.nickname);
- memberDirectoryList.innerHTML=active.map(m=>`<div class="memberSimpleRow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.birthYear?m.birthYear+'년생 · ':''}${m.gender||''}</p></div><button class="btn outline" onclick="startDm('${escAttr(m.name)}')">1:1 채팅</button></div>`).join('')||'<div class="card meta">현재 승인된 다른 회원이 없습니다.</div>';
+ const box=document.getElementById('memberDirectoryList');if(!box)return;
+ if(!box.children.length)box.innerHTML='<div class="card meta">팀 명단 불러오는 중...</div>';
+ const {data,error}=await dbClient.rpc('team_roster_list_v4');
+ if(error){console.error(error);box.innerHTML='<div class="card meta">팀 명단을 불러오지 못했습니다.</div>';return}
+ box.innerHTML=(data||[]).map(r=>{
+  const linked=!!r.linked_member_id;
+  return `<div class="memberSimpleRow"><div class="memberFallback">${escHtml(String(r.short_name||r.nickname||'?').slice(0,1))}</div><div class="grow"><b>${escHtml(r.nickname)}</b><p>${escHtml(r.team_role||'모임원')} · ${escHtml(r.lesson_level||'-')} · 출석 ${Number(r.attendance_count||0)} / 지각 ${Number(r.late_count||0)}</p></div>${linked?`<button class="btn outline" onclick="startDm('${escAttr(r.nickname)}')">1:1 채팅</button>`:'<span class="tag done">앱 미가입</span>'}</div>`;
+ }).join('')||'<div class="card meta">등록된 팀 명단이 없습니다.</div>';
 }
 async function renderMembers(){
  const list=document.getElementById('memberList');
@@ -2302,41 +2367,33 @@ async function renderMembers(){
    n.innerHTML=fresh.length?fresh.map(m=>`<span>${escHtml(m.name)} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>';
  }
 }
-function openMember(name){const m=members.find(x=>x.name===name);if(!m)return;showPage('memberDetail');document.getElementById('memberDetailBody').innerHTML=`<div class="profile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml(name.slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'}${m.birthYear?` · ${m.birthYear}년생`:''}</p></div></div><button class="btn outline" onclick="startDm('${escAttr(name)}')">1:1 채팅</button></div>${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`}
-async function kickMember(name){if(!isMasterAdmin())return toast('총관리자만 회원을 내보낼 수 있습니다.');const m=members.find(x=>x.name===name);if(!m)return;if(!confirm(`${name} 회원을 내보낼까요?`))return;await manageMemberApproval(m.id,'block');await loadPersistentContent();showPage('memberAdmin');renderMembers();renderRoleManagement()}
-async function restoreMember(name){if(!isMasterAdmin())return toast('총관리자만 회원을 복구할 수 있습니다.');const m=members.find(x=>x.name===name);if(!m)return;await manageMemberApproval(m.id,'restore');await loadPersistentContent();renderMembers();renderRoleManagement()}
-
-async function renderRoleManagement(){
- const wrap=document.getElementById('roleManagementWrap'),box=document.getElementById('roleManagementList');
- if(!wrap||!box)return;
- wrap.style.display=isMasterAdmin()?'block':'none';
- if(!isMasterAdmin())return;
- if(!members.length)await refreshMemberDirectoryFromDb();
- const rows=members.filter(m=>m.status==='approved'&&!m.blocked);
- box.innerHTML=rows.length?rows.map(m=>{
-   if(m.role==='master_admin')return `<div class="row"><div class="grow"><b>${escHtml(m.name)}</b><p>총관리자</p></div><span class="tag ok">총관리자</span></div>`;
-   const sub=m.role==='admin';
-   return `<div class="row"><div class="grow"><b>${escHtml(m.name)}</b><p>${sub?'부관리자':'일반회원'}</p></div><button class="btn ${sub?'amber':'outline'}" onclick="changeMemberRole('${m.id}','${sub?'revoke_admin':'grant_admin'}')">${sub?'부관리자 해제':'부관리자 지정'}</button></div>`;
- }).join(''):'<div class="card meta">승인된 회원이 없습니다.</div>';
+async function openMember(name){
+ const m=members.find(x=>x.name===name);if(!m)return;
+ showPage('memberDetail');
+ const body=document.getElementById('memberDetailBody');if(!body)return;
+ body.innerHTML='<div class="card meta">회원 정보를 불러오는 중...</div>';
+ let history=[];
+ try{const {data}=await dbClient.rpc('member_history_v4',{p_member_id:m.id});history=data||[]}catch(_){}
+ const roleLabel=m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원';
+ const rows=[
+  ['실명',m.realName||'-'],['팀 역할',m.teamRole||roleLabel],['가입일',m.join||'-'],['생년월일',m.birthDateText||(m.birthYear?`${m.birthYear}년`:'-')],
+  ['성별',m.gender||'-'],['거주지',m.location||'-'],['강습',m.lessonLevel||'-'],['수력',m.swimExperience||'-'],
+  ['가입 사유',m.joinReason||'-'],['기타',m.notes||'-'],['2026 출석',`${m.att||0}회`],['2026 지각',`${m.late||0}회`]
+ ];
+ const historyHtml=history.slice(0,12).map(h=>`<div class="row"><div class="grow"><b>${escHtml(String(h.activity_date))} 팀아이슬 훈련</b></div><span class="tag ${h.status==='지각'?'amber':'ok'}">${escHtml(h.status)}</span></div>`).join('');
+ body.innerHTML=`<div class="profile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml((m.shortName||name).slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${escHtml(roleLabel)}${m.realName?` · ${escHtml(m.realName)}`:''}</p></div></div><button class="btn outline" onclick="startDm('${escAttr(name)}')">1:1 채팅</button></div>
+ <div class="detail memberInfoDetail">${rows.map(([k,v])=>`<div class="detailrow"><b>${escHtml(k)}</b><span>${escHtml(String(v))}</span></div>`).join('')}</div>
+ <div class="section"><h2>최근 출석 기록</h2></div><div class="list">${historyHtml||'<div class="card meta">등록된 과거 출석 기록이 없습니다.</div>'}</div>
+ ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`;
 }
-async function changeMemberRole(memberId,action){if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');const {data:{session}}=await dbClient.auth.getSession();if(!session)return toast('다시 로그인해주세요.');try{const res=await fetch(`${SUPABASE_URL}/functions/v1/manage-member-role`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({member_id:memberId,action})});const data=await res.json();if(!res.ok)return toast(data.error||'권한 변경에 실패했습니다.');await loadPersistentContent();renderMembers();renderRoleManagement();toast(action==='grant_admin'?'부관리자로 지정했습니다.':'부관리자 권한을 해제했습니다.')}catch(e){console.error(e);toast('권한 변경 중 오류가 발생했습니다.')}}
-function appAdminPerson(name,detail){return `<div class="adminAggRow" style="display:flex;align-items:center;gap:10px">${avatarMarkup(name,'apply')}<div class="grow"><b>${escHtml(name)}</b><p>${detail}</p></div></div>`}
-async function renderApplicationAdmin(kind='training',btn){
- if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
- applicationAdminBody.innerHTML='<div class="card meta">신청현황 불러오는 중...</div>';
- let items=[];
- if(kind==='training')items=Object.values(trainings).sort((a,b)=>b.date.localeCompare(a.date));
- else if(kind==='race')items=race.id?[race]:[];
- else items=[...events].sort((a,b)=>b.date.localeCompare(a.date));
- if(!items.length){applicationAdminBody.innerHTML='<div class="card meta">등록된 일정이 없습니다.</div>';return}
- let out='';
- for(const item of items){
-  let all=[];try{all=await fetchApplicationPeople(item.id)}catch(e){}
-  const p=all.filter(x=>x.type==='participant'),w=all.filter(x=>x.type==='waitlist').sort((a,b)=>(a.order||999)-(b.order||999));
-  const rows=[...p.map(x=>`<div class="adminAggRow" style="display:flex;align-items:center;gap:10px">${applicationAvatar(x)}<div class="grow"><b>${escHtml(x.name)}</b><p>신청완료</p></div></div>`),...w.map(x=>`<div class="adminAggRow" style="display:flex;align-items:center;gap:10px">${applicationAvatar(x)}<div class="grow"><b>${escHtml(x.name)}</b><p>대기 ${x.order||'-'}번</p></div></div>`)].join('');
-  out+=`<div class="statusCard" style="margin-bottom:9px"><h3>${escHtml(item.title)}</h3><p class="meta">${item.date} · 신청 ${p.length}명${kind==='training'?` · 대기 ${w.length}명`:''}</p><div class="card" style="margin-top:9px">${rows||'<div class="meta">신청자가 없습니다.</div>'}</div></div>`;
- }
- applicationAdminBody.innerHTML=out;
+async function changeMemberRole(memberId,action){
+ if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');
+ try{
+  const {error}=await dbClient.rpc('set_member_admin_role_v4',{p_member_id:memberId,p_action:action});
+  if(error)throw error;
+  await refreshMemberDirectoryFromDb();renderMembersFromCurrentData();renderRoleManagement();
+  toast(action==='grant_admin'?'부관리자로 지정했습니다.':'부관리자 권한을 해제했습니다.');
+ }catch(e){console.error('role v4:',e);toast('권한 변경에 실패했습니다.')}
 }
 function attEvents(){return [...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,people:t.participants,state:t.date<new Date().toISOString().slice(0,10)?'done':'upcoming'})),...(race.id?[{id:race.id,type:'race',label:'대회',title:race.title,date:race.date,people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:'upcoming'}]:[]),...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,people:e.participants,state:e.done?'done':'upcoming'}))]}
 function renderAttendanceAdmin(){const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState));document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>신청</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>'}
@@ -2353,10 +2410,13 @@ function toggleSub(id){document.getElementById(id).classList.toggle('open')}
 
 window.addEventListener('load',async()=>{
  const loggedIn=await initAuth();
- if(loggedIn){try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}}
+ if(loggedIn){
+  restoreCoreSnapshot();restoreChatCache();
+  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList,initAttendanceOptions,renderAttendance].forEach(fn=>{try{fn()}catch(_){}});
+  try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}
+ }
  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders,()=>renderApplicationAdmin('training')];
  boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
- if(loggedIn){try{renderHome()}catch(err){console.error('TEAM EYSL home:',err)}}
 });
 </script>
 
@@ -2396,7 +2456,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final32').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final33').catch(()=>{}));
 }
 </script>
 </body>
