@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL16 auth/profile/avatar */
+/* FINAL17 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -266,6 +266,17 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .waitOfferActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .waitOfferActions .btn{width:100%}
 .offerBadge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#fff0ce;color:#a96500;font-size:10px;font-weight:800}
+
+#chat.page.active,#dmChat.page.active{display:flex!important;flex-direction:column;height:calc(100dvh - 74px);min-height:0;overflow:hidden;padding-bottom:8px}
+#chat .title{flex:0 0 auto;margin-bottom:12px}
+#chat .chatTabs{flex:0 0 auto;margin-top:0}
+#groupView{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+#dmView{flex:1 1 auto;min-height:0;overflow:auto;padding-bottom:12px}
+#groupView .chatBody,#dmChat .chatBody{flex:1 1 auto;min-height:0;height:auto!important;overflow-y:auto;padding:4px 2px 12px}
+#chat .chatInput,#dmChat .chatInput{position:static!important;transform:none!important;width:100%!important;flex:0 0 auto;background:var(--bg);padding:9px 0 4px;z-index:1;border-top:1px solid var(--line)}
+#dmChat .pagehead{flex:0 0 auto}.chatInput .primary{background:#111;color:#fff;white-space:nowrap}.chatInput .attachBtn{flex:0 0 38px}
+.chatEmpty{padding:28px 12px;text-align:center;color:#999;font-size:12px}
+#masterPushTestRow{display:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -357,7 +368,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   <div id="realNameSaved" class="smallLine"></div>
 </div>
 <div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div>
-<div class="row" onclick="enablePushNotifications()"><div class="grow"><b>푸시 알림</b><p id="pushStatusText">알림 상태 확인 중...</p></div><span id="pushStatusTag" class="tag">설정</span></div>
+<div class="row" onclick="enablePushNotifications()"><div class="grow"><b>푸시 알림</b><p id="pushStatusText">알림 상태 확인 중...</p></div><span id="pushStatusTag" class="tag">설정</span></div><div id="masterPushTestRow" class="row" onclick="sendTestPushNotification()"><div class="grow"><b>테스트 알림 보내기</b><p>총관리자 기기로 실제 푸시 알림을 전송합니다.</p></div><span class="tag">TEST</span></div>
 <div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
 
 <section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
@@ -547,6 +558,14 @@ async function sendPush(mode,title,body,options={}){
   if(!res.ok)console.warn('push send failed',await res.text());
  }catch(e){console.error('push send',e)}
 }
+async function sendTestPushNotification(){
+ if(!isMasterAdmin())return toast('총관리자만 테스트 알림을 사용할 수 있습니다.');
+ const sub=await currentPushSubscription();
+ if(Notification.permission!=='granted'||!sub)return toast('먼저 푸시 알림을 켜주세요.');
+ await sendPush('self_test','TEAM EYSL 🔔','테스트 알림이 정상적으로 연결되었습니다.',{tag:'eysl-test'});
+ toast('테스트 알림을 전송했습니다.');
+}
+function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={chat:'chat',schedule:'schedule',media:'media',resources:'resources'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
 function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
@@ -557,10 +576,10 @@ function showPage(id){
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
- if(id==='mypage'){renderMyProfile();refreshPushStatus();}
+ if(id==='mypage'){renderMyProfile();refreshPushStatus();const tr=document.getElementById('masterPushTestRow');if(tr)tr.style.display=isMasterAdmin()?'flex':'none';}
  if(id==='records')showRecord('personal',document.querySelector('.recordTabs button'));
  if(id==='attendance')renderAttendance();
- if(id==='memberAdmin'){renderMembers();renderRoleManagement();}
+ if(id==='memberAdmin'){void renderMembers();void renderRoleManagement();}
  if(id==='memberApproval'){if(!isMasterAdmin()){toast('총관리자만 회원 승인을 관리할 수 있습니다.');return showPage('home')}renderApprovalRequests();}if(id==='memberDirectory')renderMemberDirectory();
  if(id==='attendanceAdmin')renderAttendanceAdmin();
  if(id==='media')renderMedia('all');
@@ -655,10 +674,10 @@ async function loginMember(){
   await setCurrentUserFromMember(member);
   document.getElementById('auth')?.classList.remove('open');
   applyRole();
-  await loadPersistentContent();
+  await loadPersistentContent();await loadPersistentChat();
   const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMembers,renderMemberDirectory,renderFolders,renderResourceFiles];
   boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
-  showPage('home');
+  showPage('home');handleOpenQuery();
   toast('로그인됐습니다.');
  }catch(e){
   console.error(e);setAuthMessage('로그인 중 오류가 발생했습니다.','error');
@@ -788,13 +807,27 @@ async function deleteNotice(id){if(!confirm('이 공지를 삭제할까요?'))re
 function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('video'))openModal(url,type);else window.open(url,'_blank')}
 
 
-function renderGroup(){groupChatBody.innerHTML=groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('');groupChatBody.scrollTop=groupChatBody.scrollHeight}
-function sendGroup(){const i=document.getElementById('groupInput');if(!i.value.trim())return;groupMessages.push({name:currentUser.nickname,text:i.value.trim(),time:now(),me:true});i.value='';renderGroup()}
-function switchChat(mode){document.getElementById('groupTab').classList.toggle('active',mode==='group');document.getElementById('dmTab').classList.toggle('active',mode==='dm');document.getElementById('groupView').style.display=mode==='group'?'block':'none';document.getElementById('dmView').style.display=mode==='dm'?'block':'none';if(mode==='dm')renderDmList()}
-function renderDmList(){const names=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name);dmList.innerHTML=names.map(n=>`<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${(dmMessages[n]||[]).length?'최근 대화가 있습니다.':'아직 대화가 없습니다.'}</p></div><span>›</span></div>`).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
-function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');renderDm()}
-function renderDm(){dmBody.innerHTML=(dmMessages[currentDm]||[]).map(m=>renderChatMessage({...m,name:currentDm},m.me?'나':currentDm)).join('')||'<div class="card meta">첫 메시지를 보내보세요.</div>';dmBody.scrollTop=dmBody.scrollHeight}
-function sendDm(){const i=document.getElementById('dmInput');if(!i.value.trim())return;dmMessages[currentDm].push({me:true,text:i.value.trim(),time:now()});i.value='';renderDm()}
+async function loadPersistentChat(){
+ if(!currentUser.memberId){groupMessages=[];dmMessages={};return}
+ await refreshMemberDirectoryFromDb();
+ const {data,error}=await dbClient.from('messages').select('id,sender_id,recipient_id,room_type,body,attachment_path,attachment_type,created_at').order('created_at',{ascending:true}).limit(500);
+ if(error){console.error('chat load:',error);groupMessages=[];dmMessages={};return}
+ groupMessages=[];dmMessages={};
+ for(const row of data||[]){
+   const sender=members.find(m=>m.id===row.sender_id),recipient=members.find(m=>m.id===row.recipient_id);
+   const senderName=sender?.name||(row.sender_id===currentUser.memberId?currentUser.nickname:'회원'),isMe=row.sender_id===currentUser.memberId;
+   let attachment=null;if(row.attachment_path){const url=await signedTeamFile(row.attachment_path),mime=row.attachment_type||'application/octet-stream';attachment={name:String(row.body||'첨부파일'),url,kind:mime.startsWith('image')?'image':mime.startsWith('video')?'video':'file',size:''}}
+   const msg={id:row.id,name:senderName,text:row.attachment_path?'':(row.body||''),time:new Date(row.created_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),me:isMe,attachment};
+   if(row.room_type==='group')groupMessages.push(msg);else{const other=isMe?(recipient?.name||'회원'):senderName;if(!dmMessages[other])dmMessages[other]=[];dmMessages[other].push(msg)}
+ }
+}
+function renderGroup(){const box=document.getElementById('groupChatBody');if(!box)return;box.innerHTML=groupMessages.length?groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join(''):'<div class="chatEmpty">아직 전체채팅 메시지가 없습니다.</div>';box.scrollTop=box.scrollHeight}
+async function sendGroup(){const i=document.getElementById('groupInput'),text=(i?.value||'').trim();if(!text)return;const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:null,room_type:'group',body:text});if(error){console.error(error);return toast('메시지 전송에 실패했습니다.')}i.value='';await loadPersistentChat();renderGroup();await sendPush('all_except_self',currentUser.nickname,text.length>70?text.slice(0,70)+'…':text,{tag:'group-chat',url_path:'/?open=chat'})}
+function switchChat(mode){const g=document.getElementById('groupTab'),d=document.getElementById('dmTab'),gv=document.getElementById('groupView'),dv=document.getElementById('dmView');g?.classList.toggle('active',mode==='group');d?.classList.toggle('active',mode==='dm');if(gv)gv.style.display=mode==='group'?'flex':'none';if(dv)dv.style.display=mode==='dm'?'block':'none';if(mode==='group')void loadPersistentChat().then(renderGroup);else void renderDmList()}
+async function renderDmList(){await refreshMemberDirectoryFromDb();const names=members.filter(m=>m.status==='approved'&&!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name),box=document.getElementById('dmList');if(!box)return;box.innerHTML=names.map(n=>{const arr=dmMessages[n]||[],last=arr[arr.length-1];return `<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${last?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.')):'아직 대화가 없습니다.'}</p></div><span>›</span></div>`}).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
+async function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');await loadPersistentChat();renderDm()}
+function renderDm(){const box=document.getElementById('dmBody');if(!box)return;const arr=dmMessages[currentDm]||[];box.innerHTML=arr.length?arr.map(m=>renderChatMessage({...m,name:m.name||currentDm},m.me?'나':(m.name||currentDm))).join(''):'<div class="chatEmpty">첫 메시지를 보내보세요.</div>';box.scrollTop=box.scrollHeight}
+async function sendDm(){const i=document.getElementById('dmInput'),text=(i?.value||'').trim();if(!text||!currentDm)return;const target=members.find(m=>m.name===currentDm);if(!target)return toast('상대 회원 정보를 찾을 수 없습니다.');const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:target.id,room_type:'dm',body:text});if(error){console.error(error);return toast('메시지 전송에 실패했습니다.')}i.value='';await loadPersistentChat();renderDm();await sendPush('member',currentUser.nickname,text.length>70?text.slice(0,70)+'…':text,{target_member_id:target.id,tag:`dm-${currentUser.memberId}`,url_path:'/?open=chat'})}
 
 function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
 function renderCalendar(){
@@ -1051,12 +1084,11 @@ function closeFolder(){currentFolder=null;mediaTitle.textContent='미디어';med
 function editCurrentFolder(){if(currentFolder)renameFolder(currentFolder)}
 function deleteCurrentFolder(){if(currentFolder)deleteFolder(currentFolder)}
 async function uploadToFolder(inp){
- const f=mediaFolders.find(x=>x.id===currentFolder);if(!f)return;
- for(const file of [...inp.files]){
-  try{const storagePath=await uploadBlobToTeamFiles(file,'media');const {error}=await dbClient.from('media_files').insert({folder_id:f.id,uploader_id:currentUser.memberId,file_name:file.name,storage_path:storagePath,mime_type:file.type||'application/octet-stream'});if(error)throw error}catch(err){console.error(err);toast(`${file.name} 업로드에 실패했습니다.`)}
- }
- inp.value='';await loadPersistentContent();renderFolderFiles()
+ const f=mediaFolders.find(x=>x.id===currentFolder);if(!f)return;let success=0,lastName='';
+ for(const file of [...inp.files]){try{const storagePath=await uploadBlobToTeamFiles(file,'media');const {error}=await dbClient.from('media_files').insert({folder_id:f.id,uploader_id:currentUser.memberId,file_name:file.name,storage_path:storagePath,mime_type:file.type||'application/octet-stream'});if(error)throw error;success++;lastName=file.name}catch(err){console.error(err);toast(`${file.name} 업로드에 실패했습니다.`)}}
+ inp.value='';await loadPersistentContent();renderFolderFiles();if(success)await sendPush('all_except_self','TEAM EYSL 미디어',success===1?`${currentUser.nickname}님이 ${lastName}을(를) 업로드했습니다.`:`${currentUser.nickname}님이 ${success}개의 미디어를 업로드했습니다.`,{tag:'media-upload',url_path:'/?open=media'})
 }
+
 function renderFolderFiles(){
  const f=mediaFolders.find(x=>x.id===currentFolder);if(!f){folderFiles.innerHTML='';return}
  folderFiles.innerHTML=f.files.map(x=>{let preview=`<div class="folderPreview">📄</div>`;if(x.type==='image'&&x.url)preview=`<div class="folderPreview"><img src="${x.url}" alt=""></div>`;else if(x.type==='video'&&x.url)preview=`<div class="folderPreview"><video src="${x.url}" muted></video></div>`;return `<div class="folderFileRow">${preview}<div class="grow" onclick="openFolderFile('${f.id}','${x.id}')"><b>${x.name}</b><span>${x.date}</span></div><div class="fileActions">${canManageMediaOwner(x.uploaderId)?`<button class="btn outline" onclick="renameMediaFile('${x.id}')">수정</button><button class="btn amber" onclick="deleteMediaFile('${x.id}')">삭제</button>`:''}</div></div>`}).join('')||'<div class="card meta">아직 공유된 파일이 없습니다.</div>'
@@ -1066,11 +1098,9 @@ function openFolderFile(fid,fileId){const x=findMediaFile(fileId);if(x?.url)open
 async function renameMediaFile(id){const x=findMediaFile(id);if(!x)return;const name=prompt('새 파일명을 입력해주세요',x.name);if(!name||!name.trim()||name.trim()===x.name)return;const {error}=await dbClient.from('media_files').update({file_name:name.trim()}).eq('id',id);if(error){console.error(error);return toast('파일명 수정에 실패했습니다.')}await loadPersistentContent();currentFolder?renderFolderFiles():renderResourceFiles();toast('파일명이 수정됐습니다')}
 async function deleteMediaFile(id){const x=findMediaFile(id);if(!x||!confirm(`"${x.name}" 파일을 삭제할까요?`))return;if(x.storagePath){const {error:se}=await dbClient.storage.from('team-files').remove([x.storagePath]);if(se)console.error(se)}const {error}=await dbClient.from('media_files').delete().eq('id',id);if(error){console.error(error);return toast('파일 삭제에 실패했습니다.')}await loadPersistentContent();currentFolder?renderFolderFiles():renderResourceFiles();toast('파일이 삭제됐습니다')}
 async function uploadResourceFiles(inp){
- for(const file of [...inp.files]){
-  try{const storagePath=await uploadBlobToTeamFiles(file,'resources');const {error}=await dbClient.from('media_files').insert({folder_id:null,uploader_id:currentUser.memberId,file_name:file.name,storage_path:storagePath,mime_type:file.type||'application/octet-stream'});if(error)throw error}catch(err){console.error(err);toast(`${file.name} 등록에 실패했습니다.`)}
- }
- inp.value='';await loadPersistentContent();renderResourceFiles()
+ let success=0,lastName='';for(const file of [...inp.files]){try{const storagePath=await uploadBlobToTeamFiles(file,'resources');const {error}=await dbClient.from('media_files').insert({folder_id:null,uploader_id:currentUser.memberId,file_name:file.name,storage_path:storagePath,mime_type:file.type||'application/octet-stream'});if(error)throw error;success++;lastName=file.name}catch(err){console.error(err);toast(`${file.name} 등록에 실패했습니다.`)}}inp.value='';await loadPersistentContent();renderResourceFiles();if(success)await sendPush('all_except_self','TEAM EYSL 자료실',success===1?`${currentUser.nickname}님이 ${lastName}을(를) 등록했습니다.`:`${currentUser.nickname}님이 ${success}개의 자료를 등록했습니다.`,{tag:'resource-upload',url_path:'/?open=resources'})
 }
+
 function renderResourceFiles(){const box=document.getElementById('resourceFileList');if(!box)return;box.innerHTML=resourceFiles.map(x=>`<div class="resourceRow"><div class="icon" onclick="openFolderFile('', '${x.id}')">${x.type==='image'?'🖼️':x.type==='video'?'🎬':'📄'}</div><div class="grow" onclick="openFolderFile('', '${x.id}')"><b>${x.name}</b><span>${x.date}</span></div><div class="resourceActions">${canManageMediaOwner(x.uploaderId)?`<button class="btn outline" onclick="renameMediaFile('${x.id}')">수정</button><button class="btn amber" onclick="deleteMediaFile('${x.id}')">삭제</button>`:''}</div></div>`).join('')||'<div class="card meta">등록된 자료가 없습니다.</div>'}
 
 function addEmoji(id){const el=document.getElementById(id);el.value+=' 😊';el.focus()}
@@ -1098,7 +1128,8 @@ async function saveMyRealName(){
 }
 async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
 async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
-function renderChatMessage(m,label){let content='';if(m.attachment){const a=m.attachment;if(a.kind==='image')content=`<div class="chatMedia" onclick="openModal('${a.url}','image','${a.name}')"><img src="${a.url}" alt="${a.name}"></div>`;else if(a.kind==='video')content=`<div class="chatMedia" onclick="openModal('${a.url}','video','${a.name}')"><video src="${a.url}" muted playsinline></video><div class="play">▶</div></div>`;else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${a.name}</b><small>${a.size||''}</small><a class="saveLink" href="${a.url}" download="${a.name}" onclick="event.stopPropagation()">저장</a></div></div>`}else content=`<div class="bubble">${m.text||''}</div>`;return `<div class="bubbleRow ${m.me?'me':''}"><div><div class="bubbleName" style="${m.me?'text-align:right':''}">${label}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${m.time}</span></div></div></div>`}
+function renderChatMessage(m,label){
+ let content='';if(m.attachment){const a=m.attachment;if(a.kind==='image')content=`<div class="chatMedia" onclick="openModal('${escAttr(a.url)}','image','${escAttr(a.name)}')"><img src="${escAttr(a.url)}" alt="${escAttr(a.name)}"></div>`;else if(a.kind==='video')content=`<div class="chatMedia" onclick="openModal('${escAttr(a.url)}','video','${escAttr(a.name)}')"><video src="${escAttr(a.url)}" muted playsinline></video><div class="play">▶</div></div>`;else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${escHtml(a.name)}</b><a class="saveLink" href="${escAttr(a.url)}" target="_blank" onclick="event.stopPropagation()">열기</a></div></div>`}else content=`<div class="bubble">${escHtml(m.text||'')}</div>`;const who=m.me?currentUser.nickname:(m.name||label),avatar=m.me?'':avatarMarkup(who,'chat');return `<div class="bubbleRow ${m.me?'me':''}">${avatar}<div><div class="bubbleName" style="${m.me?'text-align:right':''}">${m.me?'나':escHtml(label)}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${escHtml(m.time||'')}</span></div></div></div>`}
 const emojiChoices=['😀','😆','😂','🥹','😭','😍','😘','😎','🤩','🥳','👍','👏','🙌','🙏','💪','🔥','❤️','🩵','✨','🎉','👀','🏊‍♀️','🏊‍♂️','💦','🫧','🏆','🥇','📣'];
 function toggleEmojiPanel(kind){
  const panelId=kind==='group'?'groupEmojiPanel':'dmEmojiPanel';
@@ -1130,7 +1161,12 @@ function sendEmoji(kind,e){
  }
 }
 
-function chatAttach(inp,kind){const files=[...inp.files];if(!files.length)return;files.forEach(f=>{const url=URL.createObjectURL(f),attachment={name:f.name,url,size:(f.size/1024/1024>=1?(f.size/1024/1024).toFixed(1)+'MB':Math.max(1,Math.round(f.size/1024))+'KB'),kind:f.type.startsWith('image')?'image':f.type.startsWith('video')?'video':'file'};if(kind==='group')groupMessages.push({name:currentUser.nickname,time:now(),me:true,attachment});else if(currentDm)dmMessages[currentDm].push({me:true,time:now(),attachment})});if(kind==='group')renderGroup();else renderDm();inp.value=''}
+async function chatAttach(inp,kind){
+ const files=[...inp.files];inp.value='';if(!files.length)return;
+ for(const f of files){try{const target=kind==='dm'?members.find(m=>m.name===currentDm):null;if(kind==='dm'&&!target){toast('상대 회원 정보를 찾을 수 없습니다.');continue}const storagePath=await uploadBlobToTeamFiles(f,'chat');const {error}=await dbClient.from('messages').insert({sender_id:currentUser.memberId,recipient_id:kind==='dm'?target.id:null,room_type:kind==='dm'?'dm':'group',body:f.name,attachment_path:storagePath,attachment_type:f.type||'application/octet-stream'});if(error)throw error;const preview=f.type.startsWith('image')?'사진':f.type.startsWith('video')?'영상':'파일';if(kind==='group')await sendPush('all_except_self',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{tag:'group-chat-file',url_path:'/?open=chat'});else await sendPush('member',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{target_member_id:target.id,tag:`dm-file-${currentUser.memberId}`,url_path:'/?open=chat'})}catch(err){console.error(err);toast(`${f.name} 전송에 실패했습니다.`)}}
+ await loadPersistentChat();if(kind==='group')renderGroup();else renderDm()
+}
+
 function setScheduleFilter(v,b){scheduleFilter=v;document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCalendar()}
 
 function addMedia(inp){[...inp.files].forEach(f=>mediaItems.push({type:f.type.startsWith('video')?'video':'image',name:f.name,url:URL.createObjectURL(f)}));renderMedia('all')}
@@ -1192,7 +1228,7 @@ async function registerSchedule(){
  if(wasEdit){({error}=await dbClient.from('activities').update(payload).eq('id',currentEditingActivityId))}
  else{payload.created_by=currentUser.memberId;({error}=await dbClient.from('activities').insert(payload))}
  if(error){console.error(error);return toast(wasEdit?'일정 수정에 실패했습니다.':'일정 저장에 실패했습니다.')}
- await loadPersistentContent();resetScheduleForm();renderHome();renderCalendar();renderTrainingList();renderRaceList();showPage('schedule');toast(wasEdit?'일정이 수정됐습니다.':'일정이 등록됐습니다.')
+ await loadPersistentContent();resetScheduleForm();renderHome();renderCalendar();renderTrainingList();renderRaceList();if(!wasEdit){const label=type==='training'?'새 훈련':type==='race'?'새 대회':'새 이벤트';await sendPush('all',`TEAM EYSL ${label}`,`${date} · ${title}`,{tag:`new-${type}`,url_path:'/?open=schedule'})}showPage('schedule');toast(wasEdit?'일정이 수정됐습니다.':'일정이 등록됐습니다.')
 }
 async function deleteActivity(id){
  if(!confirm('이 일정을 삭제할까요? 신청/출석 관련 정보도 함께 영향을 받을 수 있습니다.'))return;
@@ -1206,23 +1242,11 @@ function adminActivityActions(id){
 
 
 async function refreshMemberDirectoryFromDb(){
- let rows=[];
- if(['admin','master_admin'].includes(currentUser.actualRole)){
-  const {data,error}=await dbClient.rpc('get_admin_member_directory');
-  if(error){console.error('admin member directory',error);return false}
-  rows=data||[];
- }else{
-  const {data,error}=await dbClient.from('members').select('id,nickname,role,status,birth_year,gender,avatar_path,created_at').eq('status','approved').order('created_at',{ascending:true});
-  if(error){console.error('member directory',error);return false}
-  rows=data||[];
- }
- members=await Promise.all(rows.map(async m=>({
-  id:m.id,name:m.nickname,birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',
-  gender:m.gender||'-',join:m.created_at?String(m.created_at).slice(0,7).replace('-','.'):'-',
-  joinDate:m.created_at||null,blocked:m.status==='blocked',status:m.status,role:m.role||'member',
-  avatarPath:m.avatar_path||null,avatarUrl:m.avatar_path?(await signedProfileImage(m.avatar_path)):'',
-  att:0,late:0,pb:{},races:[],trains:[]
- })));
+ let query=dbClient.from('members').select('id,nickname,role,status,birth_year,gender,avatar_path,real_name,created_at').order('created_at',{ascending:true});
+ if(!['admin','master_admin'].includes(currentUser.actualRole))query=query.eq('status','approved');
+ const {data,error}=await query;
+ if(error){console.error('member directory direct load:',error);return false}
+ members=await Promise.all((data||[]).map(async m=>({id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',gender:m.gender||'-',join:m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-',joinDate:m.created_at||null,blocked:m.status==='blocked',status:m.status,role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:m.avatar_path?(await signedProfileImage(m.avatar_path)):'',att:0,late:0,pb:{},races:[],trains:[]})));
  return true;
 }
 async function renderMemberDirectory(){
@@ -1231,13 +1255,14 @@ async function renderMemberDirectory(){
  memberDirectoryList.innerHTML=active.map(m=>`<div class="memberSimpleRow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.birthYear?m.birthYear+'년생 · ':''}${m.gender||''}</p></div><button class="btn outline" onclick="startDm('${escAttr(m.name)}')">1:1 채팅</button></div>`).join('')||'<div class="card meta">현재 승인된 다른 회원이 없습니다.</div>';
 }
 async function renderMembers(){
- const ok=await refreshMemberDirectoryFromDb();
  const list=document.getElementById('memberList'),blockedList=document.getElementById('blockedList'),countEl=document.getElementById('memberCount');
+ if(list)list.innerHTML='<div class="card meta">회원 목록 불러오는 중...</div>';
+ const ok=await refreshMemberDirectoryFromDb();
  if(!ok){if(list)list.innerHTML='<div class="card meta">회원 목록을 불러오지 못했습니다. 다시 열어주세요.</div>';return}
- const active=members.filter(m=>!m.blocked&&m.status==='approved'),blocked=members.filter(m=>m.blocked);
+ const active=members.filter(m=>m.status==='approved'&&!m.blocked),blocked=members.filter(m=>m.status==='blocked'||m.blocked);
  if(countEl)countEl.textContent=active.length;
- if(list)list.innerHTML=active.map(m=>`<div class="memberrow" onclick="openMember('${escAttr(m.name)}')">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'} · 가입 ${m.join}</p></div><span>›</span></div>`).join('')||'<div class="card meta">승인된 회원이 없습니다.</div>';
- if(blockedList)blockedList.innerHTML=blocked.map(m=>`<div class="memberrow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div>${isMasterAdmin()?`<button class="btn outline" onclick="event.stopPropagation();restoreMember('${escAttr(m.name)}')">복구</button>`:''}</div>`).join('')||'<div class="card meta">내보낸 회원이 없습니다.</div>';
+ if(list)list.innerHTML=active.length?active.map(m=>`<div class="memberrow" onclick="openMember('${escAttr(m.name)}')">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'} · 가입 ${m.join}</p></div><span>›</span></div>`).join(''):'<div class="card meta">승인된 회원이 없습니다.</div>';
+ if(blockedList)blockedList.innerHTML=blocked.length?blocked.map(m=>`<div class="memberrow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div>${isMasterAdmin()?`<button class="btn outline" onclick="event.stopPropagation();restoreMember('${escAttr(m.name)}')">복구</button>`:''}</div>`).join(''):'<div class="card meta">내보낸 회원이 없습니다.</div>';
  const a=document.getElementById('memberAttendanceTop'),i=document.getElementById('memberInactiveTop'),n=document.getElementById('memberNewThisMonth');
  if(a)a.innerHTML='<span>데이터 없음</span>';if(i)i.innerHTML='<span>데이터 없음</span>';
  if(n){const now=new Date(),ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,fresh=active.filter(m=>m.joinDate&&String(m.joinDate).startsWith(ym)).slice(0,3);n.innerHTML=fresh.length?fresh.map(m=>`<span>${escHtml(m.name)} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>'}
@@ -1247,12 +1272,11 @@ async function kickMember(name){if(!isMasterAdmin())return toast('총관리자�
 async function restoreMember(name){if(!isMasterAdmin())return toast('총관리자만 회원을 복구할 수 있습니다.');const m=members.find(x=>x.name===name);if(!m)return;await manageMemberApproval(m.id,'restore');await loadPersistentContent();renderMembers();renderRoleManagement()}
 
 async function renderRoleManagement(){
- const wrap=document.getElementById('roleManagementWrap'),box=document.getElementById('roleManagementList');
- if(!wrap||!box)return;wrap.style.display=isMasterAdmin()?'block':'none';if(!isMasterAdmin())return;
- const {data,error}=await dbClient.rpc('get_admin_member_directory');
+ const wrap=document.getElementById('roleManagementWrap'),box=document.getElementById('roleManagementList');if(!wrap||!box)return;
+ wrap.style.display=isMasterAdmin()?'block':'none';if(!isMasterAdmin())return;
+ const {data,error}=await dbClient.from('members').select('id,nickname,role,status,created_at').eq('status','approved').order('created_at',{ascending:true});
  if(error){console.error(error);box.innerHTML='<div class="card meta">권한 목록을 불러오지 못했습니다.</div>';return}
- const rows=(data||[]).filter(m=>m.status==='approved');
- box.innerHTML=rows.map(m=>{if(m.role==='master_admin')return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>총관리자</p></div><span class="tag ok">고정</span></div>`;const sub=m.role==='admin';return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>${sub?'부관리자':'일반회원'}</p></div><button class="btn ${sub?'amber':'outline'}" onclick="changeMemberRole('${m.id}','${sub?'revoke_admin':'grant_admin'}')">${sub?'부관리자 해제':'부관리자 지정'}</button></div>`}).join('')||'<div class="card meta">회원이 없습니다.</div>';
+ box.innerHTML=(data||[]).map(m=>{if(m.role==='master_admin')return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>총관리자</p></div><span class="tag ok">고정</span></div>`;const sub=m.role==='admin';return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>${sub?'부관리자':'일반회원'}</p></div><button class="btn ${sub?'amber':'outline'}" onclick="changeMemberRole('${m.id}','${sub?'revoke_admin':'grant_admin'}')">${sub?'부관리자 해제':'부관리자 지정'}</button></div>`}).join('')||'<div class="card meta">회원이 없습니다.</div>';
 }
 async function changeMemberRole(memberId,action){if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');const {data:{session}}=await dbClient.auth.getSession();if(!session)return toast('다시 로그인해주세요.');try{const res=await fetch(`${SUPABASE_URL}/functions/v1/manage-member-role`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({member_id:memberId,action})});const data=await res.json();if(!res.ok)return toast(data.error||'권한 변경에 실패했습니다.');await loadPersistentContent();renderMembers();renderRoleManagement();toast(action==='grant_admin'?'부관리자로 지정했습니다.':'부관리자 권한을 해제했습니다.')}catch(e){console.error(e);toast('권한 변경 중 오류가 발생했습니다.')}}
 function appAdminPerson(name,detail){return `<div class="adminAggRow" style="display:flex;align-items:center;gap:10px">${avatarMarkup(name,'apply')}<div class="grow"><b>${escHtml(name)}</b><p>${detail}</p></div></div>`}
@@ -1331,7 +1355,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final16').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final17').catch(()=>{}));
 }
 </script>
 </body>
