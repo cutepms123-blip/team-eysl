@@ -232,11 +232,26 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderManage{display:flex;gap:6px;margin-top:10px}.folderManage .btn{padding:7px 9px;font-size:9px}
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
-#mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}</style>
+#mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
+/* FINAL12 auth/profile/avatar */
+.authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
+.authbox .authSimple .btn{width:100%;padding:14px}
+.authPending{display:none;text-align:center;padding:18px 4px 4px}.authPending.open{display:block}.authPending .pendingIcon{width:58px;height:58px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;margin:0 auto 14px;font-size:24px}.authPending h2{margin:0 0 8px;font-size:20px}.authPending p{margin:0;color:#777;line-height:1.7}
+.profileAvatar,.memberAvatar,.chatAvatar,.applyAvatar{object-fit:cover;background:#eef0f3;border:1px solid var(--line)}
+.profileAvatar{width:72px;height:72px;border-radius:22px;flex:0 0 auto}.profileFallback{width:72px;height:72px;border-radius:22px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;flex:0 0 auto}
+.profileMain{display:flex;align-items:center;gap:14px}.profileInfo{min-width:0;flex:1}.profileInfo h2{margin:0 0 4px}.profileActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.profileActions .btn{padding:8px 11px;font-size:11px}
+.memberAvatar{width:44px;height:44px;border-radius:50%;flex:0 0 auto}.memberFallback{width:44px;height:44px;border-radius:50%;background:#eceff3;display:grid;place-items:center;font-weight:900;flex:0 0 auto}
+.applyPerson{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}.applyPerson:last-child{border-bottom:0}.applyAvatar{width:38px;height:38px;border-radius:50%;flex:0 0 auto}.applyFallback{width:38px;height:38px;border-radius:50%;background:#eceff3;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
+.chatLine{display:flex;gap:8px;align-items:flex-start;margin:8px 0}.chatLine.me{justify-content:flex-end}.chatLine.me .chatAvatar,.chatLine.me .chatAvatarFallback{order:2}.chatAvatar,.chatAvatarFallback{width:34px;height:34px;border-radius:50%;flex:0 0 auto}.chatAvatarFallback{background:#eceff3;display:grid;place-items:center;font-size:11px;font-weight:900}.chatLine .bubbleWrap{max-width:76%}.chatLine.me .bubbleWrap{text-align:right}.chatName{font-size:10px;color:#888;margin:0 0 4px 4px}.chatLine.me .chatName{margin:0 4px 4px 0}.chatLine .bubble{display:inline-block}
+.roleTagMaster{background:#111!important;color:#fff!important}.roleTagSub{background:#edf8f2!important;color:#147a58!important}
+.masterOnly{display:none}
+
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -246,32 +261,24 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 <div id="auth" class="auth">
  <div class="authbox">
   <h1>TEAM EYSL</h1><small>TRAINING CLUB</small>
-  <p>승인된 TEAM EYSL 멤버만 사용할 수 있어요.<br>처음이라면 회원가입 후 관리자 승인을 기다려주세요.</p>
-
-  <div class="authRole">
-   <button id="authRoleMember" class="active" type="button" onclick="setAuthRole('member')">모임원용</button>
-   <button id="authRoleAdmin" type="button" onclick="setAuthRole('admin')">관리자용</button>
+  <p id="authIntro">TEAM EYSL 멤버 가입 신청을 해주세요.<br>승인 후에는 이 기기에서 앱을 열면 바로 홈으로 들어갑니다.</p>
+  <div id="authRequest" class="authSimple">
+   <input id="authNickname" maxlength="30" autocomplete="off" placeholder="닉네임">
+   <button id="signupBtn" class="btn primary" type="button" onclick="signupMember()">가입 신청</button>
   </div>
-
-  <div class="authFields">
-   <input id="authNickname" autocomplete="username" maxlength="30" placeholder="아이디 (앱에서 사용할 이름)">
-   <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="비밀번호">
+  <div id="authPending" class="authPending">
+   <div class="pendingIcon">✓</div>
+   <h2 id="pendingNickname">가입 신청 완료</h2>
+   <p>관리자 승인을 기다려주세요.<br>승인 후 앱을 다시 열면 홈 화면으로 들어갑니다.</p>
   </div>
-
-  <div class="authActions">
-   <button id="signupBtn" class="btn outline" type="button" onclick="signupMember()">회원가입</button>
-   <button id="loginBtn" class="btn primary" type="button" onclick="loginOperatingMember()">로그인</button>
-  </div>
-
   <div id="authMessage" class="authMsg"></div>
-  <div class="authHint">아이디는 중복 사용할 수 없으며, 가입한 아이디가 앱에서 회원 이름으로 그대로 표시됩니다. 비밀번호는 8자 이상으로 설정해주세요.</div>
+  <div class="authHint">닉네임은 중복 사용할 수 없으며, 가입한 닉네임이 앱에서 회원 이름으로 그대로 표시됩니다.</div>
  </div>
 </div>
-
 <div class="app">
 <header class="top">
  <div class="brandbox"><button class="hamb" onclick="openDrawer()">☰</button><div class="brand"><b>TEAM EYSL</b><span>TRAINING CLUB</span></div></div>
- <div class="userbox"><span id="roleBadge" class="role">회원</span><div id="avatar" class="avatar">MS</div></div>
+ <div class="userbox"><span id="roleBadge" class="role">회원</span><div id="avatar" class="avatar">EY</div></div>
 </header>
 
 <section id="home" class="page active">
@@ -299,7 +306,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 <section id="raceDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>상세 내용</h1><span></span></div><div id="raceDetailBody"></div></section>
 <section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
 
-<section id="mypage" class="page"><h1 class="title">마이페이지</h1><div class="profile"><div class="bigav">MS</div><div><h2 id="myName">민선</h2><p>TEAM EYSL · 2026.03 가입</p></div></div><div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div><div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
+<section id="mypage" class="page"><h1 class="title">마이페이지</h1><div class="profile"><div class="profileMain"><div id="myProfileAvatarWrap" class="profileFallback">EY</div><div class="profileInfo"><h2 id="myName">-</h2><p id="myJoinText">TEAM EYSL</p><div class="profileActions"><button class="btn outline" onclick="document.getElementById('profilePhotoInput').click()">프로필 사진 변경</button><button id="profileDeleteBtn" class="btn amber" onclick="deleteMyProfilePhoto()">사진 삭제</button><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="uploadMyProfilePhoto(this)"></div></div></div></div><div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div><div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
 
 <section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
 <section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">대회</button><button onclick="setRecordMajor('fin',this)">핀대회</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
@@ -324,7 +331,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
  <div id="processedMemberList" class="list"></div>
 </section>
 
-<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
+<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div id="roleManagementWrap"><div class="section"><h2>부관리자 권한 관리</h2></div><div id="roleManagementList" class="list"></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
 <section id="memberDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('memberAdmin')">←</button><h1>회원 상세</h1><span></span></div><div id="memberDetailBody"></div></section>
 
 <section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>활동 취합본</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">이벤트</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">이벤트</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
@@ -334,7 +341,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div class="ditem" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="ditem main" onclick="drawerGo('chat')">채팅방</div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">이벤트</div></div><div class="dparent" onclick="toggleSub('mySub')"><span>마이페이지</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 이벤트 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">자료실</div><div class="dparent" onclick="toggleSub('mediaSub')"><span>자료실</span><span>›</span></div><div id="mediaSub" class="dsub"><div class="ditem" onclick="drawerGo('media')">미디어</div><div class="ditem" onclick="drawerGo('files')">파일</div></div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('training')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -346,8 +353,7 @@ const dbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KE
  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
 });
 const today=new Date().toISOString().slice(0,10);
-let authRole='member';
-let currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
+let currentUser={nickname:'',role:'member',actualRole:'member',memberId:null,avatarPath:null,avatarUrl:'',createdAt:null};
 let unreadNoticeIds=new Set();
 let currentNoticeId=null;
 let currentEditingNoticeId=null;
@@ -393,13 +399,13 @@ async function loadPersistentContent(){
   dbClient.from('activities').select('id,kind,title,activity_date,start_time,end_time,place,capacity,details,created_by,created_at,updated_at').order('activity_date',{ascending:true}),
   dbClient.from('media_folders').select('id,name,created_by,created_at').order('created_at',{ascending:false}),
   dbClient.from('media_files').select('id,folder_id,uploader_id,file_name,storage_path,mime_type,created_at').order('created_at',{ascending:false}),
-  dbClient.from('members').select('id,nickname,role,status,birth_year,gender,created_at').in('status',['approved','blocked']).order('created_at',{ascending:true})
+  dbClient.from('members').select('id,nickname,role,status,birth_year,gender,avatar_path,created_at').in('status',['approved','blocked']).order('created_at',{ascending:true})
  ]);
  notices=await Promise.all((noticeRes.data||[]).map(async n=>({id:n.id,date:fmtDateFromIso(n.created_at),title:n.title,body:n.body,attachments:await Promise.all((Array.isArray(n.attachments)?n.attachments:[]).map(async a=>a?.storagePath?{...a,url:(await signedTeamFile(a.storagePath))||a.url||''}:a)),comments:Array.isArray(n.comments)?n.comments:[]})));
  unreadNoticeIds=new Set(notices.map(n=>n.id));
  trainings={};events=[];race=emptyRace();(activityRes.data||[]).forEach(row=>{const mapped=mapActivityRow(row);if(row.kind==='training')trainings[row.id]=mapped;else if(row.kind==='race'&&!race.id)race=mapped;else if(row.kind==='event')events.push(mapped)});
  const rawFiles=fileRes.data||[],urls=await Promise.all(rawFiles.map(f=>signedTeamFile(f.storage_path)));const fileMap=rawFiles.map((f,i)=>({id:f.id,folderId:f.folder_id,uploaderId:f.uploader_id,name:f.file_name,storagePath:f.storage_path,mime:f.mime_type||'',type:(f.mime_type||'').startsWith('image')?'image':(f.mime_type||'').startsWith('video')?'video':'file',date:fmtDateFromIso(f.created_at),url:urls[i]}));resourceFiles=fileMap.filter(f=>!f.folderId);mediaFolders=(folderRes.data||[]).map(folder=>({id:folder.id,name:folder.name,creatorId:folder.created_by,creator:'팀원',date:fmtDateFromIso(folder.created_at),files:fileMap.filter(f=>f.folderId===folder.id)}));
- members=memberRes.error?[]:(memberRes.data||[]).map(m=>({id:m.id,name:m.nickname,birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',gender:m.gender||'-',join:m.created_at?String(m.created_at).slice(0,7).replace('-','.'):'-',joinDate:m.created_at||null,blocked:m.status==='blocked',role:m.role||'member',att:0,late:0,pb:{},races:[],trains:[]}));
+ members=memberRes.error?[]:await Promise.all((memberRes.data||[]).map(async m=>({id:m.id,name:m.nickname,birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',gender:m.gender||'-',join:m.created_at?String(m.created_at).slice(0,7).replace('-','.'):'-',joinDate:m.created_at||null,blocked:m.status==='blocked',role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:m.avatar_path?(await signedProfileImage(m.avatar_path)):'',att:0,late:0,pb:{},races:[],trains:[]})));
 }
 
 function showPage(id){
@@ -412,181 +418,90 @@ function showPage(id){
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
- if(id==='mypage')document.getElementById('myName').textContent=currentUser.nickname;
+ if(id==='mypage')renderMyProfile();
  if(id==='records')showRecord('personal',document.querySelector('.recordTabs button'));
  if(id==='attendance')renderAttendance();
- if(id==='memberAdmin')renderMembers();
- if(id==='memberApproval')renderApprovalRequests();if(id==='memberDirectory')renderMemberDirectory();
+ if(id==='memberAdmin'){renderMembers();renderRoleManagement();}
+ if(id==='memberApproval'){if(!isMasterAdmin()){toast('총관리자만 회원 승인을 관리할 수 있습니다.');return showPage('home')}renderApprovalRequests();}if(id==='memberDirectory')renderMemberDirectory();
  if(id==='attendanceAdmin')renderAttendanceAdmin();
  if(id==='media')renderMedia('all');
 }
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
 function now(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 
-function setAuthRole(role){
- authRole=role==='admin'?'admin':'member';
- document.getElementById('authRoleMember')?.classList.toggle('active',authRole==='member');
- document.getElementById('authRoleAdmin')?.classList.toggle('active',authRole==='admin');
+function setAuthMessage(message,type=''){
+ const el=document.getElementById('authMessage');if(!el)return;
+ el.textContent=message||'';el.className='authMsg'+(message?' show':'')+(type?' '+type:'');
+}
+function setAuthBusy(busy){const b=document.getElementById('signupBtn');if(b){b.disabled=busy;b.style.opacity=busy?'.55':'1'}}
+async function callAuthFunction(name,body){const res=await fetch(`${SUPABASE_URL}/functions/v1/${name}`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify(body)});let data={};try{data=await res.json()}catch(_){}return {ok:res.ok,status:res.status,data}}
+function showAuthRequest(message=''){
+ document.getElementById('auth')?.classList.add('open');
+ document.getElementById('authRequest')?.style.setProperty('display','flex');
+ document.getElementById('authPending')?.classList.remove('open');
+ if(message)setAuthMessage(message,'error');else setAuthMessage('');
+}
+function showPendingAuth(nickname){
+ document.getElementById('auth')?.classList.add('open');
+ document.getElementById('authRequest')?.style.setProperty('display','none');
+ document.getElementById('authPending')?.classList.add('open');
+ const n=document.getElementById('pendingNickname');if(n)n.textContent=`${nickname||''} 가입 신청 완료`;
  setAuthMessage('');
 }
-
-function setAuthMessage(message,type=''){
- const el=document.getElementById('authMessage');
- if(!el)return;
- el.textContent=message||'';
- el.className='authMsg'+(message?' show':'')+(type?' '+type:'');
-}
-
-function setAuthBusy(busy){
- const signup=document.getElementById('signupBtn'),login=document.getElementById('loginBtn');
- if(signup)signup.disabled=busy;
- if(login)login.disabled=busy;
- if(signup)signup.style.opacity=busy?'.55':'1';
- if(login)login.style.opacity=busy?'.55':'1';
-}
-
-async function callAuthFunction(name,body){
- const res=await fetch(`${SUPABASE_URL}/functions/v1/${name}`,{
-   method:'POST',
-   headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY},
-   body:JSON.stringify(body)
- });
- let data={};
- try{data=await res.json()}catch(_){}
- return {ok:res.ok,status:res.status,data};
-}
-
 async function signupMember(){
  const nickname=document.getElementById('authNickname')?.value.trim()||'';
- const password=document.getElementById('authPassword')?.value||'';
- if(nickname.length<2)return setAuthMessage('아이디는 2자 이상 입력해주세요.','error');
- if(password.length<8)return setAuthMessage('비밀번호는 8자 이상으로 입력해주세요.','error');
- setAuthBusy(true);setAuthMessage('회원가입 요청을 등록하고 있어요.');
+ if(nickname.length<2)return setAuthMessage('닉네임은 2자 이상 입력해주세요.','error');
+ setAuthBusy(true);setAuthMessage('가입 신청을 등록하고 있어요.');
  try{
-   const result=await callAuthFunction('register-member',{nickname,password,role:authRole});
-   if(!result.ok)return setAuthMessage(result.data.error||'회원가입 요청에 실패했습니다.','error');
-   setAuthMessage('가입 요청 완료! 관리자 승인 후 같은 아이디와 비밀번호로 로그인해주세요.','success');
- }catch(e){
-   console.error(e);setAuthMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.','error');
- }finally{setAuthBusy(false)}
+  const result=await callAuthFunction('register-member',{nickname});
+  if(!result.ok)return setAuthMessage(result.data.error||'가입 신청에 실패했습니다.','error');
+  if(result.data.session?.access_token&&result.data.session?.refresh_token){
+   const {error}=await dbClient.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
+   if(error)console.error('pending session:',error);
+  }
+  showPendingAuth(result.data.member?.nickname||nickname);
+  toast('가입 신청이 완료됐습니다.');
+ }catch(e){console.error(e);setAuthMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.','error')}finally{setAuthBusy(false)}
 }
-
-async function loginOperatingMember(){
- const nickname=document.getElementById('authNickname')?.value.trim()||'';
- const password=document.getElementById('authPassword')?.value||'';
- if(!nickname||!password)return setAuthMessage('아이디와 비밀번호를 입력해주세요.','error');
- setAuthBusy(true);setAuthMessage('로그인 중이에요.');
- try{
-   const identity=await callAuthFunction('resolve-login-identity',{nickname});
-   if(!identity.ok)return setAuthMessage(identity.data.error||'로그인에 실패했습니다.','error');
-
-   if(authRole==='admin'&&identity.data.role!=='admin'){
-     return setAuthMessage('관리자 권한이 승인된 계정이 아닙니다.','error');
-   }
-
-   const {data:signIn,error:signInError}=await dbClient.auth.signInWithPassword({
-     email:identity.data.auth_email,
-     password
-   });
-   if(signInError||!signIn.session){
-     return setAuthMessage('아이디 또는 비밀번호가 올바르지 않습니다.','error');
-   }
-
-   const {data:memberRows,error:memberError}=await dbClient.rpc('get_my_member');
-   const member=Array.isArray(memberRows)?memberRows[0]:memberRows;
-   if(memberError||!member||member.status!=='approved'){
-     await dbClient.auth.signOut();
-     return setAuthMessage('승인된 회원 정보를 확인하지 못했습니다.','error');
-   }
-
-   if(authRole==='admin'&&member.role!=='admin'){
-     await dbClient.auth.signOut();
-     return setAuthMessage('관리자 권한이 승인된 계정이 아닙니다.','error');
-   }
-
-   const mode=authRole==='admin'?'admin':'member';
-   try{localStorage.setItem('eysl_view_mode',mode)}catch(_){}
-   currentUser={
-     nickname:member.nickname,
-     role:mode==='admin'?'admin':'member',
-     actualRole:member.role,
-     memberId:member.id,
-     birth_year:member.birth_year,
-     gender:member.gender
-   };
-
-   document.getElementById('auth')?.classList.remove('open');
-   setAuthMessage('');
-   applyRole();
-   renderHome();
-   showPage('home');
- }catch(e){
-   console.error('TEAM EYSL login:',e);
-   setAuthMessage('로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.','error');
- }finally{setAuthBusy(false)}
-}
-
-async function loadMemberFromSession(){
+async function memberFromSession(){
  const {data:{session},error:sessionError}=await dbClient.auth.getSession();
- if(sessionError||!session)return false;
-
+ if(sessionError||!session)return null;
  const {data,error}=await dbClient.rpc('get_my_member');
  const member=Array.isArray(data)?data[0]:data;
-
- if(error||!member||member.status!=='approved'){
-   console.error('TEAM EYSL session member load:',error);
-   await dbClient.auth.signOut();
-   return false;
- }
-
- let mode=localStorage.getItem('eysl_view_mode')||'member';
- if(mode==='admin'&&member.role!=='admin')mode='member';
-
- currentUser={
-   nickname:member.nickname,
-   role:mode==='admin'?'admin':'member',
-   actualRole:member.role,
-   memberId:member.id,
-   birth_year:member.birth_year,
-   gender:member.gender
- };
- return true;
+ if(error||!member)return null;
+ return member;
 }
-
+async function setCurrentUserFromMember(member){
+ currentUser={nickname:member.nickname,role:['admin','master_admin'].includes(member.role)?'admin':'member',actualRole:member.role||'member',memberId:member.id,birth_year:member.birth_year,gender:member.gender,avatarPath:member.avatar_path||null,avatarUrl:member.avatar_path?(await signedProfileImage(member.avatar_path)):'',createdAt:member.created_at||null};
+}
 async function initAuth(){
- const ok=await loadMemberFromSession();
- if(ok){
-   document.getElementById('auth')?.classList.remove('open');
-   applyRole();
-   return true;
+ const member=await memberFromSession();
+ if(member){
+  if(member.status==='approved'){
+   await setCurrentUserFromMember(member);document.getElementById('auth')?.classList.remove('open');applyRole();return true;
+  }
+  if(member.status==='pending'){showPendingAuth(member.nickname);return false}
+  if(member.status==='blocked'){await dbClient.auth.signOut();showAuthRequest('사용이 중지된 계정입니다. 총관리자에게 문의해주세요.');return false}
+  if(member.status==='rejected'){await dbClient.auth.signOut();showAuthRequest('가입 신청이 승인되지 않은 계정입니다.');return false}
  }
- document.getElementById('auth')?.classList.add('open');
- currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
- applyRole();
- return false;
+ currentUser={nickname:'',role:'member',actualRole:'member',memberId:null,avatarPath:null,avatarUrl:'',createdAt:null};applyRole();showAuthRequest();return false;
 }
-
 function applyRole(){
- const isAdmin=currentUser.role==='admin'&&currentUser.actualRole==='admin';
+ const isOperator=['admin','master_admin'].includes(currentUser.actualRole),isMaster=currentUser.actualRole==='master_admin';
  const badge=document.getElementById('roleBadge'),avatar=document.getElementById('avatar');
- if(badge)badge.textContent=isAdmin?'관리자':'회원';
- if(avatar)avatar.textContent=(currentUser.nickname||'EY').slice(0,2);
- const fab=document.getElementById('noticeFab'),adminMenu=document.getElementById('adminMenu');
- if(fab)fab.style.display=isAdmin?'block':'none';
- if(adminMenu)adminMenu.style.display=isAdmin?'block':'none';
- const myName=document.getElementById('myName');
- if(myName&&currentUser.nickname)myName.textContent=currentUser.nickname;
+ if(badge){badge.textContent=isMaster?'총관리자':isOperator?'부관리자':'회원';badge.classList.toggle('roleTagMaster',isMaster);badge.classList.toggle('roleTagSub',!isMaster&&isOperator)}
+ if(avatar){if(currentUser.avatarUrl){avatar.innerHTML=`<img src="${escAttr(currentUser.avatarUrl)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`}else avatar.textContent=(currentUser.nickname||'EY').slice(0,2)}
+ const fab=document.getElementById('noticeFab'),adminMenu=document.getElementById('adminMenu');if(fab)fab.style.display=isOperator?'block':'none';if(adminMenu)adminMenu.style.display=isOperator?'block':'none';
+ const approval=document.getElementById('drawerMemberApproval');if(approval)approval.style.display=isMaster?'block':'none';
+ const roleWrap=document.getElementById('roleManagementWrap');if(roleWrap)roleWrap.style.display=isMaster?'block':'none';
+ renderMyProfile();
 }
-
-async function logout(){
- try{await dbClient.auth.signOut()}catch(e){console.error(e)}
- localStorage.removeItem('eysl_view_mode');
- currentUser={nickname:'',role:'member',actualRole:'member',memberId:null};
- location.reload();
-}
+async function logout(){try{await dbClient.auth.signOut()}catch(e){console.error(e)}currentUser={nickname:'',role:'member',actualRole:'member',memberId:null,avatarPath:null,avatarUrl:'',createdAt:null};location.reload()}
+function isAdminUser(){return ['admin','master_admin'].includes(currentUser.actualRole)}
+function isMasterAdmin(){return currentUser.actualRole==='master_admin'}
 
 async function renderApprovalRequests(){
- if(currentUser.role!=='admin'||currentUser.actualRole!=='admin')return;
+ if(!isMasterAdmin())return;
  const pendingBox=document.getElementById('pendingMemberList');
  const processedBox=document.getElementById('processedMemberList');
  const count=document.getElementById('pendingCount');
@@ -594,7 +509,7 @@ async function renderApprovalRequests(){
 
  pendingBox.innerHTML='<div class="card meta">불러오는 중...</div>';
  const {data,error}=await dbClient.from('members')
-   .select('id,nickname,role_request,status,birth_year,gender,created_at')
+   .select('id,nickname,role,status,birth_year,gender,avatar_path,created_at')
    .in('status',['pending','approved','rejected','blocked'])
    .order('created_at',{ascending:false});
 
@@ -607,7 +522,7 @@ async function renderApprovalRequests(){
 
  pendingBox.innerHTML=pending.length?pending.map(m=>`<div class="approvalRow">
    <h3>${m.nickname}</h3>
-   <p>${m.role_request==='admin'?'관리자 권한 요청':'모임원 가입 요청'}${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${m.gender}`:''}</p>
+   <p>일반회원 가입 요청${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${m.gender}`:''}</p>
    <div class="actions">
     <button class="btn primary" onclick="manageMemberApproval('${m.id}','approve')">승인</button>
     <button class="btn outline" onclick="manageMemberApproval('${m.id}','reject')">거절</button>
@@ -615,12 +530,13 @@ async function renderApprovalRequests(){
  </div>`).join(''):'<div class="approvalEmpty">현재 승인 대기 회원이 없습니다.</div>';
 
  processedBox.innerHTML=processed.length?processed.map(m=>`<div class="row">
-   <div class="grow"><b>${m.nickname}</b><p>${m.role==='admin'?'관리자':'모임원'} · ${m.status==='approved'?'승인됨':m.status==='rejected'?'거절됨':'내보냄'}</p></div>
+   <div class="grow"><b>${m.nickname}</b><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'} · ${m.status==='approved'?'승인됨':m.status==='rejected'?'거절됨':'내보냄'}</p></div>
    <span class="tag ${m.status==='approved'?'ok':'done'}">${m.status==='approved'?'승인':m.status==='rejected'?'거절':'차단'}</span>
  </div>`).join(''):'<div class="approvalEmpty">처리된 회원이 없습니다.</div>';
 }
 
 async function manageMemberApproval(memberId,action){
+ if(!isMasterAdmin())return toast('총관리자만 회원 승인을 처리할 수 있습니다.');
  const {data:{session}}=await dbClient.auth.getSession();
  if(!session)return toast('다시 로그인해주세요.');
  try{
@@ -656,7 +572,7 @@ function renderHome(){
 function escAttr(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll("'",'&#39;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 function renderNotices(){const el=document.getElementById('noticeList');if(!el)return;el.innerHTML=notices.length?notices.map(n=>{const img=(n.attachments||[]).find(a=>String(a.type||'').startsWith('image'));return `<div class="notice" onclick='openNotice(${JSON.stringify(n.id)})'><div class="date">${n.date}${unreadNoticeIds.has(n.id)?' · NEW':''}</div><h3>${n.title}</h3><p>${String(n.body||'').split('\n')[0]}</p>${img?`<img class="noticeThumb" src="${escAttr(img.url)}" alt="공지 이미지 미리보기">`:''}</div>`}).join(''):'<div class="card meta">등록된 공지가 없습니다.</div>'}
 function openNotice(id){currentNoticeId=id;unreadNoticeIds.delete(id);showPage('noticeDetail');renderNoticeDetail();renderHome()}
-function renderNoticeDetail(){const n=notices.find(x=>x.id===currentNoticeId);if(!n){showPage('notice');return}const isAdmin=currentUser.role==='admin'&&currentUser.actualRole==='admin';const attach=(n.attachments||[]).map(a=>String(a.type||'').startsWith('image')?`<img class="noticePreview" src="${escAttr(a.url)}" alt="${escAttr(a.name)}" onclick="openAttachment('${escAttr(a.url)}','${escAttr(a.type)}')">`:String(a.type||'').startsWith('video')?`<video class="noticePreview" src="${escAttr(a.url)}" controls></video>`:`<div class="fileRow" onclick="openAttachment('${escAttr(a.url)}','${escAttr(a.type)}')"><div class="icon">📎</div><div class="grow"><b>${a.name}</b></div></div>`).join('');document.getElementById('noticeArticle').innerHTML=`<div class="article"><div class="meta">${n.date}</div><h2>${n.title}</h2><p>${n.body}</p>${attach?`<div class="section"><h2>첨부</h2></div>${attach}`:''}${isAdmin?`<div class="noticeAdminActions"><button class="btn outline" onclick="editNotice('${n.id}')">수정</button><button class="btn amber" onclick="deleteNotice('${n.id}')">삭제</button></div>`:''}</div>`;document.getElementById('comments').innerHTML=(n.comments||[]).map(c=>`<div class="comment"><b>${c.name}</b><span>${c.time}</span><p>${c.text}</p></div>`).join('')||'<div class="card meta">아직 댓글이 없습니다.</div>'}
+function renderNoticeDetail(){const n=notices.find(x=>x.id===currentNoticeId);if(!n){showPage('notice');return}const isAdmin=isAdminUser();const attach=(n.attachments||[]).map(a=>String(a.type||'').startsWith('image')?`<img class="noticePreview" src="${escAttr(a.url)}" alt="${escAttr(a.name)}" onclick="openAttachment('${escAttr(a.url)}','${escAttr(a.type)}')">`:String(a.type||'').startsWith('video')?`<video class="noticePreview" src="${escAttr(a.url)}" controls></video>`:`<div class="fileRow" onclick="openAttachment('${escAttr(a.url)}','${escAttr(a.type)}')"><div class="icon">📎</div><div class="grow"><b>${a.name}</b></div></div>`).join('');document.getElementById('noticeArticle').innerHTML=`<div class="article"><div class="meta">${n.date}</div><h2>${n.title}</h2><p>${n.body}</p>${attach?`<div class="section"><h2>첨부</h2></div>${attach}`:''}${isAdmin?`<div class="noticeAdminActions"><button class="btn outline" onclick="editNotice('${n.id}')">수정</button><button class="btn amber" onclick="deleteNotice('${n.id}')">삭제</button></div>`:''}</div>`;document.getElementById('comments').innerHTML=(n.comments||[]).map(c=>`<div class="comment"><b>${c.name}</b><span>${c.time}</span><p>${c.text}</p></div>`).join('')||'<div class="card meta">아직 댓글이 없습니다.</div>'}
 async function addComment(){const i=document.getElementById('commentInput'),text=i.value.trim();if(!text)return;const n=notices.find(x=>x.id===currentNoticeId);if(!n)return;const comments=[...(n.comments||[]),{name:currentUser.nickname,time:now(),text}];const {error}=await dbClient.from('notices').update({comments,updated_at:new Date().toISOString()}).eq('id',n.id);if(error){console.error(error);return toast('댓글 저장에 실패했습니다.')}n.comments=comments;i.value='';renderNoticeDetail()}
 async function imageFileToDataUrl(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=1600,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',0.82))};img.onerror=()=>resolve(reader.result);img.src=reader.result};reader.onerror=reject;reader.readAsDataURL(file)})}
 async function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
@@ -673,7 +589,7 @@ function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('
 function renderGroup(){groupChatBody.innerHTML=groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('');groupChatBody.scrollTop=groupChatBody.scrollHeight}
 function sendGroup(){const i=document.getElementById('groupInput');if(!i.value.trim())return;groupMessages.push({name:currentUser.nickname,text:i.value.trim(),time:now(),me:true});i.value='';renderGroup()}
 function switchChat(mode){document.getElementById('groupTab').classList.toggle('active',mode==='group');document.getElementById('dmTab').classList.toggle('active',mode==='dm');document.getElementById('groupView').style.display=mode==='group'?'block':'none';document.getElementById('dmView').style.display=mode==='dm'?'block':'none';if(mode==='dm')renderDmList()}
-function renderDmList(){const names=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name);dmList.innerHTML=names.map(n=>`<div class="dmRow" onclick="startDm('${n}')"><div class="dmAv">${n.slice(0,1)}</div><div class="grow"><b>${n}</b><p>아직 대화가 없습니다.</p></div><span>›</span></div>`).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
+function renderDmList(){const names=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name);dmList.innerHTML=names.map(n=>`<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${(dmMessages[n]||[]).length?'최근 대화가 있습니다.':'아직 대화가 없습니다.'}</p></div><span>›</span></div>`).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
 function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');renderDm()}
 function renderDm(){dmBody.innerHTML=(dmMessages[currentDm]||[]).map(m=>renderChatMessage({...m,name:currentDm},m.me?'나':currentDm)).join('')||'<div class="card meta">첫 메시지를 보내보세요.</div>';dmBody.scrollTop=dmBody.scrollHeight}
 function sendDm(){const i=document.getElementById('dmInput');if(!i.value.trim())return;dmMessages[currentDm].push({me:true,text:i.value.trim(),time:now()});i.value='';renderDm()}
@@ -685,7 +601,7 @@ function renderCalendar(){
  const allEvents=[...Object.values(trainings).map(t=>({date:t.date,type:'training',id:t.id})),...(race.id?[{date:race.date,type:'race',id:race.id}]:[]),...events.map(e=>({date:e.date,type:'event',id:e.id}))].filter(e=>scheduleFilter==='all'||e.type===scheduleFilter);
  for(let d=1;d<=last;d++){const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const ev=allEvents.filter(e=>e.date===ds);html+=`<div class="day" onclick="selectDay('${ds}',this)">${d}${ev.length?`<div class="dots">${ev.map(e=>`<i class="dot ${e.type==='race'?'race':e.type==='event'?'event':''}"></i>`).join('')}</div>`:''}</div>`}document.getElementById('calendarDays').innerHTML=html;document.getElementById('dayInfo').innerHTML='';
 }
-function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));if(race.id&&race.date===ds)list.push({type:'대회',title:race.title,time:'09:00 시작',place:race.place,status:raceApplication?'신청완료':'신청 가능',action:`showPage('raceList')`});events.filter(e=>e.date===ds).forEach(e=>list.push({type:'이벤트',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${currentUser.role==='admin'?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
+function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));if(race.id&&race.date===ds)list.push({type:'대회',title:race.title,time:'09:00 시작',place:race.place,status:raceApplication?'신청완료':'신청 가능',action:`showPage('raceList')`});events.filter(e=>e.date===ds).forEach(e=>list.push({type:'이벤트',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
 
 function renderTrainingList(){
  const list=Object.values(trainings).sort((a,b)=>a.date.localeCompare(b.date));
@@ -790,7 +706,7 @@ function cancelTraining(id){
 }
 function normalizeWait(t){t.waitlist.forEach((w,i)=>w.order=i+1)}
 function openApplyStatus(id){selectedTrainingId=id;showPage('applyStatus');renderApplyStatus()}
-function renderApplyStatus(){const t=trainings[selectedTrainingId];const mineOffer=t.offer&&t.offer.name===currentUser.nickname;document.getElementById('applyStatusBody').innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${t.title}</span></div><div class="detailrow"><b>신청</b><span>${t.participants.length}/${t.capacity}</span></div><div class="detailrow"><b>대기</b><span>${t.waitlist.length}명</span></div></div>${t.offer?`<div class="offerBox"><b>${t.offer.name}님 참석 응답 대기중</b><p>자리 발생으로 대기 1번에게만 24시간 참석 기회가 열려 있습니다.</p><div class="countdown">${remaining(t.offer.expiresAt)} 남음</div>${mineOffer?`<div class="actions"><button class="btn primary" onclick="acceptOffer()">참석하기</button><button class="btn outline" onclick="declineOffer()">포기하기</button></div>`:''}</div>`:''}<div class="section"><h2>신청완료 ${t.participants.length}명</h2></div><div class="card names">${t.participants.join(' · ')}</div><div class="section"><h2>대기 ${t.waitlist.length}명</h2></div><div class="waitlist">${t.waitlist.map(w=>`<div class="waititem ${t.offer?.name===w.name?'offer':''}"><b>${w.order}. ${w.name}</b>${t.offer?.name===w.name?'<div class="meta">24시간 응답 대기중</div>':''}</div>`).join('')||'<div class="meta">대기자가 없습니다.</div>'}</div>`}
+function renderApplyStatus(){const t=trainings[selectedTrainingId];const mineOffer=t.offer&&t.offer.name===currentUser.nickname;const people=t.participants.map(n=>`<div class="applyPerson">${avatarMarkup(n,'apply')}<div class="grow"><b>${escHtml(n)}</b><p class="meta">신청완료</p></div></div>`).join('')||'<div class="meta">신청자가 없습니다.</div>';const waits=t.waitlist.map(w=>`<div class="applyPerson ${t.offer?.name===w.name?'offer':''}">${avatarMarkup(w.name,'apply')}<div class="grow"><b>${w.order}. ${escHtml(w.name)}</b>${t.offer?.name===w.name?'<div class="meta">24시간 응답 대기중</div>':''}</div></div>`).join('')||'<div class="meta">대기자가 없습니다.</div>';document.getElementById('applyStatusBody').innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${t.title}</span></div><div class="detailrow"><b>신청</b><span>${t.participants.length}/${t.capacity}</span></div><div class="detailrow"><b>대기</b><span>${t.waitlist.length}명</span></div></div>${t.offer?`<div class="offerBox"><b>${t.offer.name}님 참석 응답 대기중</b><p>자리 발생으로 대기 1번에게만 24시간 참석 기회가 열려 있습니다.</p><div class="countdown">${remaining(t.offer.expiresAt)} 남음</div>${mineOffer?`<div class="actions"><button class="btn primary" onclick="acceptOffer()">참석하기</button><button class="btn outline" onclick="declineOffer()">포기하기</button></div>`:''}</div>`:''}<div class="section"><h2>신청완료 ${t.participants.length}명</h2></div><div class="card">${people}</div><div class="section"><h2>대기 ${t.waitlist.length}명</h2></div><div class="card">${waits}</div>`}
 function remaining(ex){const ms=Math.max(0,ex-Date.now());return `${Math.floor(ms/3600000)}시간 ${Math.floor(ms%3600000/60000)}분`}
 function acceptOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.participants.push(currentUser.nickname);t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);renderApplyStatus();renderHome();toast('신청완료')}
 function declineOffer(){const t=trainings[selectedTrainingId];if(!t.offer||t.offer.name!==currentUser.nickname)return;t.waitlist=t.waitlist.filter(w=>w.name!==currentUser.nickname);t.offer=null;normalizeWait(t);if(t.waitlist.length)t.offer={name:t.waitlist[0].name,expiresAt:Date.now()+86400000};renderApplyStatus();toast('다음 대기자에게 기회가 넘어갔습니다')}
@@ -823,7 +739,6 @@ function initAttendanceOptions(){const y=attYear,m=attMonth,now=new Date(),cy=no
 function renderAttendance(){const y=attYear.value,m=attMonth.value,rows=attendanceHistory.filter(x=>String(x.date).startsWith(y)&&String(x.date).slice(5,7)===m&&(!x.name||x.name===currentUser.nickname)).sort((a,b)=>b.date.localeCompare(a.date)),mine=attendanceHistory.filter(x=>!x.name||x.name===currentUser.nickname),allAtt=mine.filter(x=>x.status==='출석'||x.status==='지각').length,yearAtt=mine.filter(x=>String(x.date).startsWith(y)&&(x.status==='출석'||x.status==='지각')).length,monthAtt=rows.filter(x=>x.status==='출석'||x.status==='지각').length,allLate=mine.filter(x=>x.status==='지각').length,yearLate=mine.filter(x=>String(x.date).startsWith(y)&&x.status==='지각').length,monthLate=rows.filter(x=>x.status==='지각').length;attSix.innerHTML=`<div class="attMini"><strong>${allAtt}</strong><span>누적 출석</span></div><div class="attMini"><strong>${yearAtt}</strong><span>연간 출석</span></div><div class="attMini"><strong>${monthAtt}</strong><span>이번 달 출석</span></div><div class="attMini"><strong>${allLate}</strong><span>누적 지각</span></div><div class="attMini"><strong>${yearLate}</strong><span>연간 지각</span></div><div class="attMini"><strong>${monthLate}</strong><span>이번 달 지각</span></div>`;attList.innerHTML=rows.map(x=>`<div class="row"><div class="grow"><b>${x.date} ${x.title}</b></div><span class="tag ok">${x.status}</span></div>`).join('')||'<div class="card meta">해당 기간 출석 내역이 없습니다.</div>'}
 
 
-function isAdminUser(){return currentUser.role==='admin'&&currentUser.actualRole==='admin'}
 function canManageMediaOwner(ownerId){return isAdminUser()||ownerId===currentUser.memberId}
 function safePathName(name){return String(name||'file').replace(/[^\w.\-가-힣]+/g,'_')}
 async function uploadBlobToTeamFiles(file,prefix='media'){
@@ -864,6 +779,12 @@ async function uploadResourceFiles(inp){
 function renderResourceFiles(){const box=document.getElementById('resourceFileList');if(!box)return;box.innerHTML=resourceFiles.map(x=>`<div class="resourceRow"><div class="icon" onclick="openFolderFile('', '${x.id}')">${x.type==='image'?'🖼️':x.type==='video'?'🎬':'📄'}</div><div class="grow" onclick="openFolderFile('', '${x.id}')"><b>${x.name}</b><span>${x.date}</span></div><div class="resourceActions">${canManageMediaOwner(x.uploaderId)?`<button class="btn outline" onclick="renameMediaFile('${x.id}')">수정</button><button class="btn amber" onclick="deleteMediaFile('${x.id}')">삭제</button>`:''}</div></div>`).join('')||'<div class="card meta">등록된 자료가 없습니다.</div>'}
 
 function addEmoji(id){const el=document.getElementById(id);el.value+=' 😊';el.focus()}
+async function signedProfileImage(path){if(!path)return '';const {data,error}=await dbClient.storage.from('profile-images').createSignedUrl(path,60*60);if(error){console.error('profile signed url:',error);return ''}return data?.signedUrl||''}
+function memberByName(name){return members.find(m=>m.name===name)||null}
+function avatarMarkup(name,size='member'){const m=name===currentUser.nickname?{avatarUrl:currentUser.avatarUrl}:memberByName(name);const cls=size==='apply'?'apply':size==='chat'?'chat':'member';return m?.avatarUrl?`<img class="${cls}Avatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="${cls}Fallback">${escHtml((name||'?').slice(0,1))}</div>`}
+function renderMyProfile(){const n=document.getElementById('myName'),j=document.getElementById('myJoinText'),w=document.getElementById('myProfileAvatarWrap'),d=document.getElementById('profileDeleteBtn');if(n)n.textContent=currentUser.nickname||'-';if(j){const join=currentUser.createdAt?String(currentUser.createdAt).slice(0,7).replace('-','.'):'-';j.textContent=`TEAM EYSL · ${join} 가입`}if(w){if(currentUser.avatarUrl){w.className='';w.innerHTML=`<img class="profileAvatar" src="${escAttr(currentUser.avatarUrl)}" alt="프로필 사진">`}else{w.className='profileFallback';w.textContent=(currentUser.nickname||'EY').slice(0,2)}}if(d)d.style.display=currentUser.avatarPath?'inline-flex':'none'}
+async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
+async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
 function renderChatMessage(m,label){let content='';if(m.attachment){const a=m.attachment;if(a.kind==='image')content=`<div class="chatMedia" onclick="openModal('${a.url}','image','${a.name}')"><img src="${a.url}" alt="${a.name}"></div>`;else if(a.kind==='video')content=`<div class="chatMedia" onclick="openModal('${a.url}','video','${a.name}')"><video src="${a.url}" muted playsinline></video><div class="play">▶</div></div>`;else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${a.name}</b><small>${a.size||''}</small><a class="saveLink" href="${a.url}" download="${a.name}" onclick="event.stopPropagation()">저장</a></div></div>`}else content=`<div class="bubble">${m.text||''}</div>`;return `<div class="bubbleRow ${m.me?'me':''}"><div><div class="bubbleName" style="${m.me?'text-align:right':''}">${label}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${m.time}</span></div></div></div>`}
 const emojiChoices=['😀','😆','😂','🥹','😭','😍','😘','😎','🤩','🥳','👍','👏','🙌','🙏','💪','🔥','❤️','🩵','✨','🎉','👀','🏊‍♀️','🏊‍♂️','💦','🫧','🏆','🥇','📣'];
 function toggleEmojiPanel(kind){
@@ -967,15 +888,19 @@ async function deleteActivity(id){
  await loadPersistentContent();renderHome();renderCalendar();renderTrainingList();renderRaceList();showPage('schedule');toast('일정이 삭제됐습니다.')
 }
 function adminActivityActions(id){
- return currentUser.role==='admin'&&currentUser.actualRole==='admin'?`<div class="adminEditActions"><button class="btn outline" onclick="editActivity('${id}')">수정</button><button class="btn amber" onclick="deleteActivity('${id}')">삭제</button></div>`:'';
+ return isAdminUser()?`<div class="adminEditActions"><button class="btn outline" onclick="editActivity('${id}')">수정</button><button class="btn amber" onclick="deleteActivity('${id}')">삭제</button></div>`:'';
 }
 
-function renderMemberDirectory(){const active=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname);memberDirectoryList.innerHTML=active.map(m=>`<div class="memberSimpleRow"><div class="grow"><b>${m.name}</b><p>${m.birthYear?m.birthYear+'년생 · ':''}${m.gender||''}</p></div><button class="btn outline" onclick="startDm('${m.name}')">1:1 채팅</button></div>`).join('')||'<div class="card meta">현재 승인된 다른 회원이 없습니다.</div>'}
-function renderMembers(){const active=members.filter(m=>!m.blocked),blocked=members.filter(m=>m.blocked);memberCount.textContent=active.length;memberList.innerHTML=active.map(m=>`<div class="memberrow"><div class="grow"><b>${m.name}${m.birthYear?' · '+String(m.birthYear).slice(-2):''}${m.gender&&m.gender!=='-'?' · '+m.gender:''}</b><p>가입 ${m.join} · 출석 0회</p></div></div>`).join('')||'<div class="card meta">승인된 회원이 없습니다.</div>';blockedList.innerHTML=blocked.length?blocked.map(m=>`<div class="memberrow"><div class="grow"><b>${m.name}</b><p>내보내기 처리됨</p></div></div>`).join(''):'<div class="card meta">내보낸 회원이 없습니다.</div>';const a=document.getElementById('memberAttendanceTop'),i=document.getElementById('memberInactiveTop'),n=document.getElementById('memberNewThisMonth');if(a)a.innerHTML='<span>데이터 없음</span>';if(i)i.innerHTML='<span>데이터 없음</span>';if(n){const now=new Date(),ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,fresh=active.filter(m=>m.joinDate&&String(m.joinDate).startsWith(ym)).slice(0,3);n.innerHTML=fresh.length?fresh.map(m=>`<span>${m.name} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>'}}
-function renderApplicationAdmin(kind='training',btn){if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}let html='';if(kind==='training'){html=Object.values(trainings).sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="statusCard" style="margin-bottom:9px"><h3>${t.title}</h3><p class="meta">${t.date} · 신청 ${t.participants.length}명 · 대기 ${t.waitlist.length}명</p><div class="card" style="margin-top:9px">${t.participants.map(n=>`<div class="adminAggRow"><b>${n}</b><p>참석 신청</p></div>`).join('')}${t.waitlist.map(w=>`<div class="adminAggRow"><b>${w.name}</b><p>대기 ${w.order}번</p></div>`).join('')}</div></div>`).join('')}else if(kind==='race'){if(!race.id){applicationAdminBody.innerHTML='<div class="card meta">등록된 대회가 없습니다.</div>';return}const people=[...race.participants,...(raceApplication?[currentUser.nickname]:[])];html=`<div class="statusCard"><h3>${race.title}</h3><p class="meta">${race.date} · 신청 ${people.length}명</p><div class="card" style="margin-top:9px">${people.map(n=>`<div class="adminAggRow"><b>${n}</b><p>${n===currentUser.nickname&&raceApplication?`${raceApplication.s1} · ${raceApplication.s2} · ${raceApplication.noRelay?'단체전 참가 안 함':raceApplication.relays.join(' · ')}`:'신청 종목 확인 가능'}</p></div>`).join('')}</div></div>`}else{html=events.sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`<div class="statusCard" style="margin-bottom:9px"><h3>${e.title}</h3><p class="meta">${e.date} · 신청 ${e.participants.length}명</p><div class="card" style="margin-top:9px">${e.participants.map(n=>`<div class="adminAggRow"><b>${n}</b><p>참가 신청</p></div>`).join('')}</div></div>`).join('')}applicationAdminBody.innerHTML=html||'<div class="card meta">신청 내역이 없습니다.</div>'}
+function renderMemberDirectory(){const active=members.filter(m=>!m.blocked&&m.name!==currentUser.nickname);memberDirectoryList.innerHTML=active.map(m=>`<div class="memberSimpleRow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.birthYear?m.birthYear+'년생 · ':''}${m.gender||''}</p></div><button class="btn outline" onclick="startDm('${escAttr(m.name)}')">1:1 채팅</button></div>`).join('')||'<div class="card meta">현재 승인된 다른 회원이 없습니다.</div>'}
+function renderMembers(){const active=members.filter(m=>!m.blocked),blocked=members.filter(m=>m.blocked);document.getElementById('memberCount').textContent=active.length;document.getElementById('memberList').innerHTML=active.map(m=>`<div class="memberrow" onclick="openMember('${escAttr(m.name)}')">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'} · 가입 ${m.join}</p></div><span>›</span></div>`).join('')||'<div class="card meta">승인된 회원이 없습니다.</div>';document.getElementById('blockedList').innerHTML=blocked.map(m=>`<div class="memberrow">${avatarMarkup(m.name,'member')}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div>${isMasterAdmin()?`<button class="btn outline" onclick="event.stopPropagation();restoreMember('${escAttr(m.name)}')">복구</button>`:''}</div>`).join('')||'<div class="card meta">내보낸 회원이 없습니다.</div>';const a=document.getElementById('memberAttendanceTop'),i=document.getElementById('memberInactiveTop'),n=document.getElementById('memberNewThisMonth');if(a)a.innerHTML='<span>데이터 없음</span>';if(i)i.innerHTML='<span>데이터 없음</span>';if(n){const now=new Date(),ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,fresh=active.filter(m=>m.joinDate&&String(m.joinDate).startsWith(ym)).slice(0,3);n.innerHTML=fresh.length?fresh.map(m=>`<span>${escHtml(m.name)} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>'}}
+function openMember(name){const m=members.find(x=>x.name===name);if(!m)return;showPage('memberDetail');document.getElementById('memberDetailBody').innerHTML=`<div class="profile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml(name.slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'}${m.birthYear?` · ${m.birthYear}년생`:''}</p></div></div><button class="btn outline" onclick="startDm('${escAttr(name)}')">1:1 채팅</button></div>${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`}
+async function kickMember(name){if(!isMasterAdmin())return toast('총관리자만 회원을 내보낼 수 있습니다.');const m=members.find(x=>x.name===name);if(!m)return;if(!confirm(`${name} 회원을 내보낼까요?`))return;await manageMemberApproval(m.id,'block');await loadPersistentContent();showPage('memberAdmin');renderMembers();renderRoleManagement()}
+async function restoreMember(name){if(!isMasterAdmin())return toast('총관리자만 회원을 복구할 수 있습니다.');const m=members.find(x=>x.name===name);if(!m)return;await manageMemberApproval(m.id,'restore');await loadPersistentContent();renderMembers();renderRoleManagement()}
 
-function setAttType(v,b){attendanceType=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
-function setAttState(v,b){attendanceState=v;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAttendanceAdmin()}
+async function renderRoleManagement(){const wrap=document.getElementById('roleManagementWrap'),box=document.getElementById('roleManagementList');if(!wrap||!box)return;wrap.style.display=isMasterAdmin()?'block':'none';if(!isMasterAdmin())return;const {data,error}=await dbClient.from('members').select('id,nickname,role,status,avatar_path').eq('status','approved').order('created_at',{ascending:true});if(error){box.innerHTML='<div class="card meta">권한 목록을 불러오지 못했습니다.</div>';return}box.innerHTML=(data||[]).map(m=>{if(m.role==='master_admin')return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>총관리자</p></div><span class="tag ok">고정</span></div>`;const sub=m.role==='admin';return `<div class="row"><div class="grow"><b>${escHtml(m.nickname)}</b><p>${sub?'부관리자':'일반회원'}</p></div><button class="btn ${sub?'amber':'outline'}" onclick="changeMemberRole('${m.id}','${sub?'revoke_admin':'grant_admin'}')">${sub?'부관리자 해제':'부관리자 지정'}</button></div>`}).join('')||'<div class="card meta">회원이 없습니다.</div>'}
+async function changeMemberRole(memberId,action){if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');const {data:{session}}=await dbClient.auth.getSession();if(!session)return toast('다시 로그인해주세요.');try{const res=await fetch(`${SUPABASE_URL}/functions/v1/manage-member-role`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({member_id:memberId,action})});const data=await res.json();if(!res.ok)return toast(data.error||'권한 변경에 실패했습니다.');await loadPersistentContent();renderMembers();renderRoleManagement();toast(action==='grant_admin'?'부관리자로 지정했습니다.':'부관리자 권한을 해제했습니다.')}catch(e){console.error(e);toast('권한 변경 중 오류가 발생했습니다.')}}
+function appAdminPerson(name,detail){return `<div class="adminAggRow" style="display:flex;align-items:center;gap:10px">${avatarMarkup(name,'apply')}<div class="grow"><b>${escHtml(name)}</b><p>${detail}</p></div></div>`}
+function renderApplicationAdmin(kind='training',btn){if(btn){document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}let html='';if(kind==='training'){html=Object.values(trainings).sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="statusCard" style="margin-bottom:9px"><h3>${t.title}</h3><p class="meta">${t.date} · 신청 ${t.participants.length}명 · 대기 ${t.waitlist.length}명</p><div class="card" style="margin-top:9px">${t.participants.map(n=>appAdminPerson(n,'참석 신청')).join('')}${t.waitlist.map(w=>appAdminPerson(w.name,`대기 ${w.order}번`)).join('')}</div></div>`).join('')}else if(kind==='race'){if(!race.id){applicationAdminBody.innerHTML='<div class="card meta">등록된 대회가 없습니다.</div>';return}const people=[...race.participants,...(raceApplication?[currentUser.nickname]:[])];html=`<div class="statusCard"><h3>${race.title}</h3><p class="meta">${race.date} · 신청 ${people.length}명</p><div class="card" style="margin-top:9px">${people.map(n=>appAdminPerson(n,n===currentUser.nickname&&raceApplication?`${raceApplication.s1} · ${raceApplication.s2} · ${raceApplication.noRelay?'단체전 참가 안 함':raceApplication.relays.join(' · ')}`:'신청 종목 확인 가능')).join('')}</div></div>`}else{html=events.sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`<div class="statusCard" style="margin-bottom:9px"><h3>${e.title}</h3><p class="meta">${e.date} · 신청 ${e.participants.length}명</p><div class="card" style="margin-top:9px">${e.participants.map(n=>appAdminPerson(n,'참가 신청')).join('')}</div></div>`).join('')}applicationAdminBody.innerHTML=html||'<div class="card meta">신청 내역이 없습니다.</div>'}
 function attEvents(){return [...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,people:t.participants,state:t.date<new Date().toISOString().slice(0,10)?'done':'upcoming'})),...(race.id?[{id:race.id,type:'race',label:'대회',title:race.title,date:race.date,people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:'upcoming'}]:[]),...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,people:e.participants,state:e.done?'done':'upcoming'}))]}
 function renderAttendanceAdmin(){const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState));document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>신청</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>'}
 function attCounts(e){const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;e.people.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});return {present,late,absent}}
@@ -1034,7 +959,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=full-final9').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final12').catch(()=>{}));
 }
 </script>
 </body>
