@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL22 auth/profile/avatar */
+/* FINAL24 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL22: chat stays inside one phone screen */
+/* FINAL24: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL22 CHAT ONLY FIX ===== */
+/* ===== FINAL24 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -437,6 +437,117 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   padding:0!important;
   line-height:1!important;
 }
+.chatEmpty{margin:auto 0!important;text-align:center!important}
+
+/* ===== FINAL24 CHAT RESTORE ===== */
+#chat.page.active,#dmChat.page.active{
+  position:fixed!important;
+  inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
+  margin:auto!important;
+  transform:none!important;
+  width:min(430px,100%)!important;
+  max-width:430px!important;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 8px!important;
+  background:var(--bg)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  z-index:35!important;
+}
+#chat .chatTabs{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  flex:0 0 auto!important;
+  margin-bottom:8px!important;
+}
+#groupView{
+  display:flex!important;
+  flex-direction:column!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+}
+#dmView{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+}
+#groupView .chatBody,#dmChat .chatBody{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:8px 2px 10px!important;
+}
+.chatInput{
+  display:grid!important;
+  grid-template-columns:42px 42px minmax(0,1fr) 58px!important;
+  gap:7px!important;
+  align-items:center!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  padding:8px 0 2px!important;
+  margin:0!important;
+  background:var(--bg)!important;
+  border-top:1px solid var(--line)!important;
+  position:relative!important;
+}
+.chatInput .attachBtn{
+  width:42px!important;
+  height:42px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:20px!important;
+  line-height:1!important;
+}
+.chatInput input:not([type=file]){
+  min-width:0!important;
+  width:100%!important;
+  height:42px!important;
+  padding:0 12px!important;
+  border-radius:12px!important;
+  box-sizing:border-box!important;
+}
+.chatInput .primary{
+  height:42px!important;
+  width:58px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.emojiPanel{
+  left:0!important;
+  right:0!important;
+  bottom:58px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  grid-template-columns:repeat(7,1fr)!important;
+  gap:8px!important;
+  padding:10px!important;
+}
+.emojiPanel button{
+  width:100%!important;
+  aspect-ratio:1/1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  line-height:1!important;
+}
+.bubbleRow{display:flex;align-items:flex-end;gap:8px;margin:9px 0}
+.bubbleRow.me{justify-content:flex-end}
+.chatMessageColumn{max-width:78%;min-width:0}
+.bubbleFlex{display:flex;align-items:flex-end;gap:5px}
+.bubbleFlex.mine{flex-direction:row-reverse}
+.bubble{max-width:100%;overflow-wrap:anywhere}
+.chatMediaBtn{border:0;padding:0;background:transparent;cursor:pointer}
+.chatMedia img,.chatMedia video{display:block;max-width:220px;max-height:280px;border-radius:14px;object-fit:cover}
+.chatFile{text-decoration:none;color:inherit;display:flex!important;align-items:center!important;gap:8px}
+.chatFile .saveLink{display:block;font-size:10px;margin-top:3px}
+.bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -733,23 +844,27 @@ async function sendPush(mode,title,body,options={}){
  }
 }
 async function sendTestPushNotification(){
- if(!isMasterAdmin())return toast('총관리자만 테스트 알림을 사용할 수 있습니다.');
+ if(!isMasterAdmin())return;
  const sub=await currentPushSubscription();
- if(Notification.permission!=='granted'||!sub)return toast('먼저 푸시 알림을 켜주세요.');
- toast('테스트 알림 전송 중...');
- const result=await sendPush('self_test','TEAM EYSL 🔔','테스트 알림이 정상적으로 연결되었습니다.',{tag:`eysl-test-${Date.now()}`});
- if(!result.ok)return toast(`테스트 알림 실패: ${result.error||'알 수 없는 오류'}`);
- if(result.sent>0)return toast(`테스트 알림 전송 성공 · ${result.sent}대`);
- toast('푸시 구독은 있지만 실제 전송된 기기가 0대예요.');
+ if(Notification.permission!=='granted'||!sub){
+   await enablePushNotifications();
+ }
+ const readySub=await currentPushSubscription();
+ if(Notification.permission!=='granted'||!readySub)return;
+ const result=await sendPush('self_test','TEAM EYSL','테스트 알림입니다.',{
+   tag:`eysl-test-${Date.now()}`,
+   url_path:'/?open=home'
+ });
+ if(!result.ok)console.error('test push failed:',result.error||result);
 }
-function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={chat:'chat',schedule:'schedule',media:'media',resources:'resources'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
+function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={home:'home',chat:'chat',schedule:'schedule',media:'media',resources:'files'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
 function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
  window.scrollTo(0,0);
  if(id==='notice')renderNotices();
  if(id==='home')renderHome();
- if(id==='chat'){renderGroup();renderDmList()}
+ if(id==='chat'){bindChatEnterKeys();void loadPersistentChat().then(()=>{renderGroup();renderDmList();ensureChatRealtime();})}
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
@@ -922,15 +1037,44 @@ function isMasterAdmin(){return currentUser.actualRole==='master_admin'}
 
 async function renderApprovalRequests(){
  if(!isMasterAdmin())return;
- const pendingBox=document.getElementById('pendingMemberList'),processedBox=document.getElementById('processedMemberList'),count=document.getElementById('pendingCount');
+ const pendingBox=document.getElementById('pendingMemberList'),
+       processedBox=document.getElementById('processedMemberList'),
+       count=document.getElementById('pendingCount');
  if(!pendingBox||!processedBox)return;
- pendingBox.innerHTML='<div class="card meta">불러오는 중...</div>';
- const {data,error}=await dbClient.rpc('get_admin_member_directory');
- if(error){console.error(error);pendingBox.innerHTML='<div class="approvalEmpty">회원 승인 목록을 불러오지 못했습니다.</div>';return}
- const pending=(data||[]).filter(x=>x.status==='pending'),processed=(data||[]).filter(x=>x.status!=='pending').slice(-10).reverse();
+
+ pendingBox.innerHTML='<div class="card meta">승인 대기 회원 불러오는 중...</div>';
+
+ const {data,error}=await dbClient.rpc('get_member_approval_queue');
+ if(error){
+   console.error('get_member_approval_queue:',error);
+   pendingBox.innerHTML='<div class="approvalEmpty">승인 대기 목록을 불러오지 못했습니다.</div>';
+   if(count)count.textContent='';
+   return;
+ }
+
+ const rows=data||[];
+ const pending=rows.filter(x=>x.status==='pending');
+ const processed=rows.filter(x=>x.status!=='pending').slice(0,10);
+
  if(count)count.textContent=`${pending.length}명`;
- pendingBox.innerHTML=pending.length?pending.map(m=>`<div class="approvalRow"><h3>${escHtml(m.nickname)}</h3><p>일반회원 가입 요청${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${m.gender}`:''}</p><div class="actions"><button class="btn primary" onclick="manageMemberApproval('${m.id}','approve')">승인</button><button class="btn outline" onclick="manageMemberApproval('${m.id}','reject')">거절</button></div></div>`).join(''):'<div class="approvalEmpty">현재 승인 대기 회원이 없습니다.</div>';
- processedBox.innerHTML=processed.length?processed.map(m=>`<div class="approvalRow"><h3>${escHtml(m.nickname)}</h3><p>${m.status==='approved'?'승인 완료':m.status==='blocked'?'내보내기':'거절'} · ${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'}</p></div>`).join(''):'<div class="approvalEmpty">처리 내역이 없습니다.</div>';
+
+ pendingBox.innerHTML=pending.length
+   ?pending.map(m=>`<div class="approvalRow">
+      <h3>${escHtml(m.nickname)}</h3>
+      <p>가입 승인 대기${m.birth_year?` · ${m.birth_year}년생`:''}${m.gender?` · ${escHtml(m.gender)}`:''}</p>
+      <div class="actions">
+        <button class="btn primary" onclick="manageMemberApproval('${m.id}','approve')">승인</button>
+        <button class="btn outline" onclick="manageMemberApproval('${m.id}','reject')">거절</button>
+      </div>
+    </div>`).join('')
+   :'<div class="approvalEmpty">현재 승인 대기 회원이 없습니다.</div>';
+
+ processedBox.innerHTML=processed.length
+   ?processed.map(m=>`<div class="approvalRow">
+      <h3>${escHtml(m.nickname)}</h3>
+      <p>${m.status==='approved'?'승인 완료':m.status==='blocked'?'내보내기':'처리 완료'} · ${m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원'}</p>
+    </div>`).join('')
+   :'<div class="approvalEmpty">처리 내역이 없습니다.</div>';
 }
 async function manageMemberApproval(memberId,action){
  if(!isMasterAdmin())return toast('총관리자만 회원 승인을 처리할 수 있습니다.');
@@ -1023,6 +1167,33 @@ async function loadPersistentChat(){
    }
  }
 }
+
+let chatRealtimeChannel=null;
+let chatRealtimeRefreshTimer=null;
+
+function ensureChatRealtime(){
+ if(chatRealtimeChannel||!dbClient?.channel)return;
+ try{
+   chatRealtimeChannel=dbClient
+     .channel(`eysl-chat-${currentUser.memberId||'member'}`)
+     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},()=>{
+       clearTimeout(chatRealtimeRefreshTimer);
+       chatRealtimeRefreshTimer=setTimeout(async()=>{
+         await loadPersistentChat();
+         const chatPage=document.getElementById('chat');
+         const dmPage=document.getElementById('dmChat');
+         if(chatPage?.classList.contains('active'))renderGroup();
+         if(dmPage?.classList.contains('active'))renderDm();
+         const dmView=document.getElementById('dmView');
+         if(dmView&&dmView.style.display!=='none')renderDmList();
+       },120);
+     })
+     .subscribe();
+ }catch(err){
+   console.error('chat realtime:',err);
+ }
+}
+
 function renderGroup(){
  const box=document.getElementById('groupChatBody');
  if(!box)return;
@@ -1049,6 +1220,7 @@ async function sendGroup(){
    if(error){console.error('send group rpc:',error);return toast('메시지 전송에 실패했습니다.')}
    i.value='';
    await loadPersistentChat();renderGroup();
+   requestAnimationFrame(()=>{const b=document.getElementById('groupChatBody');if(b)b.scrollTop=b.scrollHeight;});
    await sendPush('all_except_self',currentUser.nickname,text.length>70?text.slice(0,70)+'…':text,{tag:'group-chat',url_path:'/?open=chat'});
  }finally{if(btn)btn.disabled=false}
 }
@@ -1083,7 +1255,16 @@ function switchChat(mode){
  }
 }
 async function renderDmList(){await refreshMemberDirectoryFromDb();const names=members.filter(m=>m.status==='approved'&&!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name),box=document.getElementById('dmList');if(!box)return;box.innerHTML=names.map(n=>{const arr=dmMessages[n]||[],last=arr[arr.length-1];return `<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${last?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.')):'아직 대화가 없습니다.'}</p></div><span>›</span></div>`}).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
-async function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');bindChatEnterKeys();await loadPersistentChat();renderDm()}
+async function startDm(name){
+ currentDm=name;
+ if(!dmMessages[name])dmMessages[name]=[];
+ document.getElementById('dmTitle').textContent=name;
+ showPage('dmChat');
+ bindChatEnterKeys();
+ await loadPersistentChat();
+ renderDm();
+ ensureChatRealtime();
+}
 function renderDm(){const box=document.getElementById('dmBody');if(!box)return;const arr=dmMessages[currentDm]||[];box.innerHTML=arr.length?arr.map(m=>renderChatMessage({...m,name:m.name||currentDm},m.me?'나':(m.name||currentDm))).join(''):'<div class="chatEmpty">첫 메시지를 보내보세요.</div>';box.scrollTop=box.scrollHeight}
 async function sendDm(){
  const i=document.getElementById('dmInput'),text=(i?.value||'').trim();if(!text||!currentDm)return;
@@ -1095,6 +1276,7 @@ async function sendDm(){
    });
    if(error){console.error('send dm rpc:',error);return toast('메시지 전송에 실패했습니다.')}
    i.value='';await loadPersistentChat();renderDm();
+   requestAnimationFrame(()=>{const b=document.getElementById('dmBody');if(b)b.scrollTop=b.scrollHeight;});
    await sendPush('member',currentUser.nickname,text.length>70?text.slice(0,70)+'…':text,{target_member_id:target.id,tag:`dm-${currentUser.memberId}`,url_path:'/?open=chat'});
  }finally{if(btn)btn.disabled=false}
 }
@@ -1459,23 +1641,35 @@ async function saveMyRealName(){
 async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
 async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
 function renderChatMessage(m,label){
- let content='';if(m.attachment){const a=m.attachment;if(a.kind==='image')content=`<div class="chatMedia" onclick="openModal('${escAttr(a.url)}','image','${escAttr(a.name)}')"><img src="${escAttr(a.url)}" alt="${escAttr(a.name)}"></div>`;else if(a.kind==='video')content=`<div class="chatMedia" onclick="openModal('${escAttr(a.url)}','video','${escAttr(a.name)}')"><video src="${escAttr(a.url)}" muted playsinline></video><div class="play">▶</div></div>`;else content=`<div class="bubble chatFile"><div class="ficon">📎</div><div class="grow"><b>${escHtml(a.name)}</b><a class="saveLink" href="${escAttr(a.url)}" target="_blank" onclick="event.stopPropagation()">열기</a></div></div>`}else content=`<div class="bubble">${escHtml(m.text||'')}</div>`;const who=m.me?currentUser.nickname:(m.name||label),avatar=m.me?'':avatarMarkup(who,'chat');return `<div class="bubbleRow ${m.me?'me':''}">${avatar}<div><div class="bubbleName" style="${m.me?'text-align:right':''}">${m.me?'나':escHtml(label)}</div><div class="bubbleFlex">${content}<span class="bubbleTime">${escHtml(m.time||'')}</span></div></div></div>`}
-const emojiChoices=['😀','😆','😂','🥹','😭','😍','😘','😎','🤩','🥳','👍','👏','🙌','🙏','💪','🔥','❤️','🩵','✨','🎉','👀','🏊‍♀️','🏊‍♂️','💦','🫧','🏆','🥇','📣'];
-function toggleEmojiPanel(kind){
- const panelId=kind==='group'?'groupEmojiPanel':'dmEmojiPanel';
- const otherId=kind==='group'?'dmEmojiPanel':'groupEmojiPanel';
- const p=document.getElementById(panelId);
- const other=document.getElementById(otherId);
- if(!p)return;
- if(other)other.classList.remove('open');
- if(!p.dataset.ready){
-   p.innerHTML=emojiChoices.map(e=>`<button type="button" data-emoji="${e}">${e}</button>`).join('');
-   p.querySelectorAll('button').forEach(btn=>{
-     btn.addEventListener('click',()=>sendEmoji(kind,btn.dataset.emoji));
-   });
-   p.dataset.ready='1';
+ let content='';
+ if(m.attachment){
+   const a=m.attachment;
+   if(a.kind==='image'){
+     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${escAttr(a.url)}','image','${escAttr(a.name)}')"><img src="${escAttr(a.url)}" alt="${escAttr(a.name)}"></button>`;
+   }else if(a.kind==='video'){
+     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${escAttr(a.url)}','video','${escAttr(a.name)}')"><video src="${escAttr(a.url)}" muted playsinline preload="metadata"></video><div class="play">▶</div></button>`;
+   }else{
+     content=`<a class="bubble chatFile" href="${escAttr(a.url)}" target="_blank" rel="noopener">
+       <div class="ficon">📎</div>
+       <div class="grow"><b>${escHtml(a.name)}</b><span class="saveLink">파일 열기</span></div>
+     </a>`;
+   }
+ }else{
+   content=`<div class="bubble">${escHtml(m.text||'')}</div>`;
  }
- p.classList.toggle('open');
+
+ const who=m.me?currentUser.nickname:(m.name||label);
+ const avatar=m.me?'':avatarMarkup(who,'chat');
+ return `<div class="bubbleRow ${m.me?'me':''}">
+   ${avatar}
+   <div class="chatMessageColumn">
+     ${m.me?'':`<div class="bubbleName">${escHtml(label)}</div>`}
+     <div class="bubbleFlex ${m.me?'mine':''}">
+       ${content}
+       <span class="bubbleTime">${escHtml(m.time||'')}</span>
+     </div>
+   </div>
+ </div>`;
 }
 async function sendEmoji(kind,e){
  if(kind==='group'){
@@ -1764,7 +1958,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final22').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final24').catch(()=>{}));
 }
 </script>
 </body>
