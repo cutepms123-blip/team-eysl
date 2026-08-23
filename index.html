@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL20 auth/profile/avatar */
+/* FINAL21 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL20: chat stays inside one phone screen */
+/* FINAL21: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -321,6 +321,24 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .roleSection{align-items:flex-start!important}
 .roleSection .meta{margin-top:5px!important}
 .plainArrow{border:0;background:transparent;font-size:24px;padding:8px}
+
+.compactProfileSection{margin-bottom:8px!important}
+.compactRealNameCard{padding:12px!important}
+.compactRealNameRow{display:grid;grid-template-columns:1fr 68px;gap:8px;align-items:center}
+.compactRealNameRow input{width:100%;height:40px;border:1px solid #e8e8e8;border-radius:11px;padding:0 12px;font-size:13px;background:#fff}
+.compactSaveBtn{height:40px;padding:0 10px!important}
+.compactSavedText{margin-top:6px;font-size:10px;color:#999;min-height:0}
+.recordSummaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.pbCard{background:#fff;border:1px solid #eee;border-radius:14px;padding:12px}
+.pbCard span{display:block;font-size:11px;color:#888;margin-bottom:4px}
+.pbCard b{font-size:18px}
+.recordList{display:flex;flex-direction:column;gap:8px}
+.recordRow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid #eee;border-radius:14px;padding:12px 14px}
+.recordRow b{font-size:13px}
+.recordRow p{font-size:10px;color:#999;margin:4px 0 0}
+.recordRow strong{font-size:15px;white-space:nowrap}
+.recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
+.realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -404,17 +422,20 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 <section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
 
 <section id="mypage" class="page"><h1 class="title">마이페이지</h1><div class="profile"><div class="profileMain"><div id="myProfileAvatarWrap" class="profileFallback">EY</div><div class="profileInfo"><h2 id="myName">-</h2><p id="myJoinText">TEAM EYSL</p><div class="profileActions"><button class="btn outline" onclick="document.getElementById('profilePhotoInput').click()">프로필 사진 변경</button><button id="profileDeleteBtn" class="btn amber" onclick="deleteMyProfilePhoto()">사진 삭제</button><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="uploadMyProfilePhoto(this)"></div></div></div></div>
-<div class="section"><h2>마이랭킹 기록 연동</h2></div>
-<div class="card realNameCard">
-  <label for="myRealName"><b>본인 실명</b></label>
-  <div class="realNameRow"><input id="myRealName" maxlength="30" autocomplete="name" placeholder="마이랭킹에 등록된 실명"><button class="btn primary" onclick="saveMyRealName()">저장</button></div>
-  <p class="meta">마이랭킹 기록 자동 업데이트에 사용됩니다. 입력한 실명과 팀명 <b>EYSL</b>이 일치하는 기록만 연동 대상으로 사용합니다.</p>
-  <div id="realNameSaved" class="smallLine"></div>
-  <div class="recordSyncActions">
-    <button class="btn outline" type="button" onclick="checkMyRankingSync()">마이랭킹 기록 확인</button>
-    <span id="myRankingSyncStatus" class="meta"></span>
+
+<div class="section compactProfileSection"><h2>기록 연동</h2></div>
+<div class="card compactRealNameCard">
+  <div class="compactRealNameRow">
+    <input id="myRealName" maxlength="30" autocomplete="name" placeholder="본인 실명">
+    <button class="btn primary compactSaveBtn" onclick="saveMyRealName()">저장</button>
   </div>
+  <div id="realNameSaved" class="compactSavedText"></div>
 </div>
+
+<div class="section"><h2>내 기록</h2></div>
+<div id="myRecordSummary" class="recordSummaryGrid"></div>
+<div id="myRecordList" class="recordList"></div>
+
 <div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div>
 <div class="row" onclick="enablePushNotifications()"><div class="grow"><b>푸시 알림</b><p id="pushStatusText">알림 상태 확인 중...</p></div><span id="pushStatusTag" class="tag">설정</span></div><div id="masterPushTestRow" class="row" onclick="sendTestPushNotification()"><div class="grow"><b>테스트 알림 보내기</b><p>총관리자 기기로 실제 푸시 알림을 전송합니다.</p></div><span class="tag">TEST</span></div>
 <div class="row" onclick="logout()"><div class="grow"><b>로그아웃</b><p>이 기기에서 로그인 상태를 해제합니다.</p></div><span>›</span></div></section>
@@ -1223,24 +1244,67 @@ function renderMyProfile(){
  if(d)d.style.display=currentUser.avatarPath?'inline-flex':'none';
  const rn=document.getElementById('myRealName'),saved=document.getElementById('realNameSaved');
  if(rn)rn.value=currentUser.realName||'';
- if(saved)saved.textContent=currentUser.realName?`연동 실명: ${currentUser.realName} · 팀명 EYSL 기록만 사용`:'실명을 저장하면 마이랭킹 기록 연동 대상이 됩니다.';
+ if(saved)saved.textContent=currentUser.realName?`${currentUser.realName} · EYSL 기록 연동`:'';
+ void renderMyPageRecords();
 }
-async function checkMyRankingSync(){
- const status=document.getElementById('myRankingSyncStatus');
- if(!currentUser.realName){
-   if(status)status.textContent='먼저 본인 실명을 저장해주세요.';
-   return;
- }
- if(status)status.textContent='마이랭킹 연결 상태 확인 중...';
- // 현재 마이랭킹은 공개 검색 UI는 제공하지만 외부 자동연동 API는 확인되지 않았습니다.
- // 사용자가 결과를 직접 확인할 수 있도록 검색 페이지를 열고, 앱에서는 DB 기록을 다시 읽습니다.
- try{
-   window.open('https://myranking.co.kr/','_blank');
-   if(status)status.textContent=`${currentUser.realName} · 팀명 EYSL 기준 자동연동 API 확인 중`;
-   toast('마이랭킹에서 실명을 검색한 뒤 EYSL 기록을 확인해주세요. 자동수집 연결은 계속 보완 중입니다.');
- }catch(e){
-   if(status)status.textContent='마이랭킹을 열지 못했습니다.';
- }
+
+function recordSeconds(v){
+  if(v==null)return null;
+  const s=String(v).trim();
+  const parts=s.split(':');
+  if(parts.length===2){
+    const m=Number(parts[0]),sec=Number(parts[1]);
+    if(Number.isFinite(m)&&Number.isFinite(sec))return m*60+sec;
+  }
+  const n=Number(s.replace(/[^\d.]/g,''));
+  return Number.isFinite(n)?n:null;
+}
+function bestRecordByStroke(rows,stroke){
+  const filtered=rows.filter(r=>String(r.stroke||'').includes(stroke));
+  if(!filtered.length)return null;
+  return filtered.sort((a,b)=>(recordSeconds(a.result)??9999)-(recordSeconds(b.result)??9999))[0];
+}
+async function renderMyPageRecords(){
+  const summary=document.getElementById('myRecordSummary');
+  const list=document.getElementById('myRecordList');
+  if(!summary||!list||!currentUser.memberId)return;
+
+  summary.innerHTML='<div class="recordLoading">기록 불러오는 중...</div>';
+  list.innerHTML='';
+
+  const {data,error}=await dbClient
+    .from('records')
+    .select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at')
+    .eq('member_id',currentUser.memberId)
+    .order('event_date',{ascending:false});
+
+  if(error){
+    console.error('mypage records',error);
+    summary.innerHTML='<div class="recordEmpty">기록을 불러오지 못했습니다.</div>';
+    return;
+  }
+
+  const rows=data||[];
+  if(!rows.length){
+    summary.innerHTML='<div class="recordEmpty">아직 등록된 기록이 없습니다.</div>';
+    return;
+  }
+
+  const strokes=['자유형','배영','평영','접영'];
+  summary.innerHTML=strokes.map(st=>{
+    const r=bestRecordByStroke(rows,st);
+    return `<div class="pbCard"><span>${st}</span><b>${r?escHtml(r.result||'-'):'-'}</b></div>`;
+  }).join('');
+
+  list.innerHTML=rows.map(r=>{
+    const distance=r.metadata?.distance?`${escHtml(String(r.metadata.distance))} `:'';
+    const title=`${distance}${escHtml(r.stroke||r.event_name||'기록')}`;
+    const meta=[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ');
+    return `<div class="recordRow">
+      <div><b>${title}</b><p>${meta||'기록'}</p></div>
+      <strong>${escHtml(r.result||'-')}</strong>
+    </div>`;
+  }).join('');
 }
 async function saveMyRealName(){
  const input=document.getElementById('myRealName'),name=(input?.value||'').trim();
@@ -1249,7 +1313,7 @@ async function saveMyRealName(){
  if(error){console.error(error);return toast('실명 저장에 실패했습니다.')}
  currentUser.realName=name;
  const me=members.find(m=>m.id===currentUser.memberId);if(me)me.realName=name;
- renderMyProfile();toast('실명이 저장됐습니다. 마이랭킹 기록 연동에 사용됩니다.');
+ renderMyProfile();void renderMyPageRecords();toast('실명이 저장됐습니다.');
 }
 async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
 async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
@@ -1544,7 +1608,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final20').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final21').catch(()=>{}));
 }
 </script>
 </body>
