@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL33 auth/profile/avatar */
+/* FINAL34 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL33: chat stays inside one phone screen */
+/* FINAL34: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL33 CHAT ONLY FIX ===== */
+/* ===== FINAL34 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL33 CHAT RESTORE ===== */
+/* ===== FINAL34 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,7 +549,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* FINAL33 approval queue render */
+/* FINAL34 approval queue render */
 #pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
 .approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .approvalRow h3{margin:0 0 6px;font-size:16px}
@@ -557,7 +557,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 
-/* FINAL33 CHAT UI */
+/* FINAL34 CHAT UI */
 .emojiPanel{
   display:none!important;
   position:absolute!important;
@@ -636,7 +636,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   display:flex!important;align-items:center!important;justify-content:center!important;
 }
 
-/* FINAL33 CHAT VIEW FIX */
+/* FINAL34 CHAT VIEW FIX */
 #groupView{
   flex:1 1 auto!important;
   min-height:0!important;
@@ -666,7 +666,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   overflow-y:auto!important;
 }
 
-/* FINAL33 CHAT FINAL OVERRIDES */
+/* FINAL34 CHAT FINAL OVERRIDES */
 #groupView[style*="display: none"]{display:none!important}
 #dmView[style*="display: block"]{display:block!important}
 #dmChat.page.active{
@@ -693,7 +693,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   transform:none!important;
 }
 
-/* ===== FINAL33 requested UI fixes ===== */
+/* ===== FINAL34 requested UI fixes ===== */
 
 /* Chat bottom area: reduce nav/composer gap and overall nav height */
 .nav{
@@ -764,6 +764,41 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .memberInfoDetail .detailrow{display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;gap:12px!important;padding:9px 0!important}
 .memberInfoDetail .detailrow b{font-size:10px!important;color:#8b9096!important}
 .memberInfoDetail .detailrow span{font-size:12px!important;line-height:1.4!important;text-align:left!important}
+
+/* ===== FINAL34 reviewed fixes ===== */
+.nav{
+  height:72px!important;
+  padding-bottom:max(5px,env(safe-area-inset-bottom))!important;
+}
+#chat.page.active,#dmChat.page.active{
+  bottom:calc(72px + env(safe-area-inset-bottom))!important;
+}
+.chatInput{
+  padding:2px 0 1px!important;
+  min-height:48px!important;
+}
+#groupView .chatBody,#dmChat .chatBody{padding-bottom:1px!important}
+
+/* DM cards/buttons must always receive taps */
+#dmView{position:relative!important;z-index:20!important;pointer-events:auto!important}
+#dmList{position:relative!important;z-index:21!important;pointer-events:auto!important}
+#dmList .dmRow{pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:22!important}
+
+/* Role management */
+.roleSubhead{font-size:12px;font-weight:800;margin:4px 0 9px}
+.roleSubheadSecond{margin-top:22px}
+.roleMemberRow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:8px}
+.roleMemberRow b{font-size:12px}
+.roleMemberRow p{font-size:10px;color:#929292;margin:3px 0 0}
+
+/* Record uploads */
+.recordUploadSection{margin-top:18px!important}
+.recordUploadCard{padding:12px!important}
+.recordUploadList{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.recordUploadRow{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;border-top:1px solid var(--line);padding:10px 2px 2px}
+.recordUploadRow b{font-size:11px}
+.recordUploadRow p{font-size:9px;color:#999;margin:3px 0 0}
+.recordUploadRow span{font-size:10px;color:#2f80ed}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -860,6 +895,12 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 <div class="section"><h2>내 기록</h2></div>
 <div id="myRecordSummary" class="recordSummaryGrid"></div>
 <div id="myRecordList" class="recordList"></div>
+<div class="section recordUploadSection"><h2>기록지 업로드</h2><span class="meta">마이랭킹 자동연동이 안 될 때 사용</span></div>
+<div class="card recordUploadCard">
+  <button class="btn outline" type="button" onclick="document.getElementById('recordSheetInput').click()">＋ 기록지 파일 업로드</button>
+  <input id="recordSheetInput" type="file" accept="image/*,.pdf,.xlsx,.xls" hidden onchange="uploadRecordSheet(this)">
+  <div id="recordUploadList" class="recordUploadList"></div>
+</div>
 
 <div class="section"><h2>내 활동 요약</h2></div><div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div><div class="section"><h2>내 메뉴</h2></div><div class="menuGrid"><div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div><div class="menuCard" onclick="renderMyStatus('race')"><b>나의 대회 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="renderMyStatus('event')"><b>나의 이벤트 신청 내역</b><span>전체 · 예정 · 종료</span></div><div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div></div><div class="section"><h2>설정</h2></div>
 <div class="row" onclick="enablePushNotifications()"><div class="grow"><b>푸시 알림</b><p id="pushStatusText">알림 상태 확인 중...</p></div><span id="pushStatusTag" class="tag">설정</span></div><div id="masterPushTestRow" class="row" onclick="sendTestPushNotification()"><div class="grow"><b>테스트 알림 보내기</b><p>총관리자 기기로 실제 푸시 알림을 전송합니다.</p></div><span class="tag">TEST</span></div>
@@ -888,7 +929,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
  <div id="processedMemberList" class="list"></div>
 </section>
 
-<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div id="roleManagementWrap"><div class="section"><h2>부관리자 권한 관리</h2><p class="meta">총관리자만 일반회원을 부관리자로 지정하거나 해제할 수 있어요. 부관리자는 공지·일정·미디어·자료실 등 운영 권한을 갖지만, 가입 승인·회원 내보내기·부관리자 지정/해제는 할 수 없습니다.</p></div><div id="roleManagementList" class="list"></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
+<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div id="roleManagementWrap"><div class="section"><h2>부관리자 권한 관리</h2><p class="meta">현재 부관리자와 코치를 먼저 보여줘요. 부관리자·코치는 운영 권한을 가지며, 가입 승인·회원 내보내기·권한 지정/해제는 총관리자만 할 수 있어요.</p></div><div id="roleManagementList" class="list"></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
 <section id="memberDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('memberAdmin')">←</button><h1>회원 상세</h1><span></span></div><div id="memberDetailBody"></div></section>
 
 <section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>활동 취합본</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">이벤트</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">이벤트</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
@@ -952,7 +993,7 @@ function mapActivityRow(row){const d=row.details||{};const base={id:row.id,title
 async function signedTeamFile(path){if(!path)return null;const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,3600);if(error){console.error('signed url:',error);return null}return data?.signedUrl||null}
 function snapshotPlainData(){
  try{
-  localStorage.setItem('eysl-core-cache-v33',JSON.stringify({
+  localStorage.setItem('eysl-core-cache',JSON.stringify({
    notices:notices.map(n=>({id:n.id,date:n.date,title:n.title,body:n.body,attachments:n.attachments||[],comments:n.comments||[]})).slice(0,30),
    trainings,events,race,members:members.map(m=>({...m,avatarUrl:''})),attendanceHistory
   }));
@@ -960,7 +1001,7 @@ function snapshotPlainData(){
 }
 function restoreCoreSnapshot(){
  try{
-  const raw=localStorage.getItem('eysl-core-cache-v33');if(!raw)return false;
+  const raw=localStorage.getItem('eysl-core-cache')||localStorage.getItem('eysl-core-cache-v33');if(!raw)return false;
   const c=JSON.parse(raw);
   if(Array.isArray(c.notices))notices=c.notices;
   unreadNoticeIds=new Set(notices.map(n=>n.id));
@@ -1154,7 +1195,7 @@ function showPage(id){
  window.scrollTo(0,0);
  if(id==='notice')renderNotices();
  if(id==='home')renderHome();
- if(id==='chat'){bindChatEnterKeys();restoreChatCache();renderGroup();void renderDmList();ensureChatRealtime();void loadPersistentChat().then(()=>{renderGroup();renderDmList();})}
+ if(id==='chat'){bindChatEnterKeys();restoreChatCache();renderGroup();ensureChatRealtime();void loadPersistentChat().then(()=>{renderGroup();if(document.getElementById('dmView')?.style.display!=='none')renderDmList();})}
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
@@ -1535,7 +1576,7 @@ async function chatApi(payload){
 }
 function cacheChatState(){
  try{
-  localStorage.setItem('eysl-chat-cache-v33',JSON.stringify({
+  localStorage.setItem('eysl-chat-cache',JSON.stringify({
    group:groupMessages.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-150),
    dm:Object.fromEntries(Object.entries(dmMessages).map(([k,v])=>[k,v.map(x=>({...x,attachment:x.attachment?{...x.attachment,url:''}:null})).slice(-100)]))
   }));
@@ -1544,7 +1585,7 @@ function cacheChatState(){
 function restoreChatCache(){
  if(groupMessages.length||Object.keys(dmMessages).length)return;
  try{
-  const raw=localStorage.getItem('eysl-chat-cache-v33');if(!raw)return;
+  const raw=localStorage.getItem('eysl-chat-cache')||localStorage.getItem('eysl-chat-cache-v33');if(!raw)return;
   const c=JSON.parse(raw);
   groupMessages=Array.isArray(c.group)?c.group:[];
   dmMessages=c.dm&&typeof c.dm==='object'?c.dm:{};
@@ -1593,34 +1634,31 @@ async function loadPersistentChat(){
 let chatRealtimeChannel=null;
 let chatRealtimeRefreshTimer=null;
 
-let chatPollTimer=null;
 function refreshVisibleChatViews(){
  const chatPage=document.getElementById('chat'),dmPage=document.getElementById('dmChat');
  if(chatPage?.classList.contains('active')){
-  renderGroup();
   const dmView=document.getElementById('dmView');
   if(dmView&&dmView.style.display!=='none')renderDmList();
+  else renderGroup();
  }
  if(dmPage?.classList.contains('active'))renderDm();
 }
 function ensureChatRealtime(){
- if(!chatRealtimeChannel&&dbClient?.channel){
-  try{
-   chatRealtimeChannel=dbClient.channel(`eysl-chat-${currentUser.memberId||'member'}`)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
-     if(payload?.new?.sender_id===currentUser.memberId)return;
-     clearTimeout(chatRealtimeRefreshTimer);
-     chatRealtimeRefreshTimer=setTimeout(async()=>{await loadPersistentChat();refreshVisibleChatViews()},80);
-    }).subscribe();
-  }catch(err){console.error('chat realtime:',err)}
- }
- if(!chatPollTimer){
-  chatPollTimer=setInterval(async()=>{
-   const active=document.getElementById('chat')?.classList.contains('active')||document.getElementById('dmChat')?.classList.contains('active');
-   if(!active)return;
-   await loadPersistentChat();refreshVisibleChatViews();
-  },1800);
- }
+ if(chatRealtimeChannel||!dbClient?.channel)return;
+ try{
+  chatRealtimeChannel=dbClient.channel(`eysl-chat-${currentUser.memberId||'member'}`)
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+    if(payload?.new?.sender_id===currentUser.memberId)return;
+    clearTimeout(chatRealtimeRefreshTimer);
+    chatRealtimeRefreshTimer=setTimeout(async()=>{
+      await loadPersistentChat();
+      refreshVisibleChatViews();
+    },40);
+   })
+   .subscribe(status=>{
+     if(status==='CHANNEL_ERROR')console.error('chat realtime channel error');
+   });
+ }catch(err){console.error('chat realtime:',err)}
 }
 
 
@@ -1721,6 +1759,22 @@ async function renderDmList(){
    const preview=last?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.')):'아직 대화가 없습니다.';
    return `<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${preview}</p></div><span>›</span></div>`;
  }).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>';
+}
+async function startDm(name){
+ if(!name||name===currentUser.nickname)return;
+ currentDm=name;
+ if(!dmMessages[name])dmMessages[name]=[];
+ const title=document.getElementById('dmTitle');
+ if(title)title.textContent=name;
+ showPage('dmChat');
+ bindChatEnterKeys();
+ renderDm();
+ ensureChatRealtime();
+ // Refresh in background; don't block entering the room.
+ try{
+   await loadPersistentChat();
+   if(currentDm===name)renderDm();
+ }catch(err){console.error('start dm refresh:',err)}
 }
 function renderDm(){const box=document.getElementById('dmBody');if(!box)return;const arr=dmMessages[currentDm]||[];box.innerHTML=arr.length?arr.map(m=>renderChatMessage({...m,name:m.name||currentDm},m.me?'나':(m.name||currentDm))).join(''):'<div class="chatEmpty">첫 메시지를 보내보세요.</div>';box.scrollTop=box.scrollHeight}
 async function sendDm(){
@@ -2044,8 +2098,44 @@ function renderMyProfile(){
  if(rn)rn.value=currentUser.realName||'';
  if(saved)saved.textContent=currentUser.realName?`${currentUser.realName} · EYSL 기록 연동`:'';
  void renderMyPageRecords();
+ void renderRecordUploads();
 }
 
+async function uploadRecordSheet(input){
+ const file=input.files?.[0];input.value='';
+ if(!file)return;
+ try{
+  toast('기록지 업로드 중...');
+  const path=await uploadBlobToTeamFiles(file,'records');
+  const {error}=await dbClient.rpc('save_record_upload_v1',{
+   p_file_name:file.name,
+   p_storage_path:path,
+   p_mime_type:file.type||'application/octet-stream',
+   p_note:''
+  });
+  if(error)throw error;
+  await renderRecordUploads();
+  toast('기록지를 업로드했습니다.');
+ }catch(err){
+  console.error('record upload:',err);
+  toast('기록지 업로드에 실패했습니다.');
+ }
+}
+async function renderRecordUploads(){
+ const box=document.getElementById('recordUploadList');if(!box)return;
+ const {data,error}=await dbClient.rpc('list_record_uploads_v1');
+ if(error){console.error('record uploads:',error);box.innerHTML='<div class="meta">업로드 목록을 불러오지 못했습니다.</div>';return}
+ const rows=data||[];
+ if(!rows.length){box.innerHTML='<div class="meta">아직 업로드한 기록지가 없습니다.</div>';return}
+ const rendered=await Promise.all(rows.map(async r=>{
+  let url='';try{url=await signedTeamFile(r.storage_path)}catch(_){}
+  const date=r.created_at?new Date(r.created_at).toLocaleDateString('ko-KR'):'';
+  return `<a class="recordUploadRow" ${url?`href="${escAttr(url)}" target="_blank" rel="noopener"`:''}>
+    <div class="grow"><b>${escHtml(r.file_name)}</b><p>${escHtml(date)}</p></div><span>열기 ›</span>
+  </a>`;
+ }));
+ box.innerHTML=rendered.join('');
+}
 function recordSeconds(v){
   if(v==null)return null;
   const s=String(v).trim();
@@ -2386,6 +2476,37 @@ async function openMember(name){
  <div class="section"><h2>최근 출석 기록</h2></div><div class="list">${historyHtml||'<div class="card meta">등록된 과거 출석 기록이 없습니다.</div>'}</div>
  ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`;
 }
+async function renderRoleManagement(){
+ const wrap=document.getElementById('roleManagementWrap');
+ const box=document.getElementById('roleManagementList');
+ if(!wrap||!box)return;
+ wrap.style.display=isMasterAdmin()?'block':'none';
+ if(!isMasterAdmin())return;
+
+ if(!members.length)await refreshMemberDirectoryFromDb();
+ const approved=members.filter(m=>m.status==='approved'&&!m.blocked);
+ const admins=approved.filter(m=>m.role==='admin');
+ const regular=approved.filter(m=>m.role==='member');
+
+ const adminRows=admins.map(m=>{
+   const label=m.teamRole==='코치'?'코치 · 부관리자 권한':m.teamRole==='부관리자'?'부관리자':'부관리자';
+   return `<div class="roleMemberRow">
+     <div class="grow"><b>${escHtml(m.name)}</b><p>${escHtml(label)}</p></div>
+     <button class="btn amber" onclick="changeMemberRole('${m.id}','revoke_admin')">권한 해제</button>
+   </div>`;
+ }).join('');
+
+ const regularRows=regular.map(m=>`<div class="roleMemberRow">
+   <div class="grow"><b>${escHtml(m.name)}</b><p>${escHtml(m.teamRole||'일반회원')}</p></div>
+   <button class="btn outline" onclick="changeMemberRole('${m.id}','grant_admin')">부관리자 지정</button>
+ </div>`).join('');
+
+ box.innerHTML=`
+   <div class="roleSubhead">현재 부관리자 · 코치</div>
+   ${adminRows||'<div class="card meta">현재 지정된 부관리자가 없습니다.</div>'}
+   <div class="roleSubhead roleSubheadSecond">일반 회원</div>
+   ${regularRows||'<div class="card meta">지정 가능한 일반 회원이 없습니다.</div>'}`;
+}
 async function changeMemberRole(memberId,action){
  if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');
  try{
@@ -2456,7 +2577,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final33').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final34').catch(()=>{}));
 }
 </script>
 </body>
