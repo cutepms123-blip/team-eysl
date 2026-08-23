@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL35 auth/profile/avatar */
+/* FINAL36 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL35: chat stays inside one phone screen */
+/* FINAL36: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL35 CHAT ONLY FIX ===== */
+/* ===== FINAL36 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL35 CHAT RESTORE ===== */
+/* ===== FINAL36 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,7 +549,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* FINAL35 approval queue render */
+/* FINAL36 approval queue render */
 #pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
 .approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .approvalRow h3{margin:0 0 6px;font-size:16px}
@@ -557,7 +557,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 
-/* FINAL35 CHAT UI */
+/* FINAL36 CHAT UI */
 .emojiPanel{
   display:none!important;
   position:absolute!important;
@@ -636,7 +636,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   display:flex!important;align-items:center!important;justify-content:center!important;
 }
 
-/* FINAL35 CHAT VIEW FIX */
+/* FINAL36 CHAT VIEW FIX */
 #groupView{
   flex:1 1 auto!important;
   min-height:0!important;
@@ -666,7 +666,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   overflow-y:auto!important;
 }
 
-/* FINAL35 CHAT FINAL OVERRIDES */
+/* FINAL36 CHAT FINAL OVERRIDES */
 #groupView[style*="display: none"]{display:none!important}
 #dmView[style*="display: block"]{display:block!important}
 #dmChat.page.active{
@@ -693,7 +693,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   transform:none!important;
 }
 
-/* ===== FINAL35 requested UI fixes ===== */
+/* ===== FINAL36 requested UI fixes ===== */
 
 /* Chat bottom area: reduce nav/composer gap and overall nav height */
 .nav{
@@ -765,7 +765,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .memberInfoDetail .detailrow b{font-size:10px!important;color:#8b9096!important}
 .memberInfoDetail .detailrow span{font-size:12px!important;line-height:1.4!important;text-align:left!important}
 
-/* ===== FINAL35 reviewed fixes ===== */
+/* ===== FINAL36 reviewed fixes ===== */
 .nav{
   height:72px!important;
   padding-bottom:max(5px,env(safe-area-inset-bottom))!important;
@@ -800,7 +800,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordUploadRow p{font-size:9px;color:#999;margin:3px 0 0}
 .recordUploadRow span{font-size:10px;color:#2f80ed}
 
-/* ===== FINAL35 fixes ===== */
+/* ===== FINAL36 fixes ===== */
 .chatModeHidden{display:none!important}
 #groupView:not(.chatModeHidden){display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important}
 #dmView:not(.chatModeHidden){display:block!important;flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important}
@@ -809,6 +809,11 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .scheduleListCard{cursor:pointer}
 .aggregationPeople{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 #recordUploadSection[style*="display: none"],#recordUploadCard[style*="display: none"]{display:none!important}
+
+/* ===== FINAL36 fixes ===== */
+.statusPill.done,.tag.done{background:#eceff2!important;color:#7f8790!important}
+.chatModeHidden{display:none!important}
+#groupView.chatModeHidden,#dmView.chatModeHidden{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -996,6 +1001,24 @@ let dmMessages={};
 
 
 
+function localToday(){
+ const d=new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function activityHasStarted(item){
+ if(!item?.date)return false;
+ const today=localToday();
+ if(String(item.date)<today)return true;
+ if(String(item.date)>today)return false;
+ const start=String(item.start||'').trim();
+ if(!start)return false;
+ const [hh,mm]=start.split(':').map(Number);
+ if(Number.isNaN(hh))return false;
+ const now=new Date();
+ return now.getHours()>hh || (now.getHours()===hh && now.getMinutes()>=(mm||0));
+}
+function activityState(item){return activityHasStarted(item)?'done':'upcoming'}
+function activityStateLabel(item){return activityHasStarted(item)?'종료':'신청 가능'}
 function fmtDateFromIso(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,10).replaceAll('-','.');return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`}
 function fmtDbTime(v){return v?String(v).slice(0,5):''}
 function emptyRace(){return {id:null,title:'',date:'',endDate:'',place:'',participants:[],detail:'',relays:[]}}
@@ -1191,17 +1214,53 @@ async function sendPush(mode,title,body,options={}){
 }
 async function sendTestPushNotification(){
  if(!isMasterAdmin())return;
- const sub=await currentPushSubscription();
- if(Notification.permission!=='granted'||!sub){
+ const text=document.getElementById('pushStatusText'),tag=document.getElementById('pushStatusTag');
+ if(text)text.textContent='테스트 알림 준비 중...';
+ if(tag)tag.textContent='TEST';
+
+ try{
+  let sub=await currentPushSubscription();
+  if(Notification.permission!=='granted'||!sub){
    await enablePushNotifications();
+   sub=await currentPushSubscription();
+  }
+  if(Notification.permission!=='granted'||!sub){
+   if(text)text.textContent='알림 권한 또는 기기 등록을 먼저 확인해주세요.';
+   if(tag)tag.textContent='OFF';
+   return;
+  }
+
+  let result=await sendPush('self_test','TEAM EYSL','테스트 알림입니다.',{
+   tag:`eysl-test-${Date.now()}`,url_path:'/?open=home'
+  });
+
+  if(!result.ok||result.sent<1){
+   // Re-save current subscription in case server-side registration was stale.
+   const json=sub.toJSON(),member=await memberFromSession();
+   if(member?.id){
+    await dbClient.from('push_subscriptions').upsert({
+     member_id:member.id,endpoint:json.endpoint,p256dh:json.keys?.p256dh,auth:json.keys?.auth,
+     user_agent:navigator.userAgent,updated_at:new Date().toISOString()
+    },{onConflict:'member_id,endpoint'});
+   }
+   result=await sendPush('self_test','TEAM EYSL','테스트 알림입니다.',{
+    tag:`eysl-test-retry-${Date.now()}`,url_path:'/?open=home'
+   });
+  }
+
+  if(result.ok&&result.sent>0){
+   if(text)text.textContent='테스트 알림을 실제 기기로 전송했어요.';
+   if(tag)tag.textContent='ON';
+  }else{
+   if(text)text.textContent='테스트 전송 실패 · 알림 권한/구독을 다시 확인해주세요.';
+   if(tag)tag.textContent='확인';
+   console.error('test push failed:',result);
+  }
+ }catch(err){
+  console.error('test push:',err);
+  if(text)text.textContent='테스트 알림 전송 중 오류가 발생했습니다.';
+  if(tag)tag.textContent='확인';
  }
- const readySub=await currentPushSubscription();
- if(Notification.permission!=='granted'||!readySub)return;
- const result=await sendPush('self_test','TEAM EYSL','테스트 알림입니다.',{
-   tag:`eysl-test-${Date.now()}`,
-   url_path:'/?open=home'
- });
- if(!result.ok)console.error('test push failed:',result.error||result);
 }
 function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={home:'home',chat:'chat',schedule:'schedule',media:'media',resources:'files'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
 function showPage(id){
@@ -1210,7 +1269,7 @@ function showPage(id){
  window.scrollTo(0,0);
  if(id==='notice')renderNotices();
  if(id==='home')renderHome();
- if(id==='chat'){bindChatEnterKeys();switchChat('group')}
+ if(id==='chat'){bindChatEnterKeys();switchChat('group');void refreshChatIfStale()}
  if(id==='schedule')renderCalendar();
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
@@ -1534,12 +1593,17 @@ async function manageMemberApproval(memberId,action){
 function renderHome(){
  const userName=(currentUser&&currentUser.nickname)||'회원',noticeEl=document.getElementById('homeNotice'),mineEl=document.getElementById('homeMine'),upcomingEl=document.getElementById('homeUpcoming');
  if(!noticeEl||!mineEl||!upcomingEl)return;
- const n=notices[0],unread=notices.filter(x=>unreadNoticeIds.has(x.id)).length;
+ const sortedNotices=[...notices].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ const n=sortedNotices[0],unread=notices.filter(x=>unreadNoticeIds.has(x.id)).length;
  if(n){noticeEl.innerHTML=`<small>${unread?'UNREAD NOTICE · '+unread+'건':'LATEST NOTICE'}</small><h1>${n.title}</h1><p>${String(n.body||'').split('\n')[0]}</p>`;noticeEl.onclick=()=>openNotice(n.id)}
  else{noticeEl.innerHTML='<small>LATEST NOTICE</small><h1>등록된 공지가 없습니다.</h1><p>새 공지가 등록되면 여기에 표시됩니다.</p>';noticeEl.onclick=null}
- const mine=Object.values(trainings).filter(t=>(t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName)).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
- mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start}–${mine.end} · ${mine.place}</p></div><span class="tag">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 일정이 없어요.</div>`;
- const raw=[...Object.values(trainings).map(t=>({type:'training',id:t.id,title:t.title,date:t.date,place:t.place,start:t.start})),...(race.id?[{type:'race',id:race.id,title:race.title,date:race.date,place:race.place,start:race.start||''}]:[]),...events.map(e=>({type:'event',id:e.id,title:e.title,date:e.date,place:e.place,start:e.start}))].filter(x=>x.date>=new Date().toISOString().slice(0,10)).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start))).slice(0,3);
+ const mine=Object.values(trainings).filter(t=>!activityHasStarted(t)&&((t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName))).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start)))[0];
+ mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start||'-'}${mine.end?`–${mine.end}`:''} · ${mine.place||'-'}</p></div><span class="tag">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
+ const raw=[
+  ...Object.values(trainings).map(t=>({type:'training',id:t.id,title:t.title,date:t.date,place:t.place,start:t.start,item:t})),
+  ...(race.id?[{type:'race',id:race.id,title:race.title,date:race.date,place:race.place,start:race.start||'',item:race}]:[]),
+  ...events.map(e=>({type:'event',id:e.id,title:e.title,date:e.date,place:e.place,start:e.start,item:e}))
+ ].filter(x=>!activityHasStarted(x.item)).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start))).slice(0,3);
  upcomingEl.innerHTML=raw.length?raw.map(x=>{const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;const icon=x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉';return `<div class="row" onclick="${action}"><div class="icon">${icon}</div><div class="grow"><b>${x.title}</b><p>${x.date} · ${x.place||'-'}</p></div><span class="tag">신청 가능</span></div>`}).join(''):'<div class="card">다가오는 일정이 없어요.</div>';
 }
 
@@ -1739,18 +1803,14 @@ function removeLocalMessage(id,kind,targetName=''){
  }
 }
 function renderGroup(){
- const box=document.getElementById('groupChatBody');
- if(!box)return;
- const gv=document.getElementById('groupView');
- if(gv)gv.style.display='flex';
+ const box=document.getElementById('groupChatBody');if(!box)return;
  box.innerHTML=groupMessages.length
   ?groupMessages.map(m=>renderChatMessage(m,m.me?'나':m.name)).join('')
   :'<div class="chatEmpty"><b>아직 메시지가 없습니다.</b><br><span>첫 메시지를 보내보세요.</span></div>';
- box.scrollTop=box.scrollHeight;
+ requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight});
  const input=document.getElementById('groupInput');
  const sendBtn=input?.closest('.chatInput')?.querySelector('.primary');
- if(input)input.disabled=false;
- if(sendBtn)sendBtn.disabled=false;
+ if(input)input.disabled=false;if(sendBtn)sendBtn.disabled=false;
 }
 async function sendGroup(){
  const input=document.getElementById('groupInput');
@@ -1779,20 +1839,26 @@ async function sendGroup(){
    toast(err.message||'메시지 전송 실패');
  }
 }
+let chatLastRefreshAt=0;
+async function refreshChatIfStale(force=false){
+ const nowMs=Date.now();
+ if(!force&&nowMs-chatLastRefreshAt<15000)return;
+ chatLastRefreshAt=nowMs;
+ await loadPersistentChat();
+ const chatPage=document.getElementById('chat'),dmPage=document.getElementById('dmChat');
+ if(chatPage?.classList.contains('active')){
+  if(document.getElementById('dmView')?.classList.contains('chatModeHidden'))renderGroup();else renderDmList();
+ }
+ if(dmPage?.classList.contains('active'))renderDm();
+}
 function switchChat(mode){
  const g=document.getElementById('groupTab'),d=document.getElementById('dmTab');
  const gv=document.getElementById('groupView'),dv=document.getElementById('dmView');
  g?.classList.toggle('active',mode==='group');d?.classList.toggle('active',mode==='dm');
- gv?.classList.toggle('chatModeHidden',mode!=='group');
- dv?.classList.toggle('chatModeHidden',mode!=='dm');
+ gv?.classList.toggle('chatModeHidden',mode!=='group');dv?.classList.toggle('chatModeHidden',mode!=='dm');
  restoreChatCache();ensureChatRealtime();
- if(mode==='group'){
-  renderGroup();
-  void loadPersistentChat().then(()=>{if(!gv?.classList.contains('chatModeHidden'))renderGroup()});
- }else{
-  void renderDmList();
-  void loadPersistentChat().then(()=>{if(!dv?.classList.contains('chatModeHidden'))renderDmList()});
- }
+ if(mode==='group')renderGroup();
+ else void renderDmList();
 }
 async function renderDmList(){
  if(!members.length)await refreshMemberDirectoryFromDb();
@@ -1810,7 +1876,6 @@ async function startDm(name){
  if(!dmMessages[name])dmMessages[name]=[];
  const title=document.getElementById('dmTitle');if(title)title.textContent=name;
  showPage('dmChat');bindChatEnterKeys();renderDm();ensureChatRealtime();
- void loadPersistentChat().then(()=>{if(currentDm===name&&document.getElementById('dmChat')?.classList.contains('active'))renderDm()});
 }
 function renderDm(){const box=document.getElementById('dmBody');if(!box)return;const arr=dmMessages[currentDm]||[];box.innerHTML=arr.length?arr.map(m=>renderChatMessage({...m,name:m.name||currentDm},m.me?'나':(m.name||currentDm))).join(''):'<div class="chatEmpty">첫 메시지를 보내보세요.</div>';box.scrollTop=box.scrollHeight}
 async function sendDm(){
@@ -1848,20 +1913,24 @@ async function sendDm(){
 
 function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
 function getScheduleItems(){
+ const y=currentMonth.getFullYear(),m=currentMonth.getMonth()+1;
+ const prefix=`${y}-${String(m).padStart(2,'0')}`;
  const rows=[
-  ...Object.values(trainings).map(t=>({type:'training',label:'훈련',id:t.id,title:t.title,date:t.date,place:t.place||'-',start:t.start||''})),
-  ...(race.id?[{type:'race',label:'대회',id:race.id,title:race.title,date:race.date,place:race.place||'-',start:race.start||''}]:[]),
-  ...events.map(e=>({type:'event',label:'이벤트',id:e.id,title:e.title,date:e.date,place:e.place||'-',start:e.start||''}))
+  ...Object.values(trainings).map(t=>({type:'training',label:'훈련',id:t.id,title:t.title,date:t.date,place:t.place||'-',start:t.start||'',item:t})),
+  ...(race.id?[{type:'race',label:'대회',id:race.id,title:race.title,date:race.date,place:race.place||'-',start:race.start||'',item:race}]:[]),
+  ...events.map(e=>({type:'event',label:'이벤트',id:e.id,title:e.title,date:e.date,place:e.place||'-',start:e.start||'',item:e}))
  ];
- return rows.filter(x=>scheduleFilter==='all'||x.type===scheduleFilter).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
+ return rows.filter(x=>String(x.date).startsWith(prefix)&&(scheduleFilter==='all'||x.type===scheduleFilter))
+  .sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
 }
 function renderScheduleList(){
  const box=document.getElementById('scheduleList');if(!box)return;
  const rows=getScheduleItems();
  box.innerHTML=rows.length?rows.map(x=>{
   const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;
-  return `<div class="statusCard scheduleListCard" onclick="${action}"><div class="statusTop"><div><h3>${escHtml(x.title)}</h3><p>${escHtml(x.date)} · ${escHtml(x.place)}</p></div><span class="tag">${x.label}</span></div></div>`;
- }).join(''):'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
+  const ended=activityHasStarted(x.item);
+  return `<div class="statusCard scheduleListCard" onclick="${action}"><div class="statusTop"><div><h3>${escHtml(x.title)}</h3><p>${escHtml(x.date)} · ${escHtml(x.place)}</p></div><span class="tag ${ended?'done':''}">${ended?'종료':x.label}</span></div></div>`;
+ }).join(''):'<div class="card meta">현재 표시된 월에는 조건에 맞는 일정이 없습니다.</div>';
 }
 function renderCalendar(){
  const y=currentMonth.getFullYear(),m=currentMonth.getMonth();document.getElementById('calTitle').textContent=`${y}년 ${m+1}월`;
@@ -1872,26 +1941,25 @@ function renderCalendar(){
 function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));if(race.id&&race.date===ds)list.push({type:'대회',title:race.title,time:'09:00 시작',place:race.place,status:raceApplication?'신청완료':'신청 가능',action:`showPage('raceList')`});events.filter(e=>e.date===ds).forEach(e=>list.push({type:'이벤트',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
 
 function renderTrainingList(){
- const list=Object.values(trainings).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ const list=Object.values(trainings).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
  trainingCards.innerHTML=list.map(t=>{
+   const ended=activityHasStarted(t);
    const inP=t.participants.includes(currentUser.nickname);
    const w=t.waitlist.find(x=>x.name===currentUser.nickname);
-   const state=inP?'신청완료':w?`대기 ${w.order}번`:'신청 전';
-   const badgeClass=inP?'':w?'wait':'idle';
+   const state=ended?'종료':inP?'신청완료':w?`대기 ${w.order}번`:'신청 전';
+   const badgeClass=ended?'done':inP?'':w?'wait':'idle';
 
    const seatBlocked=t.participants.length>=t.capacity || t.waitlist.length>0 || !!t.offer;
    let action='';
-   if(inP){
-     action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">참석 취소</button>`;
-   }else if(w){
-     action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">대기 취소</button>`;
-   }else{
-     action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${t.id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
+   if(!ended){
+     if(inP)action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">참석 취소</button>`;
+     else if(w)action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">대기 취소</button>`;
+     else action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${t.id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
    }
 
    return `<div class="statusCard">
      <div class="statusTop">
-       <div><h3>${t.title}</h3><p>${t.start}–${t.end} · ${t.place}<br>${t.participants.length}/${t.capacity} · ${state}</p></div>
+       <div><h3>${t.title}</h3><p>${t.start||'-'}${t.end?`–${t.end}`:''} · ${t.place||'-'}<br>${t.participants.length}/${t.capacity} · ${state}</p></div>
        <span class="statusPill ${badgeClass}">${state}</span>
      </div>
      <div class="actions">
@@ -1922,36 +1990,39 @@ async function reloadApplicationsUI(){
 }
 async function applyTraining(id){
  const t=trainings[id];if(!t)return toast('훈련 정보를 찾을 수 없습니다.');
+ if(activityHasStarted(t))return toast('종료된 훈련은 신청할 수 없습니다.');
  const type=t.participants.length<t.capacity?'participant':'waitlist';
  const order=type==='waitlist'?t.waitlist.length+1:null;
  if(!(await saveActivityApplication(id,type,{},order)).ok)return;
- await reloadApplicationsUI();
- openTraining(id);
+ await reloadApplicationsUI();openTraining(id);
  toast(type==='participant'?'훈련 신청완료':'대기 신청완료');
 }
 function openTraining(id){
  selectedTrainingId=id;showPage('trainingDetail');
  const t=trainings[id];if(!t){trainingDetailBody.innerHTML='<div class="card meta">훈련 정보를 찾을 수 없습니다.</div>';return}
+ const ended=activityHasStarted(t);
  const inP=t.participants.includes(currentUser.nickname);
  const w=t.waitlist.find(x=>x.name===currentUser.nickname);
- const isMyOffer=!!(w&&w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
- const mine=inP?'신청완료':w?(isMyOffer?'내 차례 · 응답 필요':`대기 ${w.order}번`):'신청 전';
+ const isMyOffer=!ended&&!!(w&&w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
+ const mine=ended?'종료':inP?'신청완료':w?(isMyOffer?'내 차례 · 응답 필요':`대기 ${w.order}번`):'신청 전';
  const plan=t.plan||'';
  const seatBlocked=t.participants.length>=t.capacity || t.waitlist.length>0 || !!t.offer;
  let action='';
- if(inP)action=`<button class="btn amber" onclick="cancelTraining('${id}')">참석 취소</button>`;
- else if(isMyOffer)action='';
- else if(w)action=`<button class="btn amber" onclick="cancelTraining('${id}')">대기 취소</button>`;
- else action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
+ if(!ended){
+   if(inP)action=`<button class="btn amber" onclick="cancelTraining('${id}')">참석 취소</button>`;
+   else if(isMyOffer)action='';
+   else if(w)action=`<button class="btn amber" onclick="cancelTraining('${id}')">대기 취소</button>`;
+   else action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
+ }
  const offerBox=isMyOffer?`<div class="waitOfferBox"><span class="offerBadge">내 차례</span><h3>훈련 자리가 났어요!</h3><p>${remaining(new Date(w.offerExpiresAt).getTime())} 안에 응답해주세요. 시간이 지나면 자동으로 다음 대기자에게 기회가 넘어갑니다.</p><div class="waitOfferActions"><button class="btn primary" onclick="respondWaitlistOffer('${id}','accept')">참석하기</button><button class="btn amber" onclick="respondWaitlistOffer('${id}','decline')">다음 대기자에게</button></div></div>`:'';
  trainingDetailBody.innerHTML=`<div class="detail trainingDetailCompact">
    <div class="detailrow"><b>훈련명</b><span>${t.title}</span></div>
    <div class="detailrow"><b>날짜</b><span>${t.date}</span></div>
-   <div class="detailrow"><b>시간</b><span>${t.start}–${t.end}</span></div>
-   <div class="detailrow"><b>장소</b><span>${t.place}</span></div>
-   <div class="detailrow"><b>코치</b><span>${t.coach}</span></div>
-   <div class="detailrow"><b>준비물</b><span>${t.gear}</span></div>
-   <div class="detailrow"><b>훈련 정보</b><span>${t.info}</span></div>
+   <div class="detailrow"><b>시간</b><span>${t.start||'-'}${t.end?`–${t.end}`:''}</span></div>
+   <div class="detailrow"><b>장소</b><span>${t.place||'-'}</span></div>
+   <div class="detailrow"><b>코치</b><span>${t.coach||'-'}</span></div>
+   <div class="detailrow"><b>준비물</b><span>${t.gear||'-'}</span></div>
+   <div class="detailrow"><b>훈련 정보</b><span>${t.info||'-'}</span></div>
    <div class="detailrow"><b>내 신청 상태</b><span>${mine}</span></div>
  </div>${offerBox}
  ${plan?`<div class="section"><h2>훈련표</h2></div><div class="card"><div class="trainingPlan">${plan}</div><div class="smallLine">작성 · ${t.planBy||t.coach} · ${t.planDate||t.date}</div></div>`:''}
@@ -1966,7 +2037,9 @@ async function saveTrainingEdit(id){
  await reloadApplicationsUI();openApplyStatus(id);toast('수정 내용이 반영됐습니다');
 }
 async function cancelTraining(id){
- const before=trainings[id],wasParticipant=!!before?.participants?.includes(currentUser.nickname);
+ const before=trainings[id];
+ if(before&&activityHasStarted(before))return toast('종료된 훈련은 신청 상태를 변경할 수 없습니다.');
+ const wasParticipant=!!before?.participants?.includes(currentUser.nickname);
  if(!(await removeActivityApplication(id)))return;
  if(wasParticipant)await sendPush('waitlist_offer','','',{activity_id:id});
  await reloadApplicationsUI();
@@ -2007,7 +2080,8 @@ async function renderApplyStatus(){
 }
 function remaining(ex){const ms=Math.max(0,ex-Date.now());const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);return `${h}시간 ${m}분`}
 async function respondWaitlistOffer(activityId,action){
- const actionLabel=action==='accept'?'참석':'다음 대기자에게 넘기기';
+ const t=trainings[activityId];
+ if(t&&activityHasStarted(t))return toast('종료된 훈련은 대기 응답을 변경할 수 없습니다.');
  if(action==='decline'&&!confirm('이번 기회를 넘기고 다음 대기자에게 전달할까요?'))return;
  const {data,error}=await dbClient.rpc('respond_waitlist_offer',{p_activity_id:activityId,p_action:action});
  if(error){console.error(error);return toast('대기 응답 처리에 실패했습니다.')}
@@ -2493,12 +2567,31 @@ function renderMembersFromCurrentData(){
 }
 async function renderMemberDirectory(){
  const box=document.getElementById('memberDirectoryList');if(!box)return;
- if(!box.children.length)box.innerHTML='<div class="card meta">팀 명단 불러오는 중...</div>';
+ box.innerHTML='<div class="card meta">팀 명단 불러오는 중...</div>';
+ await refreshMemberDirectoryFromDb();
  const {data,error}=await dbClient.rpc('team_roster_list_v4');
  if(error){console.error(error);box.innerHTML='<div class="card meta">팀 명단을 불러오지 못했습니다.</div>';return}
- box.innerHTML=(data||[]).map(r=>{
-  const linked=!!r.linked_member_id;
-  return `<div class="memberSimpleRow"><div class="memberFallback">${escHtml(String(r.short_name||r.nickname||'?').slice(0,1))}</div><div class="grow"><b>${escHtml(r.nickname)}</b><p>${escHtml(r.team_role||'모임원')} · ${escHtml(r.lesson_level||'-')} · 출석 ${Number(r.attendance_count||0)} / 지각 ${Number(r.late_count||0)}</p></div>${linked?`<button class="btn outline" onclick="startDm('${escAttr(r.nickname)}')">1:1 채팅</button>`:'<span class="tag done">앱 미가입</span>'}</div>`;
+
+ const roster=data||[];
+ const approved=members.filter(m=>m.status==='approved'&&!m.blocked);
+ const rosterNames=new Set(roster.map(r=>r.nickname));
+
+ const rosterRows=roster.map(r=>{
+   const linkedMember=approved.find(m=>m.name===r.nickname);
+   return {...r,_member:linkedMember||null};
+ });
+ const appOnly=approved.filter(m=>!rosterNames.has(m.name)).map(m=>({
+   nickname:m.name,short_name:(m.name||'?').slice(0,1),team_role:m.teamRole||memberRoleLabel(m.role),
+   lesson_level:m.lessonLevel||'-',attendance_count:m.att||0,late_count:m.late||0,_member:m,_appOnly:true
+ }));
+ const rows=[...rosterRows,...appOnly];
+
+ box.innerHTML=rows.map(r=>{
+  const linked=!!r._member;
+  const sub=r._appOnly
+   ?`앱 가입 회원 · ${escHtml(r.team_role||'일반회원')}`
+   :`${escHtml(r.team_role||'모임원')} · ${escHtml(r.lesson_level||'-')} · 출석 ${Number(r.attendance_count||0)} / 지각 ${Number(r.late_count||0)}`;
+  return `<div class="memberSimpleRow"><div class="memberFallback">${escHtml(String(r.short_name||r.nickname||'?').slice(0,1))}</div><div class="grow"><b>${escHtml(r.nickname)}</b><p>${sub}</p></div>${linked?`<button class="btn outline" onclick="startDm('${escAttr(r.nickname)}')">1:1 채팅</button>`:'<span class="tag done">앱 미가입</span>'}</div>`;
  }).join('')||'<div class="card meta">등록된 팀 명단이 없습니다.</div>';
 }
 async function renderMembers(){
@@ -2579,7 +2672,13 @@ async function changeMemberRole(memberId,action){
   toast(action==='grant_admin'?'부관리자로 지정했습니다.':'부관리자 권한을 해제했습니다.');
  }catch(e){console.error('role v4:',e);toast('권한 변경에 실패했습니다.')}
 }
-function attEvents(){return [...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,people:t.participants,state:t.date<new Date().toISOString().slice(0,10)?'done':'upcoming'})),...(race.id?[{id:race.id,type:'race',label:'대회',title:race.title,date:race.date,people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:'upcoming'}]:[]),...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,people:e.participants,state:e.done?'done':'upcoming'}))]}
+function attEvents(){
+ return [
+  ...Object.values(trainings).map(t=>({id:t.id,type:'training',label:'훈련',title:t.title,date:t.date,start:t.start||'',people:t.participants,state:activityState(t)})),
+  ...(race.id?[{id:race.id,type:'race',label:'대회',title:race.title,date:race.date,start:race.start||'',people:[...race.participants,...(raceApplication?[currentUser.nickname]:[])],state:activityState(race)}]:[]),
+  ...events.map(e=>({id:e.id,type:'event',label:'이벤트',title:e.title,date:e.date,start:e.start||'',people:e.participants,state:activityState(e)}))
+ ];
+}
 function renderApplicationAdmin(kind='all',btn=null){
  const box=document.getElementById('applicationAdminBody');if(!box)return;
  document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));
@@ -2661,7 +2760,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final35').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final36').catch(()=>{}));
 }
 </script>
 </body>
