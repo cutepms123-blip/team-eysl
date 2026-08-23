@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final40-push-status-members';
+const VERSION='team-eysl-final41-push-status-members';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request,{cache:'no-store'}).catch(()=>caches.match(e.request)))});
@@ -9,7 +9,10 @@ self.addEventListener('push',event=>{
   body:data.body||'새 알림이 도착했어요.',
   icon:data.icon||'/icon-192.png',
   badge:data.badge||'/icon-192.png',
-  tag:data.tag||'team-eysl',
+  tag:data.tag||`team-eysl-${Date.now()}`,
+  renotify:true,
+  silent:false,
+  timestamp:Date.now(),
   data:{url:data.url||'/'},
   vibrate:[120,60,120]
  }));
