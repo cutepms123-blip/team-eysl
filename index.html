@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL29 auth/profile/avatar */
+/* FINAL30 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL29: chat stays inside one phone screen */
+/* FINAL30: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -340,7 +340,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
 
-/* ===== FINAL29 CHAT ONLY FIX ===== */
+/* ===== FINAL30 CHAT ONLY FIX ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -439,7 +439,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 }
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* ===== FINAL29 CHAT RESTORE ===== */
+/* ===== FINAL30 CHAT RESTORE ===== */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   inset:0 0 calc(74px + env(safe-area-inset-bottom)) 0!important;
@@ -549,7 +549,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .bubbleTime{white-space:nowrap;flex:0 0 auto}
 .chatEmpty{margin:auto 0!important;text-align:center!important}
 
-/* FINAL29 approval queue render */
+/* FINAL30 approval queue render */
 #pendingMemberList,#processedMemberList{display:flex;flex-direction:column;gap:10px}
 .approvalRow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .approvalRow h3{margin:0 0 6px;font-size:16px}
@@ -557,7 +557,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .approvalRow .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .approvalEmpty{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#9a9a9a;font-size:11px}
 
-/* FINAL29 CHAT UI */
+/* FINAL30 CHAT UI */
 .emojiPanel{
   display:none!important;
   position:absolute!important;
@@ -636,7 +636,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   display:flex!important;align-items:center!important;justify-content:center!important;
 }
 
-/* FINAL29 CHAT VIEW FIX */
+/* FINAL30 CHAT VIEW FIX */
 #groupView{
   flex:1 1 auto!important;
   min-height:0!important;
@@ -666,7 +666,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
   overflow-y:auto!important;
 }
 
-/* FINAL29 CHAT FINAL OVERRIDES */
+/* FINAL30 CHAT FINAL OVERRIDES */
 #groupView[style*="display: none"]{display:none!important}
 #dmView[style*="display: block"]{display:block!important}
 #dmChat.page.active{
@@ -1018,6 +1018,17 @@ function showPage(id){
  if(id==='memberApproval'){if(!isMasterAdmin()){toast('총관리자만 회원 승인을 관리할 수 있습니다.');return showPage('home')}renderApprovalRequests();}if(id==='memberDirectory')renderMemberDirectory();
  if(id==='attendanceAdmin')renderAttendanceAdmin();
  if(id==='media')renderMedia('all');
+}
+function escHtml(value){
+ return String(value??'')
+  .replaceAll('&','&amp;')
+  .replaceAll('<','&lt;')
+  .replaceAll('>','&gt;')
+  .replaceAll('"','&quot;')
+  .replaceAll("'",'&#039;');
+}
+function escAttr(value){
+ return escHtml(value).replaceAll('`','&#096;');
 }
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
 function now(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
@@ -1920,32 +1931,32 @@ async function saveMyRealName(){
 async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
 async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
 function renderChatMessage(m,label){
+ const safe=(v)=>typeof escHtml==='function'?escHtml(v):String(v??'');
+ const safeAttr=(v)=>typeof escAttr==='function'?escAttr(v):safe(v);
  let content='';
+
  if(m.attachment){
    const a=m.attachment;
    if(a.kind==='image'){
-     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${escAttr(a.url)}','image','${escAttr(a.name)}')"><img src="${escAttr(a.url)}" alt="${escAttr(a.name)}"></button>`;
+     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${safeAttr(a.url)}','image','${safeAttr(a.name)}')"><img src="${safeAttr(a.url)}" alt="${safeAttr(a.name)}"></button>`;
    }else if(a.kind==='video'){
-     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${escAttr(a.url)}','video','${escAttr(a.name)}')"><video src="${escAttr(a.url)}" muted playsinline preload="metadata"></video><div class="play">▶</div></button>`;
+     content=`<button type="button" class="chatMedia chatMediaBtn" onclick="openModal('${safeAttr(a.url)}','video','${safeAttr(a.name)}')"><video src="${safeAttr(a.url)}" muted playsinline preload="metadata"></video><div class="play">▶</div></button>`;
    }else{
-     content=`<a class="bubble chatFile" href="${escAttr(a.url)}" target="_blank" rel="noopener">
-       <div class="ficon">📎</div>
-       <div class="grow"><b>${escHtml(a.name)}</b><span class="saveLink">파일 열기</span></div>
-     </a>`;
+     content=`<a class="bubble chatFile" href="${safeAttr(a.url)}" target="_blank" rel="noopener"><div class="ficon">📎</div><div class="grow"><b>${safe(a.name)}</b><span class="saveLink">파일 열기</span></div></a>`;
    }
  }else{
-   content=`<div class="bubble">${escHtml(m.text||'')}</div>`;
+   content=`<div class="bubble">${safe(m.text||'')}</div>`;
  }
 
  const who=m.me?currentUser.nickname:(m.name||label);
- const avatar=m.me?'':avatarMarkup(who,'chat');
+ const avatar=m.me?'':(typeof avatarMarkup==='function'?avatarMarkup(who,'chat'):'');
  return `<div class="bubbleRow ${m.me?'me':''}">
    ${avatar}
    <div class="chatMessageColumn">
-     ${m.me?'':`<div class="bubbleName">${escHtml(label)}</div>`}
+     ${m.me?'':`<div class="bubbleName">${safe(label)}</div>`}
      <div class="bubbleFlex ${m.me?'mine':''}">
        ${content}
-       <span class="bubbleTime">${escHtml(m.time||'')}</span>
+       <span class="bubbleTime">${safe(m.time||'')}</span>
      </div>
    </div>
  </div>`;
@@ -2265,7 +2276,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final29').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final30').catch(()=>{}));
 }
 </script>
 </body>
