@@ -233,7 +233,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .folderFileRow .fileActions{display:flex;gap:5px;align-items:center}.folderFileRow .fileActions .btn{padding:7px 9px;font-size:9px}
 
 #mediaRoot > .actions{margin-bottom:24px!important}#resourceUploadActions{margin-bottom:24px!important}
-/* FINAL21 auth/profile/avatar */
+/* FINAL22 auth/profile/avatar */
 .authbox .authSimple{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .authbox .authSimple input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 14px;font-size:16px;background:#fff}
 .authbox .authSimple .btn{width:100%;padding:14px}
@@ -286,7 +286,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #groupView .chatEmpty b{color:#555;font-size:13px}
 #groupView .chatEmpty span{font-size:11px}
 
-/* FINAL21: chat stays inside one phone screen */
+/* FINAL22: chat stays inside one phone screen */
 #chat.page.active,#dmChat.page.active{
   position:fixed!important;
   top:0!important;
@@ -339,6 +339,105 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .recordRow strong{font-size:15px;white-space:nowrap}
 .recordEmpty,.recordLoading{grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;color:#999;font-size:11px}
 .realNameCard,.recordSyncActions,#myRankingSyncStatus{display:none!important}
+
+/* ===== FINAL22 CHAT ONLY FIX ===== */
+#chat.page.active,#dmChat.page.active{
+  position:fixed!important;
+  top:0!important;
+  bottom:calc(76px + env(safe-area-inset-bottom))!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(430px,100%)!important;
+  height:auto!important;
+  padding:calc(14px + env(safe-area-inset-top)) 18px 8px!important;
+  overflow:hidden!important;
+  background:var(--bg)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  z-index:35!important;
+}
+#chat .title{flex:0 0 auto;margin:4px 0 14px!important}
+#chat .chatTabs{flex:0 0 auto;margin:0 0 8px!important}
+#groupView{display:flex!important;flex:1 1 auto!important;min-height:0!important;flex-direction:column!important}
+#dmView{flex:1 1 auto!important;min-height:0!important;overflow:auto!important}
+#groupView .chatBody,#dmChat .chatBody{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:10px!important;
+}
+#groupView>.chatInput,#dmChat>.chatInput{
+  position:static!important;
+  left:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  width:100%!important;
+  flex:0 0 auto!important;
+  display:grid!important;
+  grid-template-columns:44px 44px minmax(0,1fr) 58px!important;
+  gap:7px!important;
+  align-items:center!important;
+  padding:8px 0 2px!important;
+  margin:0!important;
+  border-top:1px solid var(--line)!important;
+  background:var(--bg)!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+#groupView>.chatInput .attachBtn,#dmChat>.chatInput .attachBtn{
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  line-height:1!important;
+  font-size:20px!important;
+  box-sizing:border-box!important;
+}
+#groupView>.chatInput input:not([type=file]),#dmChat>.chatInput input:not([type=file]){
+  width:100%!important;
+  min-width:0!important;
+  height:44px!important;
+  box-sizing:border-box!important;
+  padding:0 12px!important;
+}
+#groupView>.chatInput .primary,#dmChat>.chatInput .primary{
+  width:58px!important;
+  min-width:58px!important;
+  height:44px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.emojiPanel{
+  position:absolute!important;
+  left:18px!important;
+  right:18px!important;
+  bottom:62px!important;
+  transform:none!important;
+  width:auto!important;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  gap:7px!important;
+  padding:10px!important;
+  box-sizing:border-box!important;
+}
+.emojiPanel button{
+  width:100%!important;
+  aspect-ratio:1/1!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  line-height:1!important;
+}
+.chatEmpty{margin:auto 0!important;text-align:center!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -887,16 +986,41 @@ function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('
 
 async function loadPersistentChat(){
  if(!currentUser.memberId){groupMessages=[];dmMessages={};return}
- await refreshMemberDirectoryFromDb();
- const {data,error}=await dbClient.from('messages').select('id,sender_id,recipient_id,room_type,body,attachment_path,attachment_type,created_at').order('created_at',{ascending:true}).limit(500);
- if(error){console.error('chat load:',error);groupMessages=[];dmMessages={};return}
+ const {data,error}=await dbClient.rpc('get_team_messages',{p_limit:500});
+ if(error){
+   console.error('get_team_messages:',error);
+   toast('채팅 내용을 불러오지 못했습니다.');
+   return;
+ }
  groupMessages=[];dmMessages={};
  for(const row of data||[]){
-   const sender=members.find(m=>m.id===row.sender_id),recipient=members.find(m=>m.id===row.recipient_id);
-   const senderName=sender?.name||(row.sender_id===currentUser.memberId?currentUser.nickname:'회원'),isMe=row.sender_id===currentUser.memberId;
-   let attachment=null;if(row.attachment_path){const url=await signedTeamFile(row.attachment_path),mime=row.attachment_type||'application/octet-stream';attachment={name:String(row.body||'첨부파일'),url,kind:mime.startsWith('image')?'image':mime.startsWith('video')?'video':'file',size:''}}
-   const msg={id:row.id,name:senderName,text:row.attachment_path?'':(row.body||''),time:new Date(row.created_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),me:isMe,attachment};
-   if(row.room_type==='group')groupMessages.push(msg);else{const other=isMe?(recipient?.name||'회원'):senderName;if(!dmMessages[other])dmMessages[other]=[];dmMessages[other].push(msg)}
+   const isMe=row.sender_id===currentUser.memberId;
+   let attachment=null;
+   if(row.attachment_path){
+     const url=await signedTeamFile(row.attachment_path);
+     const mime=row.attachment_type||'application/octet-stream';
+     attachment={
+       name:String(row.body||'첨부파일'),
+       url,
+       kind:mime.startsWith('image/')?'image':mime.startsWith('video/')?'video':'file',
+       size:''
+     };
+   }
+   const msg={
+     id:row.id,
+     name:row.sender_nickname||(isMe?currentUser.nickname:'회원'),
+     text:row.attachment_path?'':(row.body||''),
+     time:new Date(row.created_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),
+     me:isMe,
+     attachment
+   };
+   if(row.room_type==='group'){
+     groupMessages.push(msg);
+   }else{
+     const otherName=isMe?(row.recipient_nickname||'회원'):(row.sender_nickname||'회원');
+     if(!dmMessages[otherName])dmMessages[otherName]=[];
+     dmMessages[otherName].push(msg);
+   }
  }
 }
 function renderGroup(){
@@ -928,6 +1052,23 @@ async function sendGroup(){
    await sendPush('all_except_self',currentUser.nickname,text.length>70?text.slice(0,70)+'…':text,{tag:'group-chat',url_path:'/?open=chat'});
  }finally{if(btn)btn.disabled=false}
 }
+
+function bindChatEnterKeys(){
+ const groupInput=document.getElementById('groupInput');
+ const dmInput=document.getElementById('dmInput');
+ if(groupInput&&!groupInput.dataset.enterBound){
+   groupInput.addEventListener('keydown',e=>{
+     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();void sendGroup();}
+   });
+   groupInput.dataset.enterBound='1';
+ }
+ if(dmInput&&!dmInput.dataset.enterBound){
+   dmInput.addEventListener('keydown',e=>{
+     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();void sendDm();}
+   });
+   dmInput.dataset.enterBound='1';
+ }
+}
 function switchChat(mode){
  const g=document.getElementById('groupTab'),d=document.getElementById('dmTab'),gv=document.getElementById('groupView'),dv=document.getElementById('dmView');
  g?.classList.toggle('active',mode==='group');
@@ -942,7 +1083,7 @@ function switchChat(mode){
  }
 }
 async function renderDmList(){await refreshMemberDirectoryFromDb();const names=members.filter(m=>m.status==='approved'&&!m.blocked&&m.name!==currentUser.nickname).map(m=>m.name),box=document.getElementById('dmList');if(!box)return;box.innerHTML=names.map(n=>{const arr=dmMessages[n]||[],last=arr[arr.length-1];return `<div class="dmRow" onclick="startDm('${escAttr(n)}')">${avatarMarkup(n,'member')}<div class="grow"><b>${escHtml(n)}</b><p>${last?(last.attachment?'첨부파일':escHtml(last.text||'최근 대화가 있습니다.')):'아직 대화가 없습니다.'}</p></div><span>›</span></div>`}).join('')||'<div class="card meta">개인채팅 가능한 다른 회원이 없습니다.</div>'}
-async function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');await loadPersistentChat();renderDm()}
+async function startDm(name){currentDm=name;if(!dmMessages[name])dmMessages[name]=[];document.getElementById('dmTitle').textContent=name;showPage('dmChat');bindChatEnterKeys();await loadPersistentChat();renderDm()}
 function renderDm(){const box=document.getElementById('dmBody');if(!box)return;const arr=dmMessages[currentDm]||[];box.innerHTML=arr.length?arr.map(m=>renderChatMessage({...m,name:m.name||currentDm},m.me?'나':(m.name||currentDm))).join(''):'<div class="chatEmpty">첫 메시지를 보내보세요.</div>';box.scrollTop=box.scrollHeight}
 async function sendDm(){
  const i=document.getElementById('dmInput'),text=(i?.value||'').trim();if(!text||!currentDm)return;
@@ -1336,26 +1477,31 @@ function toggleEmojiPanel(kind){
  }
  p.classList.toggle('open');
 }
-function sendEmoji(kind,e){
+async function sendEmoji(kind,e){
  if(kind==='group'){
-   groupMessages.push({name:currentUser.nickname,text:e,time:now(),me:true});
-   renderGroup();
-   const p=document.getElementById('groupEmojiPanel');
-   if(p)p.classList.remove('open');
+   const input=document.getElementById('groupInput');
+   if(!input)return;
+   input.value=e;
+   const p=document.getElementById('groupEmojiPanel');if(p)p.classList.remove('open');
+   await sendGroup();
  }else if(currentDm){
-   dmMessages[currentDm].push({me:true,text:e,time:now()});
-   renderDm();
-   const p=document.getElementById('dmEmojiPanel');
-   if(p)p.classList.remove('open');
+   const input=document.getElementById('dmInput');
+   if(!input)return;
+   input.value=e;
+   const p=document.getElementById('dmEmojiPanel');if(p)p.classList.remove('open');
+   await sendDm();
  }
 }
 
 async function chatAttach(inp,kind){
- const files=[...inp.files];inp.value='';if(!files.length)return;
+ const files=[...inp.files];inp.value='';
+ if(!files.length)return;
+ const target=kind==='dm'?members.find(m=>m.name===currentDm):null;
+ if(kind==='dm'&&!target)return toast('상대 회원 정보를 찾을 수 없습니다.');
+
+ let sent=0;
  for(const f of files){
    try{
-     const target=kind==='dm'?members.find(m=>m.name===currentDm):null;
-     if(kind==='dm'&&!target){toast('상대 회원 정보를 찾을 수 없습니다.');continue}
      const storagePath=await uploadBlobToTeamFiles(f,'chat');
      const {error}=await dbClient.rpc('send_team_message',{
        p_room_type:kind==='dm'?'dm':'group',
@@ -1365,12 +1511,22 @@ async function chatAttach(inp,kind){
        p_attachment_type:f.type||'application/octet-stream'
      });
      if(error)throw error;
-     const preview=f.type.startsWith('image')?'사진':f.type.startsWith('video')?'영상':'파일';
-     if(kind==='group')await sendPush('all_except_self',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{tag:'group-chat-file',url_path:'/?open=chat'});
-     else await sendPush('member',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{target_member_id:target.id,tag:`dm-file-${currentUser.memberId}`,url_path:'/?open=chat'});
-   }catch(err){console.error(err);toast(`${f.name} 전송에 실패했습니다.`)}
+     sent++;
+     const preview=f.type.startsWith('image/')?'사진':f.type.startsWith('video/')?'영상':'파일';
+     if(kind==='group'){
+       await sendPush('all_except_self',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{tag:'group-chat-file',url_path:'/?open=chat'});
+     }else{
+       await sendPush('member',currentUser.nickname,`${preview}을(를) 보냈습니다.`,{target_member_id:target.id,tag:`dm-file-${currentUser.memberId}`,url_path:'/?open=chat'});
+     }
+   }catch(err){
+     console.error('chat attachment:',err);
+     toast(`${f.name} 전송에 실패했습니다.`);
+   }
  }
- await loadPersistentChat();if(kind==='group')renderGroup();else renderDm();
+ if(sent){
+   await loadPersistentChat();
+   if(kind==='group')renderGroup();else renderDm();
+ }
 }
 
 function setScheduleFilter(v,b){scheduleFilter=v;document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCalendar()}
@@ -1608,7 +1764,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final21').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final22').catch(()=>{}));
 }
 </script>
 </body>
