@@ -980,6 +980,21 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #schedule{position:relative}
 @media(max-width:600px){.otherFloatingCreate{right:38px;top:16px;width:48px;height:48px}.eventHubBtn{min-height:82px;font-size:22px}}
 
+
+/* ===== FINAL57 compact member management ===== */
+#roleManagementWrap{display:none!important}
+.memberCompactProfile .profileMain{position:relative}
+.memberRoleTopBtn{margin-left:auto;white-space:nowrap;align-self:center}
+.memberSummaryHead{display:flex;align-items:center;justify-content:space-between}
+.plainDetailBtn{border:0;background:transparent;color:#3188f5;font-weight:800;font-size:13px;padding:8px 0}
+.memberActivityButtons{display:grid;gap:10px;margin-bottom:20px}
+.memberActivityButtons button{border:1px solid var(--line);background:#fff;border-radius:18px;min-height:62px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;text-align:left}
+.memberActivityButtons button b{font-size:15px}
+.memberActivityButtons button span{font-size:25px;color:#aaa}
+#memberRecordFilters .filters{margin-bottom:10px;flex-wrap:wrap}
+.adminRecordStrokeFilters{gap:7px}
+#memberRecordDetailBody,#memberActivityDetailBody{padding-bottom:24px}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1157,8 +1172,18 @@ if(window.pdfjsLib){
  <div id="processedMemberList" class="list"></div>
 </section>
 
-<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div id="roleManagementWrap"><div class="section"><h2>부관리자 권한 관리</h2><p class="meta">현재 부관리자와 코치를 먼저 보여줘요. 부관리자·코치는 운영 권한을 가지며, 가입 승인·회원 내보내기·권한 지정/해제는 총관리자만 할 수 있어요.</p></div><div id="roleManagementList" class="list"></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
+<section id="memberAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 관리</h1><span></span></div><div class="manageSummary"><div class="manageCard"><h4>전체 회원 수</h4><strong id="memberCount">0</strong></div><div class="manageCard"><h4>이번 달 출석 TOP 3</h4><div class="rank" id="memberAttendanceTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>장기 미참여 TOP 3</h4><div class="rank" id="memberInactiveTop"><span>데이터 없음</span></div></div><div class="manageCard"><h4>이번 달 신규 회원</h4><div class="rank" id="memberNewThisMonth"><span>데이터 없음</span></div></div></div><div class="section"><h2>회원 목록</h2></div><div id="memberList" class="list"></div><div class="section"><h2>내보낸 회원</h2></div><div id="blockedList" class="list"></div></section>
 <section id="memberDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('memberAdmin')">←</button><h1>회원 상세</h1><span></span></div><div id="memberDetailBody"></div></section>
+<section id="memberRecordDetail" class="page">
+ <div class="pagehead"><button class="back" onclick="showPage('memberDetail')">←</button><h1 id="memberRecordDetailTitle">상세 기록</h1><span></span></div>
+ <div id="memberRecordFilters"></div>
+ <div id="memberRecordDetailBody" class="list"></div>
+</section>
+<section id="memberActivityDetail" class="page">
+ <div class="pagehead"><button class="back" onclick="showPage('memberDetail')">←</button><h1 id="memberActivityDetailTitle">활동 현황</h1><span></span></div>
+ <div id="memberActivityDetailBody" class="list"></div>
+</section>
+
 
 <section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>활동 취합본</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('all',this)">전체</button><button onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">기타</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">기타</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
 <section id="attendanceAdminDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('attendanceAdmin')">←</button><h1>출석 체크</h1><span></span></div><div id="attAdminDetailBody"></div></section>
@@ -3804,6 +3829,14 @@ async function renderMembers(){
    n.innerHTML=fresh.length?fresh.map(m=>`<span>${escHtml(m.name)} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>';
  }
 }
+
+let adminSelectedMember=null;
+let adminSelectedMemberRecords=[];
+let adminMemberRecordMajor='meet';
+let adminMemberRecordSub='personal';
+let adminMemberRecordStroke='자유형';
+let adminMemberRecordDistance=50;
+
 function memberRecordPbHtml(rows){
  const strokes=['자유형','배영','평영','접영'];
  return strokes.map(st=>{
@@ -3813,22 +3846,30 @@ function memberRecordPbHtml(rows){
   return `<div class="pbCard"><span>${st}</span><b>${best?formatSwimResult(best.result):'-'}</b></div>`;
  }).join('');
 }
-function memberRecordHistoryHtml(rows){
- if(!rows?.length)return '<div class="card meta">등록된 수영 기록이 없습니다.</div>';
- return rows.map(r=>{
-  const dist=Number(r.metadata?.distance||0);
-  const title=[r.stroke,dist?`${dist}M`:''].filter(Boolean).join(' ')||'기록';
-  const meta=[r.event_name,r.event_date].filter(Boolean).join(' · ');
-  return `<div class="recordRow"><div><b>${escHtml(title)}</b><p>${escHtml(meta||'-')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`;
- }).join('');
+function memberRoleActionHtml(m){
+ if(!isMasterAdmin()||m.role==='master_admin')return '';
+ const action=m.role==='admin'?'revoke_admin':'grant_admin';
+ const label=m.role==='admin'?'권한 해제':'부관리자 지정';
+ const cls=m.role==='admin'?'amber':'primary';
+ return `<button class="btn ${cls} memberRoleTopBtn" onclick="changeMemberRoleFromDetail('${m.id}','${action}','${escAttr(m.name)}')">${label}</button>`;
+}
+async function changeMemberRoleFromDetail(memberId,action,name){
+ try{
+  const {error}=await dbClient.rpc('set_member_admin_role_v4',{p_member_id:memberId,p_action:action});
+  if(error)throw error;
+  await refreshMemberDirectoryFromDb();
+  renderMembersFromCurrentData();
+  toast(action==='grant_admin'?'부관리자로 지정했습니다.':'권한을 해제했습니다.');
+  await openMember(name);
+ }catch(e){console.error(e);toast('권한 변경에 실패했습니다.')}
 }
 async function openMember(name){
  const m=members.find(x=>x.name===name);if(!m)return;
+ adminSelectedMember=m;
  showPage('memberDetail');
  const body=document.getElementById('memberDetailBody');if(!body)return;
  body.innerHTML='<div class="card meta">회원 정보를 불러오는 중...</div>';
- let history=[],swimRecords=[];
- try{const {data}=await dbClient.rpc('member_history_v4',{p_member_id:m.id});history=data||[]}catch(_){}
+ let swimRecords=[];
  if(isAdminUser()&&m.id){
   try{
    const {data,error}=await dbClient.from('records').select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at').eq('member_id',m.id).order('event_date',{ascending:false});
@@ -3836,51 +3877,128 @@ async function openMember(name){
    swimRecords=(data||[]).filter(r=>(recordSeconds(r.result)??0)>0);
   }catch(e){console.error('member records:',e)}
  }
+ adminSelectedMemberRecords=swimRecords;
  const roleLabel=m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원';
  const rows=[
   ['실명',m.realName||'-'],['팀 역할',m.teamRole||roleLabel],['가입일',m.join||'-'],['생년월일',m.birthDateText||(m.birthYear?`${m.birthYear}년`:'-')],
   ['성별',m.gender||'-'],['거주지',m.location||'-'],['강습',m.lessonLevel||'-'],['수력',m.swimExperience||'-'],
   ['가입 사유',m.joinReason||'-'],['기타',m.notes||'-'],['2026 출석',`${m.att||0}회`],['2026 지각',`${m.late||0}회`]
  ];
- const historyHtml=history.slice(0,20).map(h=>`<div class="row"><div class="grow"><b>${escHtml(String(h.activity_date))} 팀아이슬 훈련</b></div><span class="tag ${h.status==='지각'?'amber':'ok'}">${escHtml(h.status)}</span></div>`).join('');
- const recordsBlock=isAdminUser()?`<div class="section"><h2>수영 기록</h2><span class="meta">관리자 전용 · ${swimRecords.length}건</span></div><div class="pbgrid">${memberRecordPbHtml(swimRecords)}</div><div class="section"><h2>전체 기록 히스토리</h2></div><div class="list">${memberRecordHistoryHtml(swimRecords)}</div>`:'';
- body.innerHTML=`<div class="profile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml((m.shortName||name).slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${escHtml(roleLabel)}${m.realName?` · ${escHtml(m.realName)}`:''}</p></div></div></div>
+ body.innerHTML=`<div class="profile memberCompactProfile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml((m.shortName||name).slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${escHtml(roleLabel)}${m.realName?` · ${escHtml(m.realName)}`:''}</p></div>${memberRoleActionHtml(m)}</div></div>
  <div class="detail memberInfoDetail">${rows.map(([k,v])=>`<div class="detailrow"><b>${escHtml(k)}</b><span>${escHtml(String(v))}</span></div>`).join('')}</div>
- ${recordsBlock}
- <div class="section"><h2>최근 출석 기록</h2></div><div class="list">${historyHtml||'<div class="card meta">등록된 과거 출석 기록이 없습니다.</div>'}</div>
+ <div class="section memberSummaryHead"><h2>수영 기록</h2><button class="plainDetailBtn" onclick="openMemberRecordDetail()">상세 기록 ›</button></div>
+ <div class="pbgrid">${memberRecordPbHtml(swimRecords)}</div>
+ <div class="section"><h2>활동 현황</h2></div>
+ <div class="memberActivityButtons">
+   <button onclick="openMemberActivityDetail('training')"><b>훈련 출석 현황</b><span>›</span></button>
+   <button onclick="openMemberActivityDetail('race')"><b>대회 참가 현황</b><span>›</span></button>
+   <button onclick="openMemberActivityDetail('event')"><b>기타 참여 현황</b><span>›</span></button>
+ </div>
  ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`;
 }
-async function renderRoleManagement(){
- const wrap=document.getElementById('roleManagementWrap');
- const box=document.getElementById('roleManagementList');
- if(!wrap||!box)return;
- wrap.style.display=isMasterAdmin()?'block':'none';
- if(!isMasterAdmin())return;
 
- if(!members.length)await refreshMemberDirectoryFromDb();
- const approved=members.filter(m=>m.status==='approved'&&!m.blocked);
- const admins=approved.filter(m=>m.role==='admin');
- const regular=approved.filter(m=>m.role==='member');
-
- const adminRows=admins.map(m=>{
-   const label=m.teamRole==='코치'?'코치 · 부관리자 권한':m.teamRole==='부관리자'?'부관리자':'부관리자';
-   return `<div class="roleMemberRow">
-     <div class="grow"><b>${escHtml(m.name)}</b><p>${escHtml(label)}</p></div>
-     <button class="btn amber" onclick="changeMemberRole('${m.id}','revoke_admin')">권한 해제</button>
-   </div>`;
- }).join('');
-
- const regularRows=regular.map(m=>`<div class="roleMemberRow">
-   <div class="grow"><b>${escHtml(m.name)}</b><p>${escHtml(m.teamRole||'일반회원')}</p></div>
-   <button class="btn outline" onclick="changeMemberRole('${m.id}','grant_admin')">부관리자 지정</button>
- </div>`).join('');
-
- box.innerHTML=`
-   <div class="roleSubhead">현재 부관리자 · 코치</div>
-   ${adminRows||'<div class="card meta">현재 지정된 부관리자가 없습니다.</div>'}
-   <div class="roleSubhead roleSubheadSecond">일반 회원</div>
-   ${regularRows||'<div class="card meta">지정 가능한 일반 회원이 없습니다.</div>'}`;
+function adminMemberRecordRule(){
+ const major=adminMemberRecordMajor,sub=adminMemberRecordSub;
+ if(major==='meet'){
+  if(sub==='personal')return {strokes:['자유형','배영','평영','접영','개인혼영'],dist:(s)=>s==='개인혼영'?[100,200]:[50,100]};
+  return {strokes:['계영','혼계영','혼성계영','혼성혼계영','기타'],dist:()=>[]};
+ }
+ if(major==='fin'){
+  if(sub==='personal')return {strokes:['자유형','접영','기타'],dist:()=>[50,100,200]};
+  return {strokes:['계영','혼계영','혼성계영','혼성혼계영','기타'],dist:()=>[200,400]};
+ }
+ if(sub==='personal')return {strokes:['자유형','배영','평영','접영','개인혼영'],dist:(s)=>s==='개인혼영'?[100,200]:[50,100]};
+ return {strokes:['단체기록'],dist:()=>[]};
 }
+function adminMemberRecordSubOptions(){
+ return adminMemberRecordMajor==='other'?[['personal','개인기록'],['relay','단체기록']]:[['personal','개인전'],['relay','단체전']];
+}
+function adminRecordButton(label,active,onclick){
+ return `<button class="${active?'active':''}" onclick="${onclick}">${label}</button>`;
+}
+function renderMemberRecordFilters(){
+ const wrap=document.getElementById('memberRecordFilters');if(!wrap)return;
+ const rule=adminMemberRecordRule(),subs=adminMemberRecordSubOptions();
+ if(!rule.strokes.includes(adminMemberRecordStroke))adminMemberRecordStroke=rule.strokes[0];
+ const distances=rule.dist(adminMemberRecordStroke);
+ if(distances.length&&!distances.includes(adminMemberRecordDistance))adminMemberRecordDistance=distances[0];
+ wrap.innerHTML=`
+  <div class="filters">${[['meet','일반'],['fin','핀'],['other','기타']].map(([v,l])=>adminRecordButton(l,adminMemberRecordMajor===v,`setAdminMemberRecordMajor('${v}')`)).join('')}</div>
+  <div class="filters">${subs.map(([v,l])=>adminRecordButton(l,adminMemberRecordSub===v,`setAdminMemberRecordSub('${v}')`)).join('')}</div>
+  <div class="filters adminRecordStrokeFilters">${rule.strokes.map(s=>adminRecordButton(s,adminMemberRecordStroke===s,`setAdminMemberRecordStroke('${s}')`)).join('')}</div>
+  ${distances.length?`<div class="filters">${distances.map(d=>adminRecordButton(`${d}M`,adminMemberRecordDistance===d,`setAdminMemberRecordDistance(${d})`)).join('')}</div>`:''}`;
+}
+function recordMatchesAdminFilter(r){
+ const sub=String(r.subcategory||'');
+ const stroke=String(r.stroke||'');
+ const dist=Number(r.metadata?.distance||0);
+ if(String(r.category||'')!==adminMemberRecordMajor)return false;
+ const wantRelay=adminMemberRecordSub==='relay';
+ if(wantRelay){
+  if(sub!=='relay')return false;
+ }else if(sub==='relay')return false;
+ if(adminMemberRecordStroke==='기타'){
+  const known=adminMemberRecordMajor==='fin'?['자유형','접영']:['자유형','배영','평영','접영','개인혼영'];
+  if(known.some(s=>stroke.includes(s)))return false;
+ }else if(adminMemberRecordStroke==='단체기록'){
+  if(sub!=='relay')return false;
+ }else if(!stroke.includes(adminMemberRecordStroke))return false;
+ const ds=adminMemberRecordRule().dist(adminMemberRecordStroke);
+ return !ds.length||dist===adminMemberRecordDistance;
+}
+function renderMemberRecordDetail(){
+ const box=document.getElementById('memberRecordDetailBody');if(!box)return;
+ renderMemberRecordFilters();
+ const rows=(adminSelectedMemberRecords||[]).filter(recordMatchesAdminFilter);
+ box.innerHTML=rows.length?rows.map(r=>{
+   const dist=Number(r.metadata?.distance||0);
+   const title=[r.stroke,dist?`${dist}M`:''].filter(Boolean).join(' ')||'기록';
+   const meta=[r.event_name,r.event_date].filter(Boolean).join(' · ');
+   return `<div class="recordRow"><div><b>${escHtml(title)}</b><p>${escHtml(meta||'-')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`;
+ }).join(''):'<div class="card meta">해당 조건의 기록이 없습니다.</div>';
+}
+function openMemberRecordDetail(){
+ if(!adminSelectedMember)return;
+ document.getElementById('memberRecordDetailTitle').textContent=`${adminSelectedMember.name} 기록`;
+ adminMemberRecordMajor='meet';adminMemberRecordSub='personal';adminMemberRecordStroke='자유형';adminMemberRecordDistance=50;
+ showPage('memberRecordDetail');renderMemberRecordDetail();
+}
+function setAdminMemberRecordMajor(v){adminMemberRecordMajor=v;adminMemberRecordSub='personal';adminMemberRecordStroke=adminMemberRecordRule().strokes[0];renderMemberRecordDetail()}
+function setAdminMemberRecordSub(v){adminMemberRecordSub=v;adminMemberRecordStroke=adminMemberRecordRule().strokes[0];renderMemberRecordDetail()}
+function setAdminMemberRecordStroke(v){adminMemberRecordStroke=v;renderMemberRecordDetail()}
+function setAdminMemberRecordDistance(v){adminMemberRecordDistance=Number(v);renderMemberRecordDetail()}
+
+async function openMemberActivityDetail(kind){
+ if(!adminSelectedMember)return;
+ showPage('memberActivityDetail');
+ const title={training:'훈련 출석 현황',race:'대회 참가 현황',event:'기타 참여 현황'}[kind]||'활동 현황';
+ document.getElementById('memberActivityDetailTitle').textContent=title;
+ const box=document.getElementById('memberActivityDetailBody');
+ box.innerHTML='<div class="card meta">불러오는 중...</div>';
+ try{
+  if(kind==='training'){
+   const {data,error}=await dbClient.rpc('member_history_v4',{p_member_id:adminSelectedMember.id});
+   if(error)throw error;
+   const rows=data||[];
+   box.innerHTML=rows.length?rows.map(h=>`<div class="row"><div class="grow"><b>${escHtml(String(h.activity_date))} 팀아이슬 훈련</b></div><span class="tag ${h.status==='지각'?'amber':'ok'}">${escHtml(h.status)}</span></div>`).join(''):'<div class="card meta">훈련 출석 기록이 없습니다.</div>';
+   return;
+  }
+  if(kind==='race'){
+   const rows=(adminSelectedMemberRecords||[]).filter(r=>['meet','fin'].includes(String(r.category||'')));
+   const seen=new Set(),events=[];
+   rows.forEach(r=>{const k=`${r.event_name}|${r.event_date}`;if(!r.event_name||seen.has(k))return;seen.add(k);events.push({title:r.event_name,date:r.event_date})});
+   events.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+   box.innerHTML=events.length?events.map(x=>`<div class="row"><div class="grow"><b>${escHtml(x.title)}</b><p>${escHtml(String(x.date||''))}</p></div><span class="tag ok">참가</span></div>`).join(''):'<div class="card meta">대회 참가 기록이 없습니다.</div>';
+   return;
+  }
+  const {data,error}=await dbClient.from('activity_applications').select('activity_id,application_type,created_at,activities!inner(id,title,activity_date,kind)').eq('member_id',adminSelectedMember.id);
+  if(error)throw error;
+  const rows=(data||[]).filter(x=>x.activities?.kind==='event').sort((a,b)=>String(b.activities?.activity_date||'').localeCompare(String(a.activities?.activity_date||'')));
+  box.innerHTML=rows.length?rows.map(x=>`<div class="row"><div class="grow"><b>${escHtml(x.activities.title||'기타')}</b><p>${escHtml(String(x.activities.activity_date||''))}</p></div><span class="tag ok">참여</span></div>`).join(''):'<div class="card meta">기타 참여 기록이 없습니다.</div>';
+ }catch(e){console.error(e);box.innerHTML='<div class="card meta">활동 현황을 불러오지 못했습니다.</div>'}
+}
+
+async function renderRoleManagement(){return;}
 async function changeMemberRole(memberId,action){
  if(!isMasterAdmin())return toast('총관리자만 부관리자를 지정하거나 해제할 수 있습니다.');
  try{
@@ -3933,12 +4051,12 @@ function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].pai
 
 let teamEventRankingCache=null;
 async function getTeamEventRankingData(){
- const {data,error}=await dbClient.rpc('get_team_event_rankings_v1');
+ const {data,error}=await dbClient.rpc('get_team_event_rankings_v2');
  if(error||!data||data.error)throw(error||new Error(data?.error||'ranking error'));
  teamEventRankingCache=data;return data;
 }
 function eventRankRows(rows,unit='회'){
- return (rows||[]).length?(rows||[]).map((r,i)=>`<div class="rankLine"><b>${i+1}위 · ${escHtml(r.nickname)}</b><span>${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+ return (rows||[]).length?(rows||[]).map((r,i)=>`<div class="rankLine"><b>${r.rank||i+1}위 · ${escHtml(r.nickname)}</b><span>${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 async function openEventRankingPage(type){
  showPage('eventRankingDetail');
@@ -3956,7 +4074,7 @@ async function openEventRankingPage(type){
   }
   const by={자유형:[],배영:[],평영:[],접영:[]};
   (data.improvements||[]).forEach(r=>{if(by[r.stroke])by[r.stroke].push(r)});
-  box.innerHTML=`<div class="eventDetailStack">${['자유형','배영','평영','접영'].map(stroke=>`<div class="eventRankMini"><h3>${data.year} ${stroke} 기록 단축왕</h3>${by[stroke].length?by[stroke].map((r,i)=>`<div class="rankLine"><b>${i+1}위 · ${escHtml(r.nickname)}</b><span>${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`).join('')}</div>`;
+  box.innerHTML=`<div class="eventDetailStack">${['자유형','배영','평영','접영'].map(stroke=>`<div class="eventRankMini"><h3>${data.year} ${stroke} 기록 단축왕</h3>${by[stroke].length?by[stroke].map((r,i)=>`<div class="rankLine"><b>${r.rank||i+1}위 · ${escHtml(r.nickname)}</b><span>${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`).join('')}</div>`;
  }catch(e){console.error(e);box.innerHTML='<div class="card meta">랭킹을 불러오지 못했습니다.</div>'}
 }
 async function renderTeamEventRankings(){return;}
@@ -4021,7 +4139,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final47').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final57-member-rank-refresh').catch(()=>{}));
 }
 </script>
 </body>
