@@ -1745,6 +1745,7 @@ async function loginMember(){
   const member=await memberFromSession();
   if(!member||member.status!=='approved'){await dbClient.auth.signOut();return setAuthMessage('승인된 회원만 로그인할 수 있습니다.','error')}
   await setCurrentUserFromMember(member);
+  try{localStorage.setItem('eysl-last-login-nickname',nickname);if(navigator.storage?.persist)void navigator.storage.persist()}catch(_){}
   document.getElementById('auth')?.classList.remove('open');
   applyRole();
   restoreCoreSnapshot();restoreChatCache();
@@ -1778,8 +1779,11 @@ async function recoverLegacyMember(){
  }finally{setAuthBusy(false)}
 }
 async function memberFromSession(){
- const {data:{session},error:sessionError}=await dbClient.auth.getSession();
- if(sessionError||!session)return null;
+ let {data:{session},error:sessionError}=await dbClient.auth.getSession();
+ if((sessionError||!session)){
+  try{const refreshed=await dbClient.auth.refreshSession();session=refreshed.data?.session||null}catch(_){session=null}
+ }
+ if(!session)return null;
  const {data,error}=await dbClient.rpc('get_my_member');
  const member=Array.isArray(data)?data[0]:data;
  if(error||!member)return null;
@@ -1789,6 +1793,7 @@ async function setCurrentUserFromMember(member){
  currentUser={nickname:member.nickname,role:['admin','master_admin'].includes(member.role)?'admin':'member',actualRole:member.role||'member',memberId:member.id,birth_year:member.birth_year,gender:member.gender,realName:member.real_name||'',avatarPath:member.avatar_path||null,avatarUrl:member.avatar_path?(await signedProfileImage(member.avatar_path)):'',createdAt:member.created_at||null};
 }
 async function initAuth(){
+ try{const saved=localStorage.getItem('eysl-last-login-nickname');const input=document.getElementById('authLoginNickname');if(saved&&input&&!input.value)input.value=saved}catch(_){}
  const member=await memberFromSession();
  if(member){
   if(member.status==='approved'){
@@ -2543,18 +2548,59 @@ async function openGenericApplyStatus(kind,id){
   box.innerHTML=`<div class="detail"><div class="detailrow"><b>${label}</b><span>${escHtml(item.title)}</span></div><div class="detailrow"><b>신청</b><span>${people.length}명</span></div></div><div class="section"><h2>신청완료 ${people.length}명</h2></div><div class="card">${rows}</div>`;
  }catch(e){box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
 }
-function renderMyStatus(kind){
+async function loadMyRaceHistory(){
+ if(!currentUser.memberId)return [];
+ try{
+  const {data,error}=await dbClient.from('records')
+   .select('event_name,event_date,category')
+   .eq('member_id',currentUser.memberId)
+   .in('category',['meet','fin'])
+   .not('event_name','is',null)
+   .not('event_date','is',null)
+   .order('event_date',{ascending:false});
+  if(error)throw error;
+  const seen=new Set(),out=[];
+  (data||[]).forEach(r=>{
+   const key=`${r.event_name}__${r.event_date}`;
+   if(seen.has(key))return;seen.add(key);
+   out.push({id:null,title:r.event_name,date:r.event_date,state:r.event_date<today?'done':'upcoming',status:r.event_date<today?'참가완료':'참가',historyOnly:true});
+  });
+  return out;
+ }catch(e){console.error('race history:',e);return []}
+}
+async function renderMyStatus(kind){
  currentStatusKind=kind;currentStatusFilter='all';showPage('myStatus');
  document.querySelectorAll('#myStatus .filters button').forEach((b,i)=>b.classList.toggle('active',i===0));
  myStatusTitle.textContent=kind==='race'?'나의 대회 신청 내역':kind==='training'?'나의 훈련 신청 내역':kind==='event'?'나의 이벤트 신청 내역':'나의 전체 신청 내역';
- renderMyStatusList();
+ await renderMyStatusList();
 }
-function filterMyStatus(f,b){currentStatusFilter=f;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMyStatusList()}
-function renderMyStatusList(){let rows=[];if(currentStatusKind==='training')rows=Object.values(trainings).filter(t=>(t.participants||[]).includes(currentUser.nickname)||(t.waitlist||[]).some(w=>w.name===currentUser.nickname)).map(t=>({id:t.id,title:t.title,date:t.date,time:`${t.start}–${t.end}`,place:t.place,state:t.date<today?'done':'upcoming',status:t.date<today?'종료':(t.participants||[]).includes(currentUser.nickname)?'신청완료':`대기 ${(t.waitlist||[]).find(w=>w.name===currentUser.nickname)?.order||''}번`}));if(currentStatusKind==='race')rows=races.filter(r=>r.application).map(r=>({id:r.id,title:r.title,date:r.date,state:r.date<today?'done':'upcoming',status:r.date<today?'종료':'신청완료'}));if(currentStatusKind==='event')rows=events.filter(x=>(x.participants||[]).includes(currentUser.nickname)).map(x=>({id:x.id,title:x.title,date:x.date,time:`${x.start}–${x.end}`,place:x.place,state:x.date<today?'done':'upcoming',status:x.date<today?'종료':'신청완료'}));rows=rows.filter(r=>currentStatusFilter==='all'||r.state===currentStatusFilter).sort((a,b)=>b.date.localeCompare(a.date));myStatusList.innerHTML=rows.map(r=>`<div class="statusCard"><div class="statusTop"><div><h3>${r.title}</h3><p>${r.date}${r.time?` · ${r.time}`:''}${r.place?`<br>${r.place}`:''}</p></div><span class="tag ${r.state==='done'?'done':r.status.startsWith('대기')?'wait':'ok'}">${r.status}</span></div><div class="actions"><button class="btn ghost" onclick="${currentStatusKind==='training'?`openTraining('${r.id}')`:currentStatusKind==='race'?`setActiveRace('${r.id}');openRaceDetail()`:`openEventDetail('${r.id}')`}">상세보기</button></div></div>`).join('')||'<div class="card meta">해당 신청 내역이 없습니다.</div>'}
+function filterMyStatus(f,b){currentStatusFilter=f;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');void renderMyStatusList()}
+async function renderMyStatusList(){
+ let rows=[];
+ if(currentStatusKind==='training')rows=Object.values(trainings).filter(t=>(t.participants||[]).includes(currentUser.nickname)||(t.waitlist||[]).some(w=>w.name===currentUser.nickname)).map(t=>({id:t.id,title:t.title,date:t.date,time:`${t.start}–${t.end}`,place:t.place,state:t.date<today?'done':'upcoming',status:t.date<today?'종료':(t.participants||[]).includes(currentUser.nickname)?'신청완료':`대기 ${(t.waitlist||[]).find(w=>w.name===currentUser.nickname)?.order||''}번`}));
+ if(currentStatusKind==='race'){
+  const applied=races.filter(r=>r.application).map(r=>({id:r.id,title:r.title,date:r.date,state:r.date<today?'done':'upcoming',status:r.date<today?'종료':'신청완료',historyOnly:false}));
+  const history=await loadMyRaceHistory();
+  const map=new Map();
+  [...applied,...history].forEach(r=>{const key=`${r.title}__${r.date}`;const prev=map.get(key);if(!prev||(!r.historyOnly&&prev.historyOnly))map.set(key,r)});
+  rows=[...map.values()];
+ }
+ if(currentStatusKind==='event')rows=events.filter(x=>(x.participants||[]).includes(currentUser.nickname)).map(x=>({id:x.id,title:x.title,date:x.date,time:`${x.start}–${x.end}`,place:x.place,state:x.date<today?'done':'upcoming',status:x.date<today?'종료':'신청완료'}));
+ rows=rows.filter(r=>currentStatusFilter==='all'||r.state===currentStatusFilter).sort((a,b)=>b.date.localeCompare(a.date));
+ myStatusList.innerHTML=rows.map(r=>{
+  let action='';
+  if(currentStatusKind==='training')action=`<div class="actions"><button class="btn ghost" onclick="openTraining('${r.id}')">상세보기</button></div>`;
+  else if(currentStatusKind==='race'&&!r.historyOnly&&r.id)action=`<div class="actions"><button class="btn ghost" onclick="setActiveRace('${r.id}');openRaceDetail()">상세보기</button></div>`;
+  else if(currentStatusKind==='race'&&r.historyOnly)action=`<div class="actions"><button class="btn ghost" onclick="showPage('records')">기록 보기</button></div>`;
+  else if(currentStatusKind==='event')action=`<div class="actions"><button class="btn ghost" onclick="openEventDetail('${r.id}')">상세보기</button></div>`;
+  return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(r.title)}</h3><p>${escHtml(r.date)}${r.time?` · ${escHtml(r.time)}`:''}${r.place?`<br>${escHtml(r.place)}`:''}</p></div><span class="tag ${r.state==='done'?'done':String(r.status).startsWith('대기')?'wait':'ok'}">${escHtml(r.status)}</span></div>${action}</div>`;
+ }).join('')||'<div class="card meta">해당 신청 내역이 없습니다.</div>';
+}
 function changeSummaryMonth(n){summaryMonth=Math.max(1,Math.min(12,summaryMonth+n));renderActivity()}
 function renderActivity(){const now=new Date(),year=now.getFullYear(),mm=String(summaryMonth).padStart(2,'0'),prefix=`${year}-${mm}`;document.getElementById('summaryMonth').textContent=`${year}년 ${summaryMonth}월`;const tr=Object.values(trainings).filter(t=>String(t.date).startsWith(prefix)&&(t.participants||[]).includes(currentUser.nickname)).length,ra=races.filter(r=>String(r.date).startsWith(prefix)&&r.application).length,ev=events.filter(x=>String(x.date).startsWith(prefix)&&(x.participants||[]).includes(currentUser.nickname)).length,ar=attendanceHistory.filter(x=>String(x.date).startsWith(prefix)&&(!x.name||x.name===currentUser.nickname)),att=ar.length?Math.round(ar.filter(x=>x.status==='출석'||x.status==='지각').length/ar.length*100):0,total=tr+ra+ev;activityBody.innerHTML=`<div class="summary"><div class="metrics"><div class="metric"><b>${tr}회</b><span>훈련 참여</span></div><div class="metric"><b>${ra}회</b><span>대회 참가</span></div><div class="metric"><b>${ev}회</b><span>이벤트</span></div><div class="metric"><b>${att}%</b><span>출석률</span></div></div></div><div class="section"><h2>이번 달 요약</h2></div><div class="row"><div class="grow"><b>${total?`${summaryMonth}월에는 훈련 ${tr}회, 대회 ${ra}회, 이벤트 ${ev}회에 참여했어요.`:'이번 달 등록된 활동 내역이 없습니다.'}</b></div></div>`}
 let recordCurrentType='personal';
 let recordDetailFilter='';
+let recordDistanceFilter='all';
 let recordViewRows=[];
 
 function recordDetailOptions(major,type){
@@ -2592,7 +2638,27 @@ function renderRecordDetailTabs(){
 
 function setRecordDetailFilter(v,btn){
  recordDetailFilter=v;
+ recordDistanceFilter='all';
  document.querySelectorAll('#recordDetailTabs button').forEach(x=>x.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ renderRecordFilteredContent();
+}
+function recordDistanceOptions(rows){
+ const target=recordCurrentType==='personal'
+  ?rows.filter(r=>personalStrokeKind(r,recordMajor)===recordDetailFilter)
+  :rows.filter(r=>relayKind(r)===recordDetailFilter);
+ return [...new Set(target.map(recordDistance).filter(d=>Number(d)>0))].sort((a,b)=>a-b);
+}
+function renderRecordDistanceTabs(rows){
+ const distances=recordDistanceOptions(rows);
+ if(recordDistanceFilter!=='all'&&!distances.includes(Number(recordDistanceFilter)))recordDistanceFilter='all';
+ if(!distances.length)return '';
+ const opts=['all',...distances];
+ return `<div class="recordTabs recordDistanceTabs" id="recordDistanceTabs">${opts.map(v=>`<button class="${String(v)===String(recordDistanceFilter)?'active':''}" onclick="setRecordDistanceFilter('${v}',this)">${v==='all'?'전체':`${v}M`}</button>`).join('')}</div>`;
+}
+function setRecordDistanceFilter(v,btn){
+ recordDistanceFilter=v==='all'?'all':Number(v);
+ document.querySelectorAll('#recordDistanceTabs button').forEach(x=>x.classList.remove('active'));
  if(btn)btn.classList.add('active');
  renderRecordFilteredContent();
 }
@@ -2624,7 +2690,9 @@ function renderRecordFilteredContent(){
      return `<div class="pbCard screenshotPb"><span>${kind}</span><b>${r?formatSwimResult(r.result):'-'}</b></div>`;
    }).join('');
 
-   const filtered=rows.filter(r=>personalStrokeKind(r,recordMajor)===recordDetailFilter)
+   const strokeRows=rows.filter(r=>personalStrokeKind(r,recordMajor)===recordDetailFilter);
+   const filtered=strokeRows
+     .filter(r=>recordDistanceFilter==='all'||recordDistance(r)===Number(recordDistanceFilter))
      .sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
 
    const history=filtered.length?filtered.map((r,i)=>{
@@ -2643,11 +2711,13 @@ function renderRecordFilteredContent(){
    box.innerHTML=`<div class="section recordScreenHead"><h2>MY PB · 50M</h2></div>
      <div class="recordSummaryGrid screenshotPbGrid">${pb}</div>
      ${renderRecordDetailTabs()}
-     <div class="strokeHistory filteredHistory"><h3>${escHtml(recordDetailFilter)} 히스토리</h3>${history}</div>`;
+     ${renderRecordDistanceTabs(rows)}
+     <div class="strokeHistory filteredHistory"><h3>${escHtml(recordDetailFilter)} 히스토리${recordDistanceFilter==='all'?'':` · ${recordDistanceFilter}M`}</h3>${history}</div>`;
    return;
  }
 
  const filtered=rows.filter(r=>relayKind(r)===recordDetailFilter)
+   .filter(r=>recordDistanceFilter==='all'||recordDistance(r)===Number(recordDistanceFilter))
    .sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
 
  const list=filtered.length?filtered.map(r=>`<div class="recordRow cleanRecordRow">
@@ -2659,12 +2729,13 @@ function renderRecordFilteredContent(){
    <strong>${escHtml(formatSwimResult(r.result))}</strong>
  </div>`).join(''):'<div class="card meta">해당 단체전 기록이 없습니다.</div>';
 
- box.innerHTML=`${renderRecordDetailTabs()}<div class="recordList recordPageList relayFilteredList">${list}</div>`;
+ box.innerHTML=`${renderRecordDetailTabs()}${renderRecordDistanceTabs(rows)}<div class="recordList recordPageList relayFilteredList">${list}</div>`;
 }
 function setRecordMajor(v,b){
  recordMajor=v;
  recordCurrentType='personal';
  recordDetailFilter='';
+ recordDistanceFilter='all';
  document.querySelectorAll('#recordMajor button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
 
@@ -2700,6 +2771,7 @@ function recordDistance(r){
 async function showRecord(type,btn){
  recordCurrentType=type;
  recordDetailFilter='';
+ recordDistanceFilter='all';
  document.querySelectorAll('#recordMinor button').forEach(b=>b.classList.remove('active'));
  if(btn)btn.classList.add('active');
 
@@ -3840,7 +3912,7 @@ window.addEventListener('load',async()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=profile-role-final47').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final49-filters-race-autologin-20260824').catch(()=>{}));
 }
 </script>
 </body>
