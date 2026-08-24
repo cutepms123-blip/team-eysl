@@ -963,6 +963,11 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .improveGroup{margin-top:12px}.improveGroup h4{font-size:12px;margin:14px 0 7px}.eventRankEmpty{font-size:11px;color:#999;padding:8px 0}
 .otherCreateBar{display:flex;justify-content:flex-end;margin:-4px 0 12px}
 
+
+/* ===== FINAL51 schedule / event readability ===== */
+#otherScheduleActions{display:none;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+#otherScheduleActions .btn{flex:1;min-width:140px}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1048,7 +1053,7 @@ if(window.pdfjsLib){
 <section id="chat" class="page"><h1 class="title">채팅방</h1><div class="chatTabs"><button id="groupTab" class="active" onclick="switchChat('group')">전체채팅</button><button id="dmTab" onclick="switchChat('dm')">개인채팅</button></div><div id="groupView"><div id="groupChatBody" class="chatBody"></div><div id="groupEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('groupAttach').click()">＋</button><input id="groupAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'group')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('group')">☺</button><input id="groupInput" placeholder="메시지 보내기"><button class="primary" onclick="sendGroup()">전송</button></div></div><div id="dmView" class="chatModeHidden"><div id="dmList" class="list"></div></div></section>
 <section id="dmChat" class="page"><div class="pagehead"><button class="back" onclick="showPage('chat');switchChat('dm')">←</button><h1 id="dmTitle">개인채팅</h1><span></span></div><div id="dmBody" class="chatBody"></div><div id="dmEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('dmAttach').click()">＋</button><input id="dmAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'dm')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('dm')">☺</button><input id="dmInput" placeholder="메시지 보내기"><button class="primary" onclick="sendDm()">전송</button></div></section>
 
-<section id="schedule" class="page"><h1 class="title">신청</h1><div class="filters" id="scheduleFilters"><button class="active" onclick="setScheduleFilter('all',this)">전체</button><button onclick="setScheduleFilter('training',this)">훈련</button><button onclick="setScheduleFilter('race',this)">대회</button><button onclick="setScheduleFilter('event',this)">기타</button></div><div class="otherCreateBar"><button class="btn outline" type="button" onclick="openOtherActivityCreate()">＋ 기타 등록</button></div><div class="calendar"><div class="calhead"><button onclick="changeMonth(-1)">‹</button><b id="calTitle"></b><button onclick="changeMonth(1)">›</button></div><div class="week"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendarDays" class="days"></div></div><div id="dayInfo"></div><div class="section scheduleListHead"><h2>일정 목록</h2></div><div id="scheduleList" class="list"></div></section>
+<section id="schedule" class="page"><h1 class="title">신청</h1><div class="filters" id="scheduleFilters"><button class="active" onclick="setScheduleFilter('all',this)">전체</button><button onclick="setScheduleFilter('training',this)">훈련</button><button onclick="setScheduleFilter('race',this)">대회</button><button onclick="setScheduleFilter('event',this)">기타</button></div><div class="otherCreateBar" id="otherScheduleActions"><button class="btn outline" type="button" onclick="openOtherActivityCreate()">＋ 기타 등록</button><button class="btn ghost" type="button" onclick="renderMyStatus('event')">나의 기타 신청내역</button></div><div class="calendar"><div class="calhead"><button onclick="changeMonth(-1)">‹</button><b id="calTitle"></b><button onclick="changeMonth(1)">›</button></div><div class="week"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendarDays" class="days"></div></div><div id="dayInfo"></div><div class="section scheduleListHead"><h2>일정 목록</h2></div><div id="scheduleList" class="list"></div></section>
 
 <section id="trainingList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>훈련</h1><span></span></div><div id="trainingCards" class="list"></div></section>
 <section id="raceList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>대회</h1><span></span></div><div id="raceCards" class="list"></div></section>
@@ -1150,7 +1155,7 @@ if(window.pdfjsLib){
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('all')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('all')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -1653,7 +1658,7 @@ function showPage(id){
  if(id==='notice')renderNotices();
  if(id==='home')renderHome();
  if(id==='chat'){bindChatEnterKeys();switchChat('group');void refreshChatIfStale()}
- if(id==='schedule')renderCalendar();
+ if(id==='schedule'){updateScheduleViewLabels();renderCalendar();}
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
  if(id==='mypage'){renderMyProfile();refreshPushStatus();const tr=document.getElementById('masterPushTestRow');if(tr)tr.style.display=isMasterAdmin()?'flex':'none';}
@@ -2365,7 +2370,7 @@ function renderCalendar(){
  document.getElementById('dayInfo').innerHTML='';
  renderScheduleList(prefix);
 }
-function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));races.filter(r=>r.date===ds).forEach(r=>list.push({type:'대회',title:r.title,time:r.start?`${r.start} 시작`:'-',place:r.place||'-',status:activityHasStarted(r)?'종료':r.application?'신청완료':'신청 가능',action:`setActiveRace('${r.id}');showPage('raceList')`}));events.filter(e=>e.date===ds).forEach(e=>list.push({type:'기타',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`renderMyStatus('event')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
+function selectDay(ds,el){document.querySelectorAll('.day').forEach(d=>d.classList.remove('selected'));el.classList.add('selected');const list=[];Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',action:`openTraining('${t.id}')`}));races.filter(r=>r.date===ds).forEach(r=>list.push({type:'대회',title:r.title,time:r.start?`${r.start} 시작`:'-',place:r.place||'-',status:activityHasStarted(r)?'종료':r.application?'신청완료':'신청 가능',action:`setActiveRace('${r.id}');showPage('raceList')`}));events.filter(e=>e.date===ds).forEach(e=>list.push({type:'기타',title:e.title,time:`${e.start}–${e.end}`,place:e.place,status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',action:`openEventDetail('${e.id}')`}));document.getElementById('dayInfo').innerHTML=list.length?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join(''):`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`}
 
 function renderTrainingList(){
  const list=Object.values(trainings).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
@@ -3561,10 +3566,27 @@ async function chatAttach(inp,kind){
  }
 }
 
+function updateScheduleViewLabels(){
+ const head=document.querySelector('.scheduleListHead h2');
+ if(head)head.textContent=scheduleFilter==='event'?'기타 일정 목록':scheduleFilter==='training'?'훈련 일정 목록':scheduleFilter==='race'?'대회 일정 목록':'일정 목록';
+ const actions=document.getElementById('otherScheduleActions');
+ if(actions)actions.style.display=scheduleFilter==='event'?'flex':'none';
+}
+function openOtherSchedule(){
+ closeDrawer();
+ scheduleFilter='event';
+ showPage('schedule');
+ document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));
+ const btn=[...document.querySelectorAll('#scheduleFilters button')].find(x=>x.textContent.trim()==='기타');
+ if(btn)btn.classList.add('active');
+ updateScheduleViewLabels();
+ renderCalendar();
+}
 function setScheduleFilter(v,b){
  scheduleFilter=v;
  document.querySelectorAll('#scheduleFilters button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
+ updateScheduleViewLabels();
  renderCalendar();
 }
 
@@ -3838,11 +3860,31 @@ async function renderTeamEventRankings(){
  box.innerHTML='<div class="card meta">랭킹 불러오는 중...</div>';
  const {data,error}=await dbClient.rpc('get_team_event_rankings_v1');
  if(error||!data||data.error){console.error(error||data);box.innerHTML='<div class="card meta">랭킹을 불러오지 못했습니다.</div>';return}
- const rankList=(title,rows,unit='회')=>`<div class="eventRankCard"><h3>${title}</h3>${(rows||[]).length?(rows||[]).map((r,i)=>`<div class="rankLine"><b>${i+1}위 · ${escHtml(r.nickname)}</b><span>${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`;
- const improvementGroups={};
- (data.improvements||[]).forEach(r=>{const k=`${r.half}|${r.stroke}|${r.distance}`;(improvementGroups[k]??=[]).push(r)});
- const improve=Object.entries(improvementGroups).map(([k,rows])=>{const [half,stroke,distance]=k.split('|');return `<div class="eventRankCard improveGroup"><h3>${half==='H1'?'상반기':'하반기'} ${escHtml(stroke)} ${distance}M 기록 단축왕</h3>${rows.map(r=>`<div class="rankLine"><b>${r.rank}위 · ${escHtml(r.nickname)}</b><span>▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join('')}</div>`}).join('')||'<div class="eventRankCard"><h3>반기별 기록 단축왕</h3><div class="eventRankEmpty">같은 영법·거리 기록이 2회 이상 있어야 집계됩니다.</div></div>';
- box.innerHTML=`<div class="eventRankGrid">${rankList('누적 출석왕',data.attendance?.lifetime)}${rankList(`${data.year} 상반기 출석왕`,data.attendance?.h1)}${rankList(`${data.year} 하반기 출석왕`,data.attendance?.h2)}${rankList('누적 지각왕',data.late?.lifetime)}${rankList(`${data.year} 상반기 지각왕`,data.late?.h1)}${rankList(`${data.year} 하반기 지각왕`,data.late?.h2)}${improve}</div>`;
+ const rankRows=(rows,unit='회')=>(rows||[]).length?(rows||[]).map((r,i)=>`<div class="rankLine"><b>${i+1}위 · ${escHtml(r.nickname)}</b><span>${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+ const compactRank=(title,rows)=>`<div class="eventRankMini"><h4>${title}</h4>${rankRows(rows)}</div>`;
+ const section=(title,sub,content)=>`<div class="eventRankSection"><div class="eventRankSectionHead"><h3>${title}</h3><span>${sub}</span></div>${content}</div>`;
+
+ const attendance=section(
+  '출석왕',
+  '누적 · 상반기 · 하반기',
+  `<div class="eventRankTriple">${compactRank('누적 출석왕',data.attendance?.lifetime)}${compactRank(`${data.year} 상반기 출석왕`,data.attendance?.h1)}${compactRank(`${data.year} 하반기 출석왕`,data.attendance?.h2)}</div>`
+ );
+
+ const late=section(
+  '지각왕',
+  '누적 · 상반기 · 하반기',
+  `<div class="eventRankTriple">${compactRank('누적 지각왕',data.late?.lifetime)}${compactRank(`${data.year} 상반기 지각왕`,data.late?.h1)}${compactRank(`${data.year} 하반기 지각왕`,data.late?.h2)}</div>`
+ );
+
+ const byStroke={자유형:[],배영:[],평영:[],접영:[]};
+ (data.improvements||[]).forEach(r=>{if(byStroke[r.stroke])byStroke[r.stroke].push(r)});
+ const improveCards=['자유형','배영','평영','접영'].map(stroke=>{
+   const rows=byStroke[stroke]||[];
+   return `<div class="eventRankMini improveMini"><h4>${data.year} ${stroke} 기록 단축왕</h4>${rows.length?rows.map((r,i)=>`<div class="rankLine"><b>${i+1}위 · ${escHtml(r.nickname)}</b><span>${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">같은 거리 기록이 2회 이상 있어야 집계됩니다.</div>'}</div>`;
+ }).join('');
+ const improve=section('단축왕',`${data.year} 연간 · 자유형 / 배영 / 평영 / 접영`,`<div class="eventRankDouble">${improveCards}</div>`);
+
+ box.innerHTML=`<div class="eventRankGrid eventRankReadable">${attendance}${late}${improve}</div>`;
 }
 
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open')}
