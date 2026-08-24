@@ -976,9 +976,9 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .eventDetailStack{display:grid;gap:18px;padding-bottom:24px}
 .eventDetailStack .eventRankMini{padding:22px;border-radius:22px;background:#fff;border:1px solid var(--line)}
 .eventDetailStack .eventRankMini h3{margin:0 0 14px;font-size:20px}
-.otherFloatingCreate{display:none;position:absolute;right:42px;top:88px;width:54px;height:54px;border:0;border-radius:50%;background:#050505;color:#fff;align-items:center;justify-content:center;font-size:34px;font-weight:300;line-height:1;z-index:4;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.otherFloatingCreate{display:none;position:absolute;right:42px;top:18px;width:48px;height:48px;border:0;border-radius:50%;background:#050505;color:#fff;align-items:center;justify-content:center;font-size:34px;font-weight:300;line-height:1;z-index:4;box-shadow:0 4px 12px rgba(0,0,0,.12)}
 #schedule{position:relative}
-@media(max-width:600px){.otherFloatingCreate{right:38px;top:86px;width:52px;height:52px}.eventHubBtn{min-height:82px;font-size:22px}}
+@media(max-width:600px){.otherFloatingCreate{right:38px;top:16px;width:48px;height:48px}.eventHubBtn{min-height:82px;font-size:22px}}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1237,7 +1237,20 @@ function activityStateLabel(item){return activityHasStarted(item)?'종료':'신�
 function fmtDateFromIso(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,10).replaceAll('-','.');return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`}
 function fmtDbTime(v){return v?String(v).slice(0,5):''}
 function emptyRace(){return {id:null,title:'',date:'',endDate:'',place:'',participants:[],detail:'',relays:[]}}
-function mapActivityRow(row){const d=row.details||{};const base={id:row.id,title:row.title,date:row.activity_date,start:fmtDbTime(row.start_time),end:fmtDbTime(row.end_time),place:row.place||'',createdBy:row.created_by||null,participants:Array.isArray(d.participants)?d.participants:[],waitlist:Array.isArray(d.waitlist)?d.waitlist:[],offer:d.offer||null};if(row.kind==='training')return {...base,kind:'training',coach:d.coach||'-',gear:d.gear||'-',lane:d.lane||'-',info:d.info||'-',capacity:Number(row.capacity||d.capacity||20),plan:d.plan||'',planBy:d.planBy||'',planDate:d.planDate||row.activity_date};if(row.kind==='race')return {...base,kind:'race',endDate:d.endDate||row.activity_date,detail:d.info||d.detail||'',relays:Array.isArray(d.relays)?d.relays:[]};return {...base,kind:'event',done:!!d.done,info:d.info||''}}
+function mapActivityRow(row){
+ const d=row.details||{};
+ const base={
+  id:row.id,title:row.title,date:row.activity_date,start:fmtDbTime(row.start_time),end:fmtDbTime(row.end_time),
+  place:row.place||'',createdBy:row.created_by||null,
+  participants:Array.isArray(d.participants)?d.participants:[],
+  waitlist:Array.isArray(d.waitlist)?d.waitlist:[],offer:d.offer||null,
+  historicalParticipants:Array.isArray(d.historical_participants)?d.historical_participants:[],
+  historicalAttendance:(d.historical_attendance&&typeof d.historical_attendance==='object')?d.historical_attendance:{}
+ };
+ if(row.kind==='training')return {...base,kind:'training',coach:d.coach||'-',gear:d.gear||'-',lane:d.lane||'-',info:d.info||'-',capacity:Number(row.capacity||d.capacity||20),plan:d.plan||'',planBy:d.planBy||'',planDate:d.planDate||row.activity_date};
+ if(row.kind==='race')return {...base,kind:'race',endDate:d.endDate||row.activity_date,detail:d.info||d.detail||'',relays:Array.isArray(d.relays)?d.relays:[]};
+ return {...base,kind:'event',done:!!d.done,info:d.info||''};
+}
 async function signedTeamFile(path){if(!path)return null;const {data,error}=await dbClient.storage.from('team-files').createSignedUrl(path,3600);if(error){console.error('signed url:',error);return null}return data?.signedUrl||null}
 function snapshotPlainData(){
  try{
@@ -1364,6 +1377,13 @@ async function loadPersistentContent(){
  });
  Object.values(trainings).forEach(t=>{
   normalizeWait(t);
+  if(activityHasStarted(t)&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
+   t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
+   if(!attRecords[t.id])attRecords[t.id]={};
+   Object.entries(t.historicalAttendance||{}).forEach(([name,status])=>{
+    attRecords[t.id][name]={status,paid:false,historical:true};
+   });
+  }
   const offered=t.waitlist.find(w=>w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
   t.offer=offered?{name:offered.name,memberId:offered.memberId,expiresAt:new Date(offered.offerExpiresAt).getTime()}:null;
  });
@@ -2503,11 +2523,23 @@ async function renderApplyStatus(){
  const box=document.getElementById('applyStatusBody'),t=trainings[selectedTrainingId];if(!box)return;
  if(!t){box.innerHTML='<div class="card meta">훈련 정보를 찾을 수 없습니다.</div>';return}
  try{
-  const all=await fetchApplicationPeople(selectedTrainingId),participants=all.filter(x=>x.type==='participant'),waitlist=all.filter(x=>x.type==='waitlist').sort((a,b)=>(a.order||999)-(b.order||999));
-  const people=participants.length?participants.map(p=>`<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(p.name)}</b><p class="meta">신청완료</p></div></div>`).join(''):'<div class="meta">신청자가 없습니다.</div>';
+  const all=await fetchApplicationPeople(selectedTrainingId);
+  let participants=all.filter(x=>x.type==='participant');
+  const waitlist=all.filter(x=>x.type==='waitlist').sort((a,b)=>(a.order||999)-(b.order||999));
+  const done=activityHasStarted(t);
+  if(done&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
+   const seen=new Set(participants.map(p=>p.name));
+   t.historicalParticipants.forEach(name=>{
+    if(!seen.has(name))participants.push({name,type:'participant',historical:true,avatarUrl:'',attendanceStatus:t.historicalAttendance?.[name]||'출석'});
+   });
+  }
+  const people=participants.length?participants.map(p=>{
+   const status=done?(t.historicalAttendance?.[p.name]||p.details?.attendance_status||p.attendanceStatus||'출석'):'신청완료';
+   return `<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(p.name)}</b><p class="meta">${escHtml(status)}${p.historical?' · 과거 출석부':''}</p></div></div>`;
+  }).join(''):'<div class="meta">참석자가 없습니다.</div>';
   const waits=waitlist.length?waitlist.map(p=>{const offered=p.offerStatus==='offered'&&p.offerExpiresAt&&new Date(p.offerExpiresAt).getTime()>Date.now();return `<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${p.order||'-'}. ${escHtml(p.name)}</b><p class="meta">${offered?`응답 대기 · ${remaining(new Date(p.offerExpiresAt).getTime())} 남음`:'대기중'}</p></div>${offered?'<span class="offerBadge">응답중</span>':''}</div>`}).join(''):'<div class="meta">대기자가 없습니다.</div>';
-  box.innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${escHtml(t.title)}</span></div><div class="detailrow"><b>신청</b><span>${participants.length}/${t.capacity}</span></div><div class="detailrow"><b>대기</b><span>${waitlist.length}명</span></div></div><div class="section"><h2>신청완료 ${participants.length}명</h2></div><div class="card">${people}</div><div class="section"><h2>대기 ${waitlist.length}명</h2></div><div class="card">${waits}</div>`;
- }catch(e){box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
+  box.innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${escHtml(t.title)}</span></div><div class="detailrow"><b>${done?'참석':'신청'}</b><span>${participants.length}/${t.capacity}</span></div>${done?'':`<div class="detailrow"><b>대기</b><span>${waitlist.length}명</span></div>`}</div><div class="section"><h2>${done?'실제 참석':'신청완료'} ${participants.length}명</h2></div><div class="card">${people}</div>${done?'':`<div class="section"><h2>대기 ${waitlist.length}명</h2></div><div class="card">${waits}</div>`}`;
+ }catch(e){console.error(e);box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
 }
 function remaining(ex){const ms=Math.max(0,ex-Date.now());const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);return `${h}시간 ${m}분`}
 async function respondWaitlistOffer(activityId,action){
@@ -3772,22 +3804,49 @@ async function renderMembers(){
    n.innerHTML=fresh.length?fresh.map(m=>`<span>${escHtml(m.name)} · ${String(m.joinDate).slice(5,10).replace('-','/')}</span>`).join(''):'<span>데이터 없음</span>';
  }
 }
+function memberRecordPbHtml(rows){
+ const strokes=['자유형','배영','평영','접영'];
+ return strokes.map(st=>{
+  const eligible=(rows||[]).filter(r=>String(r.stroke||'')===st&&Number(r.metadata?.distance||0)===50&&String(r.category||'')==='meet'&&String(r.subcategory||'')==='personal'&&(recordSeconds(r.result)??0)>0);
+  eligible.sort((a,b)=>(recordSeconds(a.result)??9999)-(recordSeconds(b.result)??9999));
+  const best=eligible[0];
+  return `<div class="pbCard"><span>${st}</span><b>${best?formatSwimResult(best.result):'-'}</b></div>`;
+ }).join('');
+}
+function memberRecordHistoryHtml(rows){
+ if(!rows?.length)return '<div class="card meta">등록된 수영 기록이 없습니다.</div>';
+ return rows.map(r=>{
+  const dist=Number(r.metadata?.distance||0);
+  const title=[r.stroke,dist?`${dist}M`:''].filter(Boolean).join(' ')||'기록';
+  const meta=[r.event_name,r.event_date].filter(Boolean).join(' · ');
+  return `<div class="recordRow"><div><b>${escHtml(title)}</b><p>${escHtml(meta||'-')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`;
+ }).join('');
+}
 async function openMember(name){
  const m=members.find(x=>x.name===name);if(!m)return;
  showPage('memberDetail');
  const body=document.getElementById('memberDetailBody');if(!body)return;
  body.innerHTML='<div class="card meta">회원 정보를 불러오는 중...</div>';
- let history=[];
+ let history=[],swimRecords=[];
  try{const {data}=await dbClient.rpc('member_history_v4',{p_member_id:m.id});history=data||[]}catch(_){}
+ if(isAdminUser()&&m.id){
+  try{
+   const {data,error}=await dbClient.from('records').select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at').eq('member_id',m.id).order('event_date',{ascending:false});
+   if(error)throw error;
+   swimRecords=(data||[]).filter(r=>(recordSeconds(r.result)??0)>0);
+  }catch(e){console.error('member records:',e)}
+ }
  const roleLabel=m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원';
  const rows=[
   ['실명',m.realName||'-'],['팀 역할',m.teamRole||roleLabel],['가입일',m.join||'-'],['생년월일',m.birthDateText||(m.birthYear?`${m.birthYear}년`:'-')],
   ['성별',m.gender||'-'],['거주지',m.location||'-'],['강습',m.lessonLevel||'-'],['수력',m.swimExperience||'-'],
   ['가입 사유',m.joinReason||'-'],['기타',m.notes||'-'],['2026 출석',`${m.att||0}회`],['2026 지각',`${m.late||0}회`]
  ];
- const historyHtml=history.slice(0,12).map(h=>`<div class="row"><div class="grow"><b>${escHtml(String(h.activity_date))} 팀아이슬 훈련</b></div><span class="tag ${h.status==='지각'?'amber':'ok'}">${escHtml(h.status)}</span></div>`).join('');
+ const historyHtml=history.slice(0,20).map(h=>`<div class="row"><div class="grow"><b>${escHtml(String(h.activity_date))} 팀아이슬 훈련</b></div><span class="tag ${h.status==='지각'?'amber':'ok'}">${escHtml(h.status)}</span></div>`).join('');
+ const recordsBlock=isAdminUser()?`<div class="section"><h2>수영 기록</h2><span class="meta">관리자 전용 · ${swimRecords.length}건</span></div><div class="pbgrid">${memberRecordPbHtml(swimRecords)}</div><div class="section"><h2>전체 기록 히스토리</h2></div><div class="list">${memberRecordHistoryHtml(swimRecords)}</div>`:'';
  body.innerHTML=`<div class="profile"><div class="profileMain">${m.avatarUrl?`<img class="profileAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(name)}">`:`<div class="profileFallback">${escHtml((m.shortName||name).slice(0,2))}</div>`}<div class="profileInfo"><h2>${escHtml(name)}</h2><p>${escHtml(roleLabel)}${m.realName?` · ${escHtml(m.realName)}`:''}</p></div></div></div>
  <div class="detail memberInfoDetail">${rows.map(([k,v])=>`<div class="detailrow"><b>${escHtml(k)}</b><span>${escHtml(String(v))}</span></div>`).join('')}</div>
+ ${recordsBlock}
  <div class="section"><h2>최근 출석 기록</h2></div><div class="list">${historyHtml||'<div class="card meta">등록된 과거 출석 기록이 없습니다.</div>'}</div>
  ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`;
 }
@@ -3859,9 +3918,14 @@ function setAttState(v,b){
 }
 function renderAttendanceAdmin(){
  const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>신청</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
+ document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.type==='training'&&e.state==='done'?Math.max(e.people.length,Object.keys(attRecords[e.id]||{}).length):e.people.length}</b><span>${e.type==='training'&&e.state==='done'?'참석':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
 }
-function attCounts(e){const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;e.people.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});return {present,late,absent}}
+function attCounts(e){
+ const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;
+ const names=[...new Set([...(e.people||[]),...Object.keys(rec)])];
+ names.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});
+ return {present,late,absent};
+}
 function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
 function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>신청 인원</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>신청자 체크</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
 function setAtt(id,name,status){if(!attRecords[id])attRecords[id]={};attRecords[id][name]={status,paid:status==='지각'?(attRecords[id][name]?.paid||false):null};renderAttDetail(attEvents().find(x=>x.id===id))}
@@ -3869,7 +3933,6 @@ function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].pai
 
 let teamEventRankingCache=null;
 async function getTeamEventRankingData(){
- if(teamEventRankingCache)return teamEventRankingCache;
  const {data,error}=await dbClient.rpc('get_team_event_rankings_v1');
  if(error||!data||data.error)throw(error||new Error(data?.error||'ranking error'));
  teamEventRankingCache=data;return data;
