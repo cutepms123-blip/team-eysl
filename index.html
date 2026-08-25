@@ -1091,6 +1091,27 @@ if(window.pdfjsLib){
 <style>
 .tag.ok{background:#F0E9FF !important;color:#7250B5 !important;border-color:#E4D7FF !important}
 </style>
+
+<style>
+.achievementBadgeGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.attBadge{min-height:112px;border:1px solid #e3e6ea;border-radius:18px;background:#fff;padding:12px 9px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:5px;transition:.2s}
+.attBadge.locked{opacity:.38;filter:grayscale(.65)}
+.attBadge .badgeIcon{width:42px;height:42px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900}
+.attBadge.locked .badgeIcon{background:#d7d9dd;color:#888}
+.attBadge b{font-size:12px;color:#111}
+.attBadge p{font-size:9px;line-height:1.35;color:#777;margin:0;word-break:keep-all}
+.badgeProgressCard{border:1px solid #eee;border-radius:18px;background:#fafafa;padding:13px 15px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badgeProgressCard b{font-size:14px}.badgeProgressCard span{font-size:11px;color:#777;text-align:right}
+.pbMomentList{display:grid;gap:10px;margin-bottom:8px}
+.pbMomentCard{border:1px solid #e4e6ea;border-radius:18px;background:#fff;padding:15px 16px}
+.pbMomentHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:9px}
+.pbMomentHead b{font-size:15px}.pbMomentHead span{font-size:10px;color:#999}
+.pbMomentRecord{font-size:18px;font-weight:900;letter-spacing:-.3px;color:#111;margin-bottom:4px}
+.pbMomentDelta{font-size:12px;font-weight:800;color:#7250B5;margin-bottom:7px}
+.pbMomentMsg{font-size:12px;color:#555;line-height:1.5;margin:0}
+.pbMomentEvent{font-size:10px;color:#999;margin-top:7px}
+@media(max-width:430px){.achievementBadgeGrid{grid-template-columns:repeat(5,1fr);gap:5px}.attBadge{min-height:105px;padding:9px 4px}.attBadge .badgeIcon{width:36px;height:36px;font-size:14px}.attBadge b{font-size:10px}.attBadge p{font-size:8px}}
+</style>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1190,6 +1211,10 @@ if(window.pdfjsLib){
  <div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div>
  <div class="menuCard" onclick="showPage('teamEvents')"><b>이벤트</b><span>출석왕 · 단축왕 · PB · 대회 · 영법별 랭킹</span></div>
 </div>
+<div class="section"><h2>나의 출석 배지</h2><span id="myBadgeYear" class="meta">연간 누적</span></div>
+<div id="myAttendanceBadges" class="achievementBadgeGrid"><div class="card meta">배지 불러오는 중...</div></div>
+<div class="section"><h2>PB 모먼트</h2><span class="meta">내가 깬 기록들 🎉</span></div>
+<div id="myPbMoments" class="pbMomentList"><div class="card meta">PB 기록 불러오는 중...</div></div>
 <div class="section"><h2>내 활동 요약</h2></div>
 <div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div>
 <div class="section"><h2>설정</h2></div>
@@ -1235,14 +1260,14 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v71</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v72</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openFunEventPage('pbcollector')"><span>PB 수집왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openFunEventPage('competition')"><span>대회왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openFunEventPage('stroke')"><span>영법별 랭킹</span><b>›</b></button>
-<button class="eventHubBtn" onclick="openFunEventPage('firstattendance')"><span>첫 출석</span><b>›</b></button>
+
 </div></section><section id="eventRankingDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('teamEvents')">←</button><h1 id="eventRankingTitle">이벤트</h1><span></span></div><div id="teamEventRankings"></div></section>
 
 <section id="media" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1 id="mediaTitle">미디어</h1><span></span></div><div id="mediaRoot"><div class="actions"><button class="btn primary" onclick="createFolder()">＋ 폴더 만들기</button></div><div id="folderGrid" class="folderGrid"></div></div><div id="folderView" style="display:none"><div class="actions"><button class="btn outline" onclick="closeFolder()">← 폴더 목록</button><button class="btn primary" onclick="document.getElementById('folderUpload').click()">＋ 파일 올리기</button><button id="editFolderBtn" class="btn outline" onclick="editCurrentFolder()">폴더명 수정</button><button id="deleteFolderBtn" class="btn amber" onclick="deleteCurrentFolder()">폴더 삭제</button><input id="folderUpload" type="file" multiple hidden onchange="uploadToFolder(this)"></div><div id="folderFiles" class="list"></div></div></section>
@@ -1894,6 +1919,54 @@ async function sendTestPushNotification(){
  }
 }
 function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={home:'home',chat:'chat',schedule:'schedule',media:'media',resources:'files'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
+
+const attendanceBadgeDefs=[
+ {count:5,title:'5회',message:'팀아이슬, 이제 익숙해졌죠?'},
+ {count:10,title:'10회',message:'이제 나는 아이슬과 한 몸!'},
+ {count:15,title:'15회',message:'당신, 재능있어 계속해!'},
+ {count:20,title:'20회',message:'오 좀 치네?'},
+ {count:25,title:'25회',message:'아이슬 포세이돈'}
+];
+const pbCongrats=[
+ '또 한 번 빨라졌다 🔥',
+ '오늘의 내가 어제의 나를 이김.',
+ 'PB 업데이트 완료. 다음 벽은 어디?',
+ '기록은 거짓말 안 한다 😎',
+ '또 벽 하나 깼다!',
+ '수영장에 기록 하나 두고 갑니다 🏊',
+ '조금씩, 그런데 확실하게 빨라지는 중!',
+ '이 기록, 꽤 마음에 드는데? 😏'
+];
+function stablePbMessage(m){
+ const key=`${m.stroke||''}${m.event_date||''}${m.new_pb||''}`;
+ let n=0;for(let i=0;i<key.length;i++)n=(n+key.charCodeAt(i)*(i+1))%100000;
+ return pbCongrats[n%pbCongrats.length];
+}
+async function renderMyAchievements(){
+ const badgeBox=document.getElementById('myAttendanceBadges');
+ const pbBox=document.getElementById('myPbMoments');
+ if(!badgeBox||!pbBox||!currentUser.memberId)return;
+ badgeBox.innerHTML='<div class="card meta" style="grid-column:1/-1">배지 불러오는 중...</div>';
+ pbBox.innerHTML='<div class="card meta">PB 기록 불러오는 중...</div>';
+ try{
+  const year=new Date().getFullYear();
+  const {data,error}=await dbClient.rpc('get_my_achievement_v1',{p_member_id:currentUser.memberId,p_year:year});
+  if(error)throw error;
+  const y=data?.year||year,count=Number(data?.attendance_count||0),moments=Array.isArray(data?.pb_moments)?data.pb_moments:[];
+  const yearEl=document.getElementById('myBadgeYear');if(yearEl)yearEl.textContent=`${y}년 누적 ${count}회`;
+  const next=attendanceBadgeDefs.find(x=>count<x.count);
+  const progress=next?`다음 배지 ${next.count}회까지 ${next.count-count}회 남음`:'25회 배지까지 모두 달성!';
+  badgeBox.innerHTML=`<div class="badgeProgressCard" style="grid-column:1/-1"><b>${y}년 출석 ${count}회</b><span>${progress}</span></div>`+
+   attendanceBadgeDefs.map(b=>{const on=count>=b.count;return `<div class="attBadge ${on?'':'locked'}"><div class="badgeIcon">${on?'✓':'🔒'}</div><b>${b.title}</b><p>${b.message}</p></div>`}).join('');
+  if(!moments.length){pbBox.innerHTML='<div class="card meta">올해 새로 달성한 PB가 아직 없어요. 첫 PB 모먼트를 만들어봐요! 🏊</div>';return;}
+  pbBox.innerHTML=moments.map(m=>`<div class="pbMomentCard"><div class="pbMomentHead"><b>🎉 NEW PB · ${escHtml(m.stroke)}</b><span>${escHtml(m.event_date||'')}</span></div><div class="pbMomentRecord">${Number(m.old_pb).toFixed(2)} → ${Number(m.new_pb).toFixed(2)}</div><div class="pbMomentDelta">▼ ${Number(m.improvement).toFixed(2)}초 단축</div><p class="pbMomentMsg">${escHtml(stablePbMessage(m))}</p><div class="pbMomentEvent">${escHtml(m.event_name||'')}</div></div>`).join('');
+ }catch(e){
+  console.error('my achievements:',e);
+  badgeBox.innerHTML='<div class="card meta" style="grid-column:1/-1">출석 배지를 불러오지 못했습니다.</div>';
+  pbBox.innerHTML='<div class="card meta">PB 모먼트를 불러오지 못했습니다.</div>';
+ }
+}
+
 function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
@@ -1905,7 +1978,7 @@ function showPage(id){
  if(id==='trainingList')renderTrainingList();
  if(id==='raceList')renderRaceList();
  if(id==='otherList')renderOtherList();
- if(id==='mypage'){renderMyProfile();refreshPushStatus();const tr=document.getElementById('masterPushTestRow');if(tr)tr.style.display=isMasterAdmin()?'flex':'none';}
+ if(id==='mypage'){renderMyProfile();void renderMyAchievements();refreshPushStatus();const tr=document.getElementById('masterPushTestRow');if(tr)tr.style.display=isMasterAdmin()?'flex':'none';}
  if(id==='records'){setRecordMajor('meet',document.querySelector('#recordMajor button'));}
  if(id==='recordUploadManager'){if(!canManageRecordUploads()){toast('접근 권한이 없습니다.');return showPage('mypage')}renderRecordUploads();}
  if(id==='attendance')renderAttendance();
@@ -4458,7 +4531,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final71-event-data-rpc').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final72-my-achievements').catch(()=>{}));
 }
 </script>
 </body>
