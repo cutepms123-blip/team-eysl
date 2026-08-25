@@ -1145,7 +1145,7 @@ if(window.pdfjsLib){
 <section id="trainingList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>훈련</h1><span></span></div><div id="trainingCards" class="list"></div></section>
 <section id="raceList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>대회</h1><span></span></div><div id="raceCards" class="list"></div></section>
 <section id="trainingDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('trainingList')">←</button><h1>훈련 상세</h1><span></span></div><div id="trainingDetailBody"></div></section>
-<section id="applyStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('trainingList')">←</button><h1>신청 현황</h1><span></span></div><div id="applyStatusBody"></div></section>
+<section id="applyStatus" class="page"><div class="pagehead"><button class="back" onclick="backFromApplyStatus()">←</button><h1>신청 현황</h1><span></span></div><div id="applyStatusBody"></div></section>
 
 <section id="raceDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>상세 내용</h1><span></span></div><div id="raceDetailBody"></div></section>
 <section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
@@ -1248,7 +1248,7 @@ if(window.pdfjsLib){
 <section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>활동 취합본</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('all',this)">전체</button><button onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">기타</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">기타</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
 <section id="attendanceAdminDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('attendanceAdmin')">←</button><h1>출석 체크</h1><span></span></div><div id="attAdminDetailBody"></div></section>
 
-<nav class="nav"><button data-page="memberDirectory" onclick="showPage('memberDirectory')"><i>◎</i>회원리스트</button><button data-page="notice" onclick="showPage('notice')"><i>▤</i>공지</button><button class="active" data-page="home" onclick="showPage('home')"><i>⌂</i>홈</button><button data-page="schedule" onclick="showPage('schedule')"><i>◫</i>신청</button><button data-page="mypage" onclick="showPage('mypage')"><i>○</i>마이페이지</button></nav>
+<nav class="nav"><button data-page="teamEvents" onclick="showPage('teamEvents')"><i>◎</i>이벤트</button><button data-page="notice" onclick="showPage('notice')"><i>▤</i>공지</button><button class="active" data-page="home" onclick="showPage('home')"><i>⌂</i>홈</button><button data-page="schedule" onclick="showPage('schedule')"><i>◫</i>신청</button><button data-page="mypage" onclick="showPage('mypage')"><i>○</i>마이페이지</button></nav>
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
@@ -2675,8 +2675,12 @@ function applicationAvatar(p){
  if(p.avatarUrl)return `<img class="applyAvatar" src="${escAttr(p.avatarUrl)}" alt="${escAttr(p.name)}">`;
  return `<div class="applyAvatar fallback">${escHtml(String(p.name||'?').slice(0,1))}</div>`;
 }
+let applyStatusBackPage='trainingList';
+function backFromApplyStatus(){
+ showPage(applyStatusBackPage||'schedule');
+}
 async function openApplyStatus(id){
- selectedTrainingId=id;showPage('applyStatus');
+ applyStatusBackPage='trainingList';selectedTrainingId=id;showPage('applyStatus');
  const box=document.getElementById('applyStatusBody');if(box)box.innerHTML='<div class="card meta">신청현황 불러오는 중...</div>';
  await renderApplyStatus();
 }
@@ -2764,6 +2768,7 @@ async function cancelEventApplication(id){
 }
 async function openGenericApplyStatus(kind,id){
  if(kind==='training')return openApplyStatus(id);
+ applyStatusBackPage=kind==='race'?'raceList':'schedule';
  showPage('applyStatus');
  const box=document.getElementById('applyStatusBody');
  box.innerHTML='<div class="card meta">신청현황 불러오는 중...</div>';
@@ -4309,7 +4314,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final62-history-all-participants').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final63-bottom-event-race-back').catch(()=>{}));
 }
 </script>
 </body>
