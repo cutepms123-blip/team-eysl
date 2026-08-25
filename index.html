@@ -1018,6 +1018,38 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .rankValue{font-size:12px!important;color:#666!important;font-weight:700!important;white-space:nowrap}
 .eventRankEmpty{font-size:12px!important;color:#999!important;padding:10px 0!important}
 
+/* FINAL60 event hub */#eventHub .eventHubBtn{min-height:92px!important;padding:0 24px!important;border-radius:20px!important;background:#fff!important;border:1px solid #e2e5e9!important;box-shadow:none!important;color:#111!important;font-size:17px!important;font-weight:800!important}#eventHub .eventHubBtn b{color:#9a9da1!important;font-size:25px!important;font-weight:500!important}#eventHub .eventHubGrid{gap:12px!important}
+/* ===== FINAL61 EVENT HUB / VERIFIED RANKING ===== */
+.eventHub{display:grid!important;gap:12px!important;padding:8px 0 24px!important}
+.eventHub .eventHubBtn{
+  width:100%!important;
+  min-height:78px!important;
+  padding:0 22px!important;
+  border:1px solid #e2e5e9!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  text-align:left!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  color:#111!important;
+}
+.eventHub .eventHubBtn span{
+  color:#111!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+.eventHub .eventHubBtn b{
+  color:#9a9da1!important;
+  font-size:24px!important;
+  font-weight:500!important;
+  line-height:1!important;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -4144,7 +4176,7 @@ function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].pai
 
 let teamEventRankingCache=null;
 async function getTeamEventRankingData(){
- const {data,error}=await dbClient.rpc('get_team_event_rankings_v2');
+ const {data,error}=await dbClient.rpc('get_team_event_rankings_v3');
  if(error||!data||data.error)throw(error||new Error(data?.error||'ranking error'));
  teamEventRankingCache=data;return data;
 }
@@ -4251,7 +4283,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final59-event-top5-yoy').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final61-verified-rank').catch(()=>{}));
 }
 </script>
 </body>
