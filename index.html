@@ -1120,7 +1120,37 @@ if(window.pdfjsLib){
 </style>
 
 <style>
-.rankNo{min-width:38px;display:inline-flex;align-items:center;justify-content:flex-start;white-space:nowrap}
+.rankNo{
+  width:34px;
+  height:34px;
+  min-width:34px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 34px;
+  background:#111;
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:0;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.rankLine:nth-child(1) .rankNo,
+.rankLine:nth-child(2) .rankNo,
+.rankLine:nth-child(3) .rankNo{
+  font-size:20px;
+  background:#f6f6f7;
+  border:1px solid #e5e6e9;
+}
+.compactRankLine{
+  min-height:54px;
+}
+.rankLeft{
+  gap:12px;
+}
 </style>
 </head>
 <body>
@@ -1270,7 +1300,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v75</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v76</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -4380,9 +4410,9 @@ async function getTeamEventRankingData(){
 }
 function rankDisplay(rank){
  const n=Number(rank);
- if(n===1)return '🥇 1';
- if(n===2)return '🥈 2';
- if(n===3)return '🥉 3';
+ if(n===1)return '🥇';
+ if(n===2)return '🥈';
+ if(n===3)return '🥉';
  return String(rank??'');
 }
 let rankToggleSeq=0;
@@ -4565,7 +4595,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final75-medal-rank').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final76-rank-circle').catch(()=>{}));
 }
 </script>
 </body>
