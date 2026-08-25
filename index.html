@@ -1401,13 +1401,15 @@ async function hydrateNoticeAttachmentsInBackground(){
 async function loadPersistentContent(){
  const historyPromise=currentUser.memberId?dbClient.rpc('member_history_v4',{p_member_id:currentUser.memberId}):Promise.resolve({data:[],error:null});
  const raceHistoryPromise=currentUser.memberId?dbClient.rpc('get_my_race_history_v1'):Promise.resolve({data:[],error:null});
- const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes]=await Promise.all([
+ const historicalTrainingPromise=dbClient.rpc('get_historical_training_people_v1');
+ const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes,historicalTrainingRes]=await Promise.all([
   dbClient.from('notices').select('id,title,body,attachments,comments,created_by,created_at,updated_at').order('created_at',{ascending:false}),
   dbClient.from('activities').select('id,kind,title,activity_date,start_time,end_time,place,capacity,details,created_by,created_at,updated_at').order('activity_date',{ascending:true}),
   dbClient.rpc('member_directory_v4'),
   dbClient.from('activity_applications').select('id,activity_id,member_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at'),
   historyPromise,
-  raceHistoryPromise
+  raceHistoryPromise,
+  historicalTrainingPromise
  ]);
 
  notices=(noticeRes.data||[]).map(n=>({
@@ -1460,7 +1462,26 @@ async function loadPersistentContent(){
   if(rr){rr.participants.push(name);if(a.member_id===currentUser.memberId)rr.application=a.details||{};if(race.id===rr.id&&a.member_id===currentUser.memberId)raceApplication=a.details||{};return}
   const e=events.find(x=>x.id===a.activity_id);if(e)e.participants.push(name);
  });
+ const historicalTrainingRows=historicalTrainingRes?.error?[]:(historicalTrainingRes?.data||[]);
+ const historicalByDate={};
+ historicalTrainingRows.forEach(row=>{
+   const date=String(row.activity_date||'');
+   if(!historicalByDate[date])historicalByDate[date]=[];
+   historicalByDate[date].push({name:row.nickname,status:row.status});
+ });
  Object.values(trainings).forEach(t=>{
+  const canonical=historicalByDate[String(t.date||'')]||[];
+  if(canonical.length){
+    t.historicalParticipants=canonical.map(x=>x.name);
+    t.historicalAttendance=Object.fromEntries(canonical.map(x=>[x.name,x.status]));
+    if(activityHasStarted(t)){
+      t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
+      if(!attRecords[t.id])attRecords[t.id]={};
+      canonical.forEach(({name,status})=>{
+        attRecords[t.id][name]={status,paid:attRecords[t.id]?.[name]?.paid||false,historical:true};
+      });
+    }
+  }
   normalizeWait(t);
   if(activityHasStarted(t)&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
    t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
@@ -2695,7 +2716,10 @@ async function renderApplyStatus(){
   if(done&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
    const seen=new Set(participants.map(p=>p.name));
    t.historicalParticipants.forEach(name=>{
-    if(!seen.has(name))participants.push({name,type:'participant',historical:true,avatarUrl:'',attendanceStatus:t.historicalAttendance?.[name]||'출석'});
+    if(!seen.has(name)){
+      participants.push({name,type:'participant',historical:true,avatarUrl:'',attendanceStatus:t.historicalAttendance?.[name]||'출석'});
+      seen.add(name);
+    }
    });
   }
   const people=participants.length?participants.map(p=>{
@@ -4201,7 +4225,7 @@ function attCounts(e){
  return {present,late,absent};
 }
 function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
-function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;const done=e.state==='done';document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>${done?'참석 인원':'신청 인원'}</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
+function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const displayPeople=[...new Set([...(e.people||[]),...Object.keys(rec||{})])];const lateNames=displayPeople.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;const done=e.state==='done';document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>${done?'참석 인원':'신청 인원'}</b><span>${displayPeople.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${displayPeople.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
 function setAtt(id,name,status){if(!attRecords[id])attRecords[id]={};attRecords[id][name]={status,paid:status==='지각'?(attRecords[id][name]?.paid||false):null};renderAttDetail(attEvents().find(x=>x.id===id))}
 function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].paid;renderAttDetail(attEvents().find(x=>x.id===id))}
 
@@ -4314,7 +4338,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final63-bottom-event-race-back').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final64-canonical-training-attendance').catch(()=>{}));
 }
 </script>
 </body>
