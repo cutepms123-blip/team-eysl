@@ -1003,6 +1003,21 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .pushSetupCard p{margin:4px 0 0;font-size:11px;line-height:1.45;color:#7d8288}
 .pushSetupCard .btn{white-space:nowrap;flex:0 0 auto}
 
+
+/* FINAL59 event rankings: compact monochrome TOP5 */
+#eventRankingDetail .pagehead h1{font-size:20px!important;color:#111!important;font-weight:800!important}
+.eventRankGroup{margin-bottom:22px}
+.eventRankGroup>h2{font-size:15px!important;color:#111!important;font-weight:800!important;margin:18px 2px 10px}
+.eventRankMini{padding:14px 16px 6px!important;border:1px solid #e8eaed!important;border-radius:18px!important;background:#fff!important;margin-bottom:10px!important}
+.eventRankMini h3{font-size:14px!important;color:#111!important;font-weight:800!important;margin:0 0 8px!important}
+.compactRankLine{min-height:44px;padding:9px 0!important;border-top:1px solid #f0f1f3;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.compactRankLine:first-of-type{border-top:0}
+.rankLeft{display:flex;align-items:center;gap:9px;min-width:0}
+.rankLeft b{font-size:13px!important;color:#222!important;font-weight:700!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rankNo{width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex:0 0 auto}
+.rankValue{font-size:12px!important;color:#666!important;font-weight:700!important;white-space:nowrap}
+.eventRankEmpty{font-size:12px!important;color:#999!important;padding:10px 0!important}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -4134,7 +4149,12 @@ async function getTeamEventRankingData(){
  teamEventRankingCache=data;return data;
 }
 function eventRankRows(rows,unit='회'){
- return (rows||[]).length?(rows||[]).map((r,i)=>`<div class="rankLine"><b>${r.rank||i+1}위 · ${escHtml(r.nickname)}</b><span>${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+ const top=(rows||[]).slice(0,5);
+ return top.length?top.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${r.rank||i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+}
+function improvementRows(rows){
+ const top=(rows||[]).slice(0,5);
+ return top.length?top.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${r.rank||i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 async function openEventRankingPage(type){
  showPage('eventRankingDetail');
@@ -4150,9 +4170,12 @@ async function openEventRankingPage(type){
   if(type==='late'){
    box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>누적 지각왕</h3>${eventRankRows(data.late?.lifetime)}</div><div class="eventRankMini"><h3>${data.year} 상반기 지각왕</h3>${eventRankRows(data.late?.h1)}</div><div class="eventRankMini"><h3>${data.year} 하반기 지각왕</h3>${eventRankRows(data.late?.h2)}</div></div>`;return;
   }
-  const by={자유형:[],배영:[],평영:[],접영:[]};
-  (data.improvements||[]).forEach(r=>{if(by[r.stroke])by[r.stroke].push(r)});
-  box.innerHTML=`<div class="eventDetailStack">${['자유형','배영','평영','접영'].map(stroke=>`<div class="eventRankMini"><h3>${data.year} ${stroke} 기록 단축왕</h3>${by[stroke].length?by[stroke].map((r,i)=>`<div class="rankLine"><b>${r.rank||i+1}위 · ${escHtml(r.nickname)}</b><span>${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`).join('')}</div>`;
+  const imp=data.improvements||{};
+  const within=Array.isArray(imp)?imp:(imp.within_year||[]);
+  const yoy=Array.isArray(imp)?[]:(imp.yoy_pb||[]);
+  const strokes=['자유형','배영','평영','접영'];
+  const section=(heading,rows)=>`<div class="eventRankGroup"><h2>${heading}</h2>${strokes.map(stroke=>`<div class="eventRankMini"><h3>${stroke}</h3>${improvementRows(rows.filter(x=>x.stroke===stroke))}</div>`).join('')}</div>`;
+  box.innerHTML=section(`${data.year}년 올해 안에서 가장 많이 단축`,within)+section(`${data.year-1}년 PB 대비 ${data.year}년 PB 단축`,yoy);
  }catch(e){console.error(e);box.innerHTML='<div class="card meta">랭킹을 불러오지 못했습니다.</div>'}
 }
 async function renderTeamEventRankings(){return;}
@@ -4228,7 +4251,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final58-push-reliable').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final59-event-top5-yoy').catch(()=>{}));
 }
 </script>
 </body>
