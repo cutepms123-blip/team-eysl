@@ -1112,6 +1112,16 @@ if(window.pdfjsLib){
 .pbMomentEvent{font-size:10px;color:#999;margin-top:7px}
 @media(max-width:430px){.achievementBadgeGrid{grid-template-columns:repeat(5,1fr);gap:5px}.attBadge{min-height:105px;padding:9px 4px}.attBadge .badgeIcon{width:36px;height:36px;font-size:14px}.attBadge b{font-size:10px}.attBadge p{font-size:8px}}
 </style>
+
+<style>
+.rankMoreBtn{width:100%;min-height:42px;margin-top:10px;border:1px solid #dedfe3;border-radius:13px;background:#f7f7f8;color:#222;font-size:12px;font-weight:800}
+.rankMoreBtn:active{background:#ececef}
+.fullRankingRows{border-top:1px solid #f0f1f3;margin-top:2px}
+</style>
+
+<style>
+.rankNo{min-width:38px;display:inline-flex;align-items:center;justify-content:flex-start;white-space:nowrap}
+</style>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1260,7 +1270,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v73</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v75</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -4364,17 +4374,41 @@ function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].pai
 
 let teamEventRankingCache=null;
 async function getTeamEventRankingData(){
- const {data,error}=await dbClient.rpc('get_team_event_rankings_v3');
+ const {data,error}=await dbClient.rpc('get_team_event_rankings_v4');
  if(error||!data||data.error)throw(error||new Error(data?.error||'ranking error'));
  teamEventRankingCache=data;return data;
 }
+function rankDisplay(rank){
+ const n=Number(rank);
+ if(n===1)return '🥇 1';
+ if(n===2)return '🥈 2';
+ if(n===3)return '🥉 3';
+ return String(rank??'');
+}
+let rankToggleSeq=0;
+function toggleFullRanking(id,btn){
+ const el=document.getElementById(id);if(!el)return;
+ const open=el.style.display!=='none';
+ el.style.display=open?'none':'block';
+ if(btn)btn.textContent=open?'전체 랭킹 보기':'TOP5만 보기';
+}
+function rankToggleButton(rows,id){
+ return (rows||[]).length>5?`<button type="button" class="rankMoreBtn" onclick="toggleFullRanking('${id}',this)">전체 랭킹 보기</button>`:'';
+}
 function eventRankRows(rows,unit='회'){
- const top=(rows||[]).slice(0,5);
- return top.length?top.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${r.rank||i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.count}${unit}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+ const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const row=r=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.count}${unit}</span></div>`;
+ return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(row).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 function improvementRows(rows){
- const top=(rows||[]).slice(0,5);
- return top.length?top.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${r.rank||i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+ const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const row=r=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`;
+ return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(row).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+}
+function funRankRows(rows,valueFn){
+ const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const row=(r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank||i+1)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${valueFn(r)}</span></div>`;
+ return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map((r,i)=>row(r,i+5)).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 
 function parseRaceSeconds(v){
@@ -4387,12 +4421,8 @@ function parseRaceSeconds(v){
  }
  const n=Number(s);return Number.isFinite(n)?n:NaN;
 }
-function funRankRows(rows,valueFn){
- const top=(rows||[]).slice(0,5);
- return top.length?top.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${valueFn(r)}</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
-}
 async function loadFunEventRaw(){
- const {data,error}=await dbClient.rpc('get_team_fun_event_rankings_v1');
+ const {data,error}=await dbClient.rpc('get_team_fun_event_rankings_v2');
  if(error||!data)throw(error||new Error('event ranking data error'));
  return data;
 }
@@ -4422,7 +4452,11 @@ async function openFunEventPage(type){
    const strokes=['자유형','배영','평영','접영'];
    const render=(gender)=>`<div class="eventRankGroup"><h2>${gender==='여'?'여자':'남자'}</h2>${strokes.map(stroke=>{
      const picked=rows.filter(x=>x.gender===gender&&x.stroke===stroke);
-     return `<div class="eventRankMini"><h3>${stroke} 50M TOP5</h3>${picked.length?picked.map((r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${r.rank||i+1}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${Number(r.pb_seconds).toFixed(2)}초 · ${Number(r.score).toFixed(1)}점</span></div>`).join(''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`;
+     const id=`rank-full-${++rankToggleSeq}`;
+     const row=(r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank||i+1)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${Number(r.pb_seconds).toFixed(2)}초 · ${Number(r.score).toFixed(1)}점</span></div>`;
+     const top=picked.slice(0,5),rest=picked.slice(5);
+     const body=top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map((r,i)=>row(r,i+5)).join('')}</div>${rankToggleButton(picked,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
+     return `<div class="eventRankMini"><h3>${stroke} 50M TOP5</h3>${body}</div>`;
    }).join('')}</div>`;
    box.innerHTML=`<div class="eventDetailStack">${render('여')}${render('남')}<div class="card meta">남녀를 따로 계산해요. 각 성별·영법의 팀내 최고 50M PB를 100점으로 두고 상대점수를 표시해요. 종합점수는 사용하지 않습니다.</div></div>`;
    return;
@@ -4531,7 +4565,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final73-badge-reveal').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final75-medal-rank').catch(()=>{}));
 }
 </script>
 </body>
