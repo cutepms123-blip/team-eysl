@@ -1472,6 +1472,17 @@ async function loadPersistentContent(){
   const offered=t.waitlist.find(w=>w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
   t.offer=offered?{name:offered.name,memberId:offered.memberId,expiresAt:new Date(offered.offerExpiresAt).getTime()}:null;
  });
+ [...races,...events].forEach(item=>{
+  if(activityHasStarted(item)&&Array.isArray(item.historicalParticipants)&&item.historicalParticipants.length){
+   item.participants=[...new Set([...(item.participants||[]),...item.historicalParticipants])];
+   if(!attRecords[item.id])attRecords[item.id]={};
+   const hist=item.historicalAttendance||{};
+   item.historicalParticipants.forEach(name=>{
+    const status=hist[name]||'출석';
+    if(!attRecords[item.id][name])attRecords[item.id][name]={status,paid:false,historical:true};
+   });
+  }
+ });
 
  snapshotPlainData();
  void loadMediaContentInBackground();
@@ -2753,15 +2764,30 @@ async function cancelEventApplication(id){
 }
 async function openGenericApplyStatus(kind,id){
  if(kind==='training')return openApplyStatus(id);
- showPage('applyStatus');const box=document.getElementById('applyStatusBody');
+ showPage('applyStatus');
+ const box=document.getElementById('applyStatusBody');
  box.innerHTML='<div class="card meta">신청현황 불러오는 중...</div>';
- const item=kind==='race'?race:events.find(x=>x.id===id),label=kind==='race'?'대회':'기타';
+ const item=kind==='race'?(races.find(x=>x.id===id)||race):events.find(x=>x.id===id);
+ const label=kind==='race'?'대회':'기타';
  if(!item){box.innerHTML='<div class="card meta">일정 정보를 찾을 수 없습니다.</div>';return}
  try{
+  const done=activityHasStarted(item);
+  if(done){
+   const names=[...new Set([...(item.participants||[]),...(item.historicalParticipants||[])])];
+   const rows=names.length?names.map(name=>{
+    const status=item.historicalAttendance?.[name]||'참석';
+    return `<div class="applyPerson"><div class="applyAvatar fallback">${escHtml(String(name||'?').slice(0,1))}</div><div class="grow"><b>${escHtml(name)}</b><p class="meta">${escHtml(status==='출석'?'참석':status)}</p></div></div>`;
+   }).join(''):'<div class="meta">참석자가 없습니다.</div>';
+   box.innerHTML=`<div class="detail"><div class="detailrow"><b>${label}</b><span>${escHtml(item.title)}</span></div><div class="detailrow"><b>참석</b><span>${names.length}명</span></div></div><div class="section"><h2>실제 참석 ${names.length}명</h2></div><div class="card">${rows}</div>`;
+   return;
+  }
   const all=await fetchApplicationPeople(id),people=all.filter(x=>x.type==='participant');
   const rows=people.length?people.map(p=>`<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(p.name)}</b><p class="meta">신청완료</p></div></div>`).join(''):'<div class="meta">신청자가 없습니다.</div>';
   box.innerHTML=`<div class="detail"><div class="detailrow"><b>${label}</b><span>${escHtml(item.title)}</span></div><div class="detailrow"><b>신청</b><span>${people.length}명</span></div></div><div class="section"><h2>신청완료 ${people.length}명</h2></div><div class="card">${rows}</div>`;
- }catch(e){box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
+ }catch(e){
+  console.error(e);
+  box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>';
+ }
 }
 function renderMyStatus(kind){
  currentStatusKind=kind;currentStatusFilter='all';showPage('myStatus');
@@ -4161,7 +4187,7 @@ function setAttState(v,b){
 }
 function renderAttendanceAdmin(){
  const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.type==='training'&&e.state==='done'?Math.max(e.people.length,Object.keys(attRecords[e.id]||{}).length):e.people.length}</b><span>${e.type==='training'&&e.state==='done'?'참석':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
+ document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.state==='done'?Math.max(e.people.length,Object.keys(attRecords[e.id]||{}).length):e.people.length}</b><span>${e.state==='done'?'참석':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
 }
 function attCounts(e){
  const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;
@@ -4170,7 +4196,7 @@ function attCounts(e){
  return {present,late,absent};
 }
 function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
-function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>신청 인원</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>신청자 체크</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
+function renderAttDetail(e){const c=attCounts(e),rec=attRecords[e.id];const lateNames=e.people.filter(n=>rec[n]?.status==='지각');const paid=lateNames.filter(n=>rec[n]?.paid).length;const done=e.state==='done';document.getElementById('attAdminDetailBody').innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${e.title}</span></div><div class="detailrow"><b>${done?'참석 인원':'신청 인원'}</b><span>${e.people.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${e.people.map(n=>{const r=rec[n]||{status:'미체크'};return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${n}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick="setAtt('${e.id}','${n}','출석')">출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick="setAtt('${e.id}','${n}','지각')">지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick="setAtt('${e.id}','${n}','불참')">불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" onclick="togglePaid('${e.id}','${n}')">${r.paid?'지각비 납부완료':'지각비 미납'}</button>`:''}</div></div>`}).join('')}</div>`}
 function setAtt(id,name,status){if(!attRecords[id])attRecords[id]={};attRecords[id][name]={status,paid:status==='지각'?(attRecords[id][name]?.paid||false):null};renderAttDetail(attEvents().find(x=>x.id===id))}
 function togglePaid(id,name){attRecords[id][name].paid=!attRecords[id][name].paid;renderAttDetail(attEvents().find(x=>x.id===id))}
 
@@ -4283,7 +4309,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final61-verified-rank').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final62-history-all-participants').catch(()=>{}));
 }
 </script>
 </body>
