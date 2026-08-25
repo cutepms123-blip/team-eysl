@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final69-events-gender-first2026';
+const VERSION='team-eysl-final70-force-event-refresh';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request,{cache:'no-store'}).catch(()=>caches.match(e.request)))});
@@ -24,4 +24,21 @@ self.addEventListener('notificationclick',event=>{
   for(const c of list){if('focus'in c){c.navigate(target);return c.focus()}}
   return clients.openWindow?clients.openWindow(target):null;
  }));
+});
+
+// FINAL70_NAV_NETWORK_FIRST
+self.addEventListener('fetch',event=>{
+  const req=event.request;
+  if(req.mode==='navigate' || new URL(req.url).pathname==='/' || new URL(req.url).pathname.endsWith('/index.html')){
+    event.respondWith((async()=>{
+      try{
+        const fresh=await fetch(req,{cache:'no-store'});
+        const c=await caches.open(VERSION);
+        c.put(req,fresh.clone());
+        return fresh;
+      }catch(_){
+        return (await caches.match(req)) || (await caches.match('/index.html'));
+      }
+    })());
+  }
 });
