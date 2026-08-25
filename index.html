@@ -1061,7 +1061,7 @@ if(window.pdfjsLib){
 </script>
 
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=final66">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -1071,6 +1071,19 @@ if(window.pdfjsLib){
 .nav{height:82px!important;padding-top:6px!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important;box-sizing:border-box!important}
 .nav button{font-size:10px!important;line-height:1.2!important;gap:4px!important;padding:2px 0 4px!important;overflow:visible!important}
 .nav button i{font-size:19px!important;line-height:1.05!important;min-height:20px!important}
+</style>
+
+<style>
+/* FINAL65 status badge distinction */
+.tag.applied, .tag.my-applied{
+  background:#F0E9FF !important;
+  color:#7250B5 !important;
+  border-color:#E4D7FF !important;
+}
+</style>
+
+<style>
+.tag.ok{background:#F0E9FF !important;color:#7250B5 !important;border-color:#E4D7FF !important}
 </style>
 </head>
 <body>
@@ -1401,15 +1414,13 @@ async function hydrateNoticeAttachmentsInBackground(){
 async function loadPersistentContent(){
  const historyPromise=currentUser.memberId?dbClient.rpc('member_history_v4',{p_member_id:currentUser.memberId}):Promise.resolve({data:[],error:null});
  const raceHistoryPromise=currentUser.memberId?dbClient.rpc('get_my_race_history_v1'):Promise.resolve({data:[],error:null});
- const historicalTrainingPromise=dbClient.rpc('get_historical_training_people_v1');
- const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes,historicalTrainingRes]=await Promise.all([
+ const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes]=await Promise.all([
   dbClient.from('notices').select('id,title,body,attachments,comments,created_by,created_at,updated_at').order('created_at',{ascending:false}),
   dbClient.from('activities').select('id,kind,title,activity_date,start_time,end_time,place,capacity,details,created_by,created_at,updated_at').order('activity_date',{ascending:true}),
   dbClient.rpc('member_directory_v4'),
   dbClient.from('activity_applications').select('id,activity_id,member_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at'),
   historyPromise,
-  raceHistoryPromise,
-  historicalTrainingPromise
+  raceHistoryPromise
  ]);
 
  notices=(noticeRes.data||[]).map(n=>({
@@ -2202,7 +2213,7 @@ function renderHome(){
  if(n){noticeEl.innerHTML=`<small>${unread?'UNREAD NOTICE · '+unread+'건':'LATEST NOTICE'}</small><h1>${n.title}</h1><p>${String(n.body||'').split('\n')[0]}</p>`;noticeEl.onclick=()=>openNotice(n.id)}
  else{noticeEl.innerHTML='<small>LATEST NOTICE</small><h1>등록된 공지가 없습니다.</h1><p>새 공지가 등록되면 여기에 표시됩니다.</p>';noticeEl.onclick=null}
  const mine=Object.values(trainings).filter(t=>!activityHasStarted(t)&&((t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName))).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start)))[0];
- mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start||'-'}${mine.end?`–${mine.end}`:''} · ${mine.place||'-'}</p></div><span class="tag">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
+ mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start||'-'}${mine.end?`–${mine.end}`:''} · ${mine.place||'-'}</p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'':'my-applied'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
  const raw=[
   ...Object.values(trainings).map(t=>({type:'training',id:t.id,title:t.title,date:t.date,place:t.place,start:t.start,item:t})),
   ...races.map(r=>({type:'race',id:r.id,title:r.title,date:r.date,place:r.place,start:r.start||'',item:r})),
@@ -2710,17 +2721,18 @@ async function renderApplyStatus(){
  if(!t){box.innerHTML='<div class="card meta">훈련 정보를 찾을 수 없습니다.</div>';return}
  try{
   const all=await fetchApplicationPeople(selectedTrainingId);
-  let participants=all.filter(x=>x.type==='participant');
+  const liveParticipants=all.filter(x=>x.type==='participant');
   const waitlist=all.filter(x=>x.type==='waitlist').sort((a,b)=>(a.order||999)-(b.order||999));
   const done=activityHasStarted(t);
+  let participants=liveParticipants;
   if(done&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
-   const seen=new Set(participants.map(p=>p.name));
-   t.historicalParticipants.forEach(name=>{
-    if(!seen.has(name)){
-      participants.push({name,type:'participant',historical:true,avatarUrl:'',attendanceStatus:t.historicalAttendance?.[name]||'출석'});
-      seen.add(name);
-    }
-   });
+    const liveByName=new Map(liveParticipants.map(p=>[p.name,p]));
+    participants=t.historicalParticipants.map(name=>({
+      ...(liveByName.get(name)||{}),
+      name,type:'participant',historical:true,
+      avatarUrl:liveByName.get(name)?.avatarUrl||'',
+      attendanceStatus:t.historicalAttendance?.[name]||'출석'
+    }));
   }
   const people=participants.length?participants.map(p=>{
    const status=done?(t.historicalAttendance?.[p.name]||p.details?.attendance_status||p.attendanceStatus||'출석'):'신청완료';
@@ -4338,7 +4350,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final64-canonical-training-attendance').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final66-app-icon').catch(()=>{}));
 }
 </script>
 </body>
