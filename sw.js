@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final91-multiday-calendar';
+const VERSION='team-eysl-final92-unregistered-roster';
 const CACHE=`team-eysl-${VERSION}`;
 const PRECACHE=['/','/index.html','/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png'];
 
