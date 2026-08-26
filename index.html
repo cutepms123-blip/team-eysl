@@ -1196,6 +1196,11 @@ if(window.pdfjsLib){
 .boardListRow .grow{min-width:0;flex:1}.boardListRow b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .boardListRow p{font-size:10px;color:#8a8e95;margin:6px 0 0}.boardListRow>span{color:#9da1a7;font-size:20px}
 </style>
+<style>
+#pushSetupCard{position:relative;z-index:20}
+#pushSetupBtn{position:relative;z-index:21;pointer-events:auto!important;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#pushSetupBtn:disabled{opacity:.65}
+</style>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1360,7 +1365,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v79</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v80</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1799,7 +1804,47 @@ function updatePushSetupCard(serverState='unknown'){
  card.style.display='flex';
  if(title)title.textContent=serverState==='repair'?'알림 서버 연결을 복구해주세요':'알림 서버 연결 확인 중';
  if(desc)desc.textContent='알림 허용은 켜져 있어요. TEAM EYSL 서버 구독까지 연결되어야 실제 알림을 받을 수 있어요.';
- if(btn){btn.textContent='다시 등록';btn.onclick=async()=>{const r=await syncCurrentPushSubscription();await refreshPushStatus();toast(r.ok?'알림 서버 연결이 복구됐습니다.':'서버 등록에 실패했습니다. 다시 시도해주세요.');}}
+ if(btn){
+   btn.textContent='다시 등록';
+   btn.disabled=false;
+   btn.style.pointerEvents='auto';
+   btn.style.touchAction='manipulation';
+   btn.onclick=repairPushRegistration;
+ }
+}
+let pushRepairRunning=false;
+async function repairPushRegistration(){
+ if(pushRepairRunning)return;
+ pushRepairRunning=true;
+ const btn=document.getElementById('pushSetupBtn');
+ try{
+  if(btn){btn.disabled=true;btn.textContent='연결 중...';}
+  const r=await syncCurrentPushSubscription();
+  await refreshPushStatus();
+  if(r.ok){
+   updatePushSetupCard('ok');
+   toast('알림 서버 연결이 복구됐습니다.');
+  }else{
+   updatePushSetupCard('repair');
+   toast(`서버 등록 실패${r.error?' · '+r.error:''}`);
+  }
+ }catch(e){
+  console.error('push repair:',e);
+  updatePushSetupCard('repair');
+  toast('서버 등록에 실패했습니다. 다시 시도해주세요.');
+ }finally{
+  pushRepairRunning=false;
+  if(btn&&!btn.disabled){btn.textContent='다시 등록';}
+ }
+}
+async function forceAutoRepairPush(){
+ if(!('Notification'in window)||Notification.permission!=='granted')return false;
+ if(/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!isInstalledPwa())return false;
+ const serverCount=await getMyServerPushCount();
+ if(serverCount>0){updatePushSetupCard('ok');return true;}
+ const r=await syncCurrentPushSubscription();
+ if(r.ok){updatePushSetupCard('ok');return true;}
+ updatePushSetupCard('repair');return false;
 }
 async function refreshPushStatus(){
  updatePushSetupCard();
@@ -4712,7 +4757,11 @@ function toggleSub(id){document.getElementById(id).classList.toggle('open')}
 
 window.addEventListener('load',async()=>{
  const loggedIn=await initAuth();
- if(loggedIn)void autoHealPushSubscription();
+ if(loggedIn){
+  void autoHealPushSubscription();
+  setTimeout(()=>void forceAutoRepairPush(),1200);
+  setTimeout(()=>void forceAutoRepairPush(),3500);
+ }
  if(loggedIn){
   restoreCoreSnapshot();restoreChatCache();
   [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList,initAttendanceOptions,renderAttendance].forEach(fn=>{try{fn()}catch(_){}});
@@ -4757,12 +4806,12 @@ window.addEventListener('load',async()=>{
 
 window.addEventListener('pageshow',()=>{
  try{
-  setTimeout(()=>{updatePushSetupCard();if(('Notification'in window)&&Notification.permission==='granted')void autoHealPushSubscription()},500);
+  setTimeout(()=>{updatePushSetupCard();if(('Notification'in window)&&Notification.permission==='granted')void forceAutoRepairPush()},500);
  }catch(_){}
 });
 document.addEventListener('visibilitychange',()=>{
  if(document.visibilityState==='visible'){
-  try{updatePushSetupCard();if(('Notification'in window)&&Notification.permission==='granted')void autoHealPushSubscription()}catch(_){}
+  try{updatePushSetupCard();if(('Notification'in window)&&Notification.permission==='granted')void forceAutoRepairPush()}catch(_){}
  }
 });
 
@@ -4770,7 +4819,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final79-push-repair').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final80-push-autofix').catch(()=>{}));
 }
 </script>
 </body>
