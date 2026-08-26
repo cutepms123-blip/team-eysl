@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final86-notice-flow-fix';
+const VERSION='team-eysl-final87-notice-push-fix';
 const CACHE=`team-eysl-${VERSION}`;
 const PRECACHE=['/','/index.html','/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png'];
 
