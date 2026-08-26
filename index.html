@@ -1370,7 +1370,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v85</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v86</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -2700,8 +2700,64 @@ function renderNoticeFileChips(){const box=document.getElementById('noticeFileCh
 function removeNoticeAttachment(i){noticeAttachments.splice(i,1);renderNoticeFileChips()}
 function editNotice(id){const n=notices.find(x=>x.id===id);if(!n)return;currentEditingNoticeId=id;noticeAttachments=[...(n.attachments||[])];document.getElementById('nwTitle').value=n.title;document.getElementById('nwBody').value=n.body;document.getElementById('noticeWriteTitle').textContent='공지 수정';document.getElementById('noticeSaveBtn').textContent='수정 저장';renderNoticeFileChips();showPage('noticeWrite')}
 function cancelNoticeEdit(){currentEditingNoticeId=null;noticeAttachments=[];document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';document.getElementById('noticeWriteTitle').textContent='공지 작성';document.getElementById('noticeSaveBtn').textContent='공지 등록';renderNoticeFileChips();showPage('notice')}
-async function saveNotice(){const t=document.getElementById('nwTitle').value.trim(),b=document.getElementById('nwBody').value.trim();if(!t||!b)return toast('제목과 본문을 입력해주세요');const wasEdit=!!currentEditingNoticeId,payload={title:t,body:b,attachments:[...noticeAttachments],updated_at:new Date().toISOString()};let error;if(wasEdit){({error}=await dbClient.from('notices').update(payload).eq('id',currentEditingNoticeId))}else{payload.created_by=currentUser.memberId;({error}=await dbClient.from('notices').insert(payload))}if(error){console.error(error);return toast('공지 저장에 실패했습니다.')}await loadPersistentContent();currentEditingNoticeId=null;noticeAttachments=[];document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';document.getElementById('noticeWriteTitle').textContent='공지 작성';document.getElementById('noticeSaveBtn').textContent='공지 등록';renderNoticeFileChips();showPage('notice');renderNotices();renderHome();if(!wasEdit)await sendPush('all','TEAM EYSL 새 공지',t,{tag:'new-notice'});toast(wasEdit?'공지가 수정됐습니다':'공지가 등록됐습니다')}
-async function deleteNotice(id){if(!confirm('이 공지를 삭제할까요?'))return;const {error}=await dbClient.from('notices').delete().eq('id',id);if(error){console.error(error);return toast('공지 삭제에 실패했습니다.')}currentNoticeId=null;await loadPersistentContent();showPage('notice');renderNotices();renderHome();toast('공지가 삭제됐습니다')}
+let noticeSaveRunning=false;
+async function saveNotice(){
+ if(noticeSaveRunning)return;
+ const t=document.getElementById('nwTitle').value.trim(),b=document.getElementById('nwBody').value.trim();
+ if(!t||!b)return toast('제목과 본문을 입력해주세요');
+ const btn=document.getElementById('noticeSaveBtn');
+ noticeSaveRunning=true;
+ if(btn){btn.disabled=true;btn.textContent='저장 중...'}
+ try{
+  const wasEdit=!!currentEditingNoticeId,payload={title:t,body:b,attachments:[...noticeAttachments],updated_at:new Date().toISOString()};
+  let error,savedId=currentEditingNoticeId;
+  if(wasEdit){
+   ({error}=await dbClient.from('notices').update(payload).eq('id',currentEditingNoticeId));
+  }else{
+   payload.created_by=currentUser.memberId;
+   const result=await dbClient.from('notices').insert(payload).select('id').single();
+   error=result.error;savedId=result.data?.id||null;
+  }
+  if(error){console.error(error);toast('공지 저장에 실패했습니다.');return}
+
+  await loadPersistentContent();
+  currentEditingNoticeId=null;noticeAttachments=[];
+  document.getElementById('nwTitle').value='';
+  document.getElementById('nwBody').value='';
+  document.getElementById('noticeWriteTitle').textContent='공지 작성';
+  renderNoticeFileChips();
+
+  // 저장 성공 즉시 작성 화면을 벗어나 목록으로 이동. 푸시는 화면 전환을 막지 않음.
+  showPage('notice');
+  renderNotices();renderHome();
+  window.scrollTo(0,0);
+  toast(wasEdit?'공지가 수정됐습니다':'공지가 등록됐습니다');
+
+  if(!wasEdit)void sendPush('all','TEAM EYSL 새 공지',t,{tag:'new-notice'});
+ }finally{
+  noticeSaveRunning=false;
+  if(btn){btn.disabled=false;btn.textContent='공지 등록'}
+ }
+}
+let noticeDeleteRunning=false;
+async function deleteNotice(id){
+ if(noticeDeleteRunning)return;
+ if(!confirm('이 공지를 삭제할까요?'))return;
+ noticeDeleteRunning=true;
+ try{
+  const {error}=await dbClient.from('notices').delete().eq('id',id);
+  if(error){console.error(error);toast('공지 삭제에 실패했습니다.');return}
+  currentNoticeId=null;
+  // 상세 화면을 즉시 닫아 삭제된 공지가 화면에 남지 않게 함
+  showPage('notice');
+  const article=document.getElementById('noticeArticle');if(article)article.innerHTML='';
+  const comments=document.getElementById('comments');if(comments)comments.innerHTML='';
+  await loadPersistentContent();
+  renderNotices();renderHome();
+  window.scrollTo(0,0);
+  toast('공지가 삭제됐습니다');
+ }finally{noticeDeleteRunning=false}
+}
 function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('video'))openModal(url,type);else window.open(url,'_blank')}
 
 
@@ -4905,7 +4961,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final85-push-true-reset').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final86-notice-flow-fix').catch(()=>{}));
 }
 </script>
 </body>
