@@ -1370,7 +1370,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v87</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v89</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1557,11 +1557,12 @@ async function hydrateMemberAvatarsInBackground(){
 async function hydrateNoticeAttachmentsInBackground(){
  const jobs=[];
  notices.forEach(n=>(n.attachments||[]).forEach(a=>{
-  if(a?.storagePath)jobs.push((async()=>{try{a.url=await signedTeamFile(a.storagePath)||''}catch(_){a.url=''}})());
+  const path=a?.storagePath||a?.storage_path||'';
+  if(path)jobs.push((async()=>{try{a.storagePath=path;a.url=await signedTeamFile(path)||''}catch(_){a.url=''}})());
  }));
  await Promise.all(jobs);
  snapshotPlainData();
- if(document.getElementById('notice')?.classList.contains('active'))renderNotices();
+ renderNotices();
  if(document.getElementById('noticeDetail')?.classList.contains('active'))renderNoticeDetail();
 }
 async function loadPersistentContent(){
@@ -2695,51 +2696,124 @@ function renderNoticeDetail(){
 async function addComment(){const i=document.getElementById('commentInput'),text=i.value.trim();if(!text)return;const n=notices.find(x=>x.id===currentNoticeId);if(!n)return;const comments=[...(n.comments||[]),{name:currentUser.nickname,time:now(),text}];const {error}=await dbClient.from('notices').update({comments,updated_at:new Date().toISOString()}).eq('id',n.id);if(error){console.error(error);return toast('댓글 저장에 실패했습니다.')}n.comments=comments;i.value='';renderNoticeDetail()}
 async function imageFileToDataUrl(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=1600,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',0.82))};img.onerror=()=>resolve(reader.result);img.src=reader.result};reader.onerror=reject;reader.readAsDataURL(file)})}
 async function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
-async function collectNoticeFiles(inp){for(const f of [...inp.files]){if(noticeAttachments.length>=4){toast('첨부는 최대 4개까지 가능합니다.');break}try{const storagePath=await uploadBlobToTeamFiles(f,'notices'),url=await signedTeamFile(storagePath);noticeAttachments.push({name:f.name,type:f.type||'application/octet-stream',storagePath,url:url||''})}catch(err){console.error(err);toast(`${f.name} 첨부 업로드에 실패했습니다.`)}}renderNoticeFileChips();inp.value=''}
-function renderNoticeFileChips(){const box=document.getElementById('noticeFileChips');if(!box)return;box.innerHTML=noticeAttachments.map((a,i)=>`<div class="previewChip">${String(a.type).startsWith('image')?`<img src="${a.url}" alt="">`:'<span>📎</span>'}<span class="grow">${a.name}</span><button class="btn outline" type="button" onclick="removeNoticeAttachment(${i})">삭제</button></div>`).join('')}
-function removeNoticeAttachment(i){noticeAttachments.splice(i,1);renderNoticeFileChips()}
+async function collectNoticeFiles(inp){
+ for(const f of [...inp.files]){
+  if(noticeAttachments.length>=4){toast('첨부는 최대 4개까지 가능합니다.');break}
+  const localUrl=URL.createObjectURL(f);
+  const item={name:f.name,type:f.type||'application/octet-stream',storagePath:'',url:localUrl,localUrl,uploading:true};
+  noticeAttachments.push(item);
+  renderNoticeFileChips();
+  try{
+   const storagePath=await uploadBlobToTeamFiles(f,'notices');
+   const signedUrl=await signedTeamFile(storagePath);
+   item.storagePath=storagePath;
+   item.uploading=false;
+   if(signedUrl){
+    if(item.localUrl){try{URL.revokeObjectURL(item.localUrl)}catch(_){}}
+    item.url=signedUrl;item.localUrl='';
+   }
+  }catch(err){
+   console.error(err);
+   item.uploading=false;item.uploadError=true;
+   toast(`${f.name} 첨부 업로드에 실패했습니다.`);
+  }
+  renderNoticeFileChips();
+ }
+ inp.value='';
+}
+function renderNoticeFileChips(){
+ const box=document.getElementById('noticeFileChips');if(!box)return;
+ box.innerHTML=noticeAttachments.map((a,i)=>`<div class="previewChip">${String(a.type).startsWith('image')
+   ?`<img src="${escAttr(a.url||'')}" alt="이미지 미리보기">`
+   :'<span>📎</span>'}<span class="grow">${escHtml(a.name||'첨부파일')}${a.uploading?' · 업로드 중':''}${a.uploadError?' · 업로드 실패':''}</span><button class="btn outline" type="button" onclick="removeNoticeAttachment(${i})">삭제</button></div>`).join('');
+}
+function removeNoticeAttachment(i){
+ const a=noticeAttachments[i];
+ if(a?.localUrl){try{URL.revokeObjectURL(a.localUrl)}catch(_){}}
+ noticeAttachments.splice(i,1);renderNoticeFileChips();
+}
 function editNotice(id){const n=notices.find(x=>x.id===id);if(!n)return;currentEditingNoticeId=id;noticeAttachments=[...(n.attachments||[])];document.getElementById('nwTitle').value=n.title;document.getElementById('nwBody').value=n.body;document.getElementById('noticeWriteTitle').textContent='공지 수정';document.getElementById('noticeSaveBtn').textContent='수정 저장';renderNoticeFileChips();showPage('noticeWrite')}
 function cancelNoticeEdit(){currentEditingNoticeId=null;noticeAttachments=[];document.getElementById('nwTitle').value='';document.getElementById('nwBody').value='';document.getElementById('noticeWriteTitle').textContent='공지 작성';document.getElementById('noticeSaveBtn').textContent='공지 등록';renderNoticeFileChips();showPage('notice')}
 let noticeSaveRunning=false;
+async function createNoticeOnServer(title,body,attachments){
+ const {data:{session}}=await dbClient.auth.getSession();
+ if(!session)throw new Error('로그인 세션이 없습니다.');
+ const res=await fetch(`${SUPABASE_URL}/functions/v1/notice-create`,{
+  method:'POST',
+  headers:{
+   'Content-Type':'application/json',
+   'apikey':SUPABASE_PUBLISHABLE_KEY,
+   'Authorization':`Bearer ${session.access_token}`
+  },
+  body:JSON.stringify({title,body,attachments})
+ });
+ let data={};try{data=await res.json()}catch(_){}
+ if(!res.ok||!data?.ok)throw new Error(data?.detail||data?.error||`HTTP ${res.status}`);
+ return data;
+}
 async function saveNotice(){
  if(noticeSaveRunning)return;
  const t=document.getElementById('nwTitle').value.trim(),b=document.getElementById('nwBody').value.trim();
  if(!t||!b)return toast('제목과 본문을 입력해주세요');
+ if(noticeAttachments.some(a=>a.uploading))return toast('사진 업로드가 끝날 때까지 잠시만 기다려주세요.');
+ if(noticeAttachments.some(a=>a.uploadError||!a.storagePath))return toast('업로드에 실패한 첨부파일을 삭제하거나 다시 올려주세요.');
+
  const btn=document.getElementById('noticeSaveBtn');
  noticeSaveRunning=true;
  if(btn){btn.disabled=true;btn.textContent='저장 중...'}
- try{
-  const wasEdit=!!currentEditingNoticeId,payload={title:t,body:b,attachments:[...noticeAttachments],updated_at:new Date().toISOString()};
-  let error,savedId=currentEditingNoticeId;
-  if(wasEdit){
-   ({error}=await dbClient.from('notices').update(payload).eq('id',currentEditingNoticeId));
-  }else{
-   payload.created_by=currentUser.memberId;
-   const result=await dbClient.from('notices').insert(payload).select('id').single();
-   error=result.error;savedId=result.data?.id||null;
-  }
-  if(error){console.error(error);toast('공지 저장에 실패했습니다.');return}
 
-  await loadPersistentContent();
-  currentEditingNoticeId=null;noticeAttachments=[];
+ try{
+  const wasEdit=!!currentEditingNoticeId;
+  const cleanAttachments=noticeAttachments.map(a=>({name:a.name,type:a.type,storagePath:a.storagePath}));
+  let savedRow=null;
+
+  if(wasEdit){
+   const payload={title:t,body:b,attachments:cleanAttachments,updated_at:new Date().toISOString()};
+   const result=await dbClient.from('notices').update(payload).eq('id',currentEditingNoticeId)
+    .select('id,title,body,attachments,comments,created_by,created_at,updated_at').single();
+   if(result.error||!result.data)throw result.error||new Error('공지 수정 실패');
+   savedRow=result.data;
+  }else{
+   // 신규 공지는 서버에서 "저장 + 푸시"를 한 요청으로 처리
+   const result=await createNoticeOnServer(t,b,cleanAttachments);
+   savedRow=result.notice;
+   console.log('notice push result:',result.push);
+  }
+
+  const mapped={
+   id:savedRow.id,date:fmtDateFromIso(savedRow.created_at),title:savedRow.title,body:savedRow.body,
+   attachments:(Array.isArray(savedRow.attachments)?savedRow.attachments:[]).map(a=>({...a,url:''})),
+   comments:Array.isArray(savedRow.comments)?savedRow.comments:[]
+  };
+
+  if(wasEdit){
+   const idx=notices.findIndex(n=>n.id===mapped.id);
+   if(idx>=0)notices[idx]=mapped;else notices.unshift(mapped);
+  }else{
+   notices=notices.filter(n=>n.id!==mapped.id);
+   notices.unshift(mapped);
+   unreadNoticeIds.add(mapped.id);
+  }
+
+  currentEditingNoticeId=null;
+  noticeAttachments.forEach(a=>{if(a?.localUrl){try{URL.revokeObjectURL(a.localUrl)}catch(_){}}});
+  noticeAttachments=[];
   document.getElementById('nwTitle').value='';
   document.getElementById('nwBody').value='';
   document.getElementById('noticeWriteTitle').textContent='공지 작성';
   renderNoticeFileChips();
 
-  // 저장 성공 즉시 작성 화면을 벗어나 목록으로 이동. 푸시는 화면 전환을 막지 않음.
+  // 저장 성공 즉시 이전 화면으로 이동
   showPage('notice');
   renderNotices();renderHome();
   window.scrollTo(0,0);
   toast(wasEdit?'공지가 수정됐습니다':'공지가 등록됐습니다');
 
-  if(!wasEdit){
-    const pushResult=await sendPush('all','TEAM EYSL 새 공지',t,{tag:'new-notice'});
-    if(!pushResult?.ok){
-      console.error('notice push failed:',pushResult);
-      toast('공지는 등록됐지만 알림 발송에 실패했습니다.');
-    }
-  }
+  void hydrateNoticeAttachmentsInBackground();
+  void loadPersistentContent();
+ }catch(e){
+  console.error('saveNotice:',e);
+  toast(`공지 저장에 실패했습니다${e?.message?' · '+e.message:''}`);
  }finally{
   noticeSaveRunning=false;
   if(btn){btn.disabled=false;btn.textContent='공지 등록'}
@@ -2753,16 +2827,26 @@ async function deleteNotice(id){
  try{
   const {error}=await dbClient.from('notices').delete().eq('id',id);
   if(error){console.error(error);toast('공지 삭제에 실패했습니다.');return}
+
+  // 서버 삭제 성공 즉시 로컬 목록에서도 제거
+  notices=notices.filter(n=>n.id!==id);
+  unreadNoticeIds.delete(id);
   currentNoticeId=null;
-  // 상세 화면을 즉시 닫아 삭제된 공지가 화면에 남지 않게 함
-  showPage('notice');
+
   const article=document.getElementById('noticeArticle');if(article)article.innerHTML='';
   const comments=document.getElementById('comments');if(comments)comments.innerHTML='';
-  await loadPersistentContent();
+
+  // 삭제한 상세 화면에 머물지 않고 바로 이전 화면으로 이동
+  showPage('notice');
   renderNotices();renderHome();
   window.scrollTo(0,0);
   toast('공지가 삭제됐습니다');
- }finally{noticeDeleteRunning=false}
+
+  // 서버 원본 재동기화는 화면 이동 이후 처리
+  void loadPersistentContent();
+ }finally{
+  noticeDeleteRunning=false;
+ }
 }
 function openAttachment(url,type){if(type.startsWith('image')||type.startsWith('video'))openModal(url,type);else window.open(url,'_blank')}
 
@@ -4967,7 +5051,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final87-notice-push-fix').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final89-notice-server-atomic').catch(()=>{}));
 }
 </script>
 </body>
