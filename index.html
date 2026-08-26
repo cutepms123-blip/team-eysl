@@ -1370,7 +1370,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v83</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v85</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1727,14 +1727,7 @@ async function syncCurrentPushSubscription(){
  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!isInstalledPwa())return {ok:false,count:0,error:'홈 화면에 추가한 TEAM EYSL 앱에서 실행해주세요.'};
  try{
    const reg=await withTimeout(ensureActivePushServiceWorker(),10000,'서비스워커 연결');
-
-   // CLEAN START: 기기에 남아 있는 기존 Apple Web Push 구독도 폐기 후 새로 발급
-   const oldSub=await withTimeout(reg.pushManager.getSubscription(),5000,'기존 푸시 구독 확인');
-   if(oldSub){
-     try{await withTimeout(oldSub.unsubscribe(),5000,'기존 푸시 구독 해제')}catch(e){console.warn('old push unsubscribe:',e)}
-   }
-
-   const sub=await withTimeout(
+const sub=await withTimeout(
      reg.pushManager.subscribe({
        userVisibleOnly:true,
        applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
@@ -1871,7 +1864,7 @@ function updatePushSetupCard(serverState='unknown'){
  // 권한이 이미 granted여도 서버 구독이 없으면 "처음부터 알림 켜기"로 다시 시작
  card.style.display='flex';
  if(title)title.textContent='TEAM EYSL 알림을 켜주세요';
- if(desc)desc.textContent='알림 구독을 새로 시작합니다. 버튼을 누르면 기존 기기 구독을 초기화하고 새로 연결해요.';
+ if(desc)desc.textContent='알림 구독이 초기화됐어요. 알림 켜기를 누르면 이 기기를 새로 연결해요.';
  if(btn){
    btn.textContent='알림 켜기';
    btn.disabled=false;
@@ -1880,7 +1873,45 @@ function updatePushSetupCard(serverState='unknown'){
    btn.onclick=enablePushNotifications;
  }
 }
+const PUSH_RESET_GENERATION='20260826-r1';
+async function runOneTimePushReset(){
+ if(!currentUser?.memberId)return false;
+ const key=`team-eysl-push-reset:${PUSH_RESET_GENERATION}:${currentUser.memberId}`;
+ if(localStorage.getItem(key)==='done')return true;
+ try{
+   // 1) 이 기기의 기존 Apple Web Push 구독만 해제
+   if('serviceWorker' in navigator && 'PushManager' in window){
+     const reg=await navigator.serviceWorker.getRegistration('/');
+     if(reg?.pushManager){
+       const sub=await reg.pushManager.getSubscription();
+       if(sub){try{await sub.unsubscribe()}catch(e){console.warn('local push unsubscribe:',e)}}
+     }
+   }
+   // 2) 이 로그인 회원의 서버 구독도 모두 삭제
+   const {data:{session}}=await dbClient.auth.getSession();
+   if(!session)return false;
+   const res=await fetch(`${SUPABASE_URL}/functions/v1/push-reset`,{
+     method:'POST',
+     headers:{
+       'Content-Type':'application/json',
+       'apikey':SUPABASE_PUBLISHABLE_KEY,
+       'Authorization':`Bearer ${session.access_token}`
+     },
+     body:'{}'
+   });
+   if(!res.ok){
+     console.warn('push-reset failed',res.status);
+     return false;
+   }
+   localStorage.setItem(key,'done');
+   return true;
+ }catch(e){
+   console.warn('one-time push reset:',e);
+   return false;
+ }
+}
 async function refreshPushStatus(){
+ await runOneTimePushReset();
  const text=document.getElementById('pushStatusText'),tag=document.getElementById('pushStatusTag');
  if(!text||!tag)return;
 
@@ -1938,7 +1969,7 @@ async function enablePushNotifications(){
 
    if(btn){btn.disabled=true;btn.textContent='설정 중...';}
    if(title)title.textContent='알림을 연결하고 있어요';
-   if(desc)desc.textContent='기존 구독 초기화 → 새 Apple 푸시 구독 생성 → TEAM EYSL 서버 등록 중입니다.';
+   if(desc)desc.textContent='새 Apple 푸시 구독 생성 → TEAM EYSL 서버 등록 중입니다.';
 
    const result=await syncCurrentPushSubscription();
 
@@ -4874,7 +4905,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final83-push-clean-start').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final85-push-true-reset').catch(()=>{}));
 }
 </script>
 </body>
