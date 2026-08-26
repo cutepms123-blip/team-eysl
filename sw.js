@@ -1,6 +1,6 @@
-const VERSION='team-eysl-final96-native-notices';
+const VERSION='team-eysl-final97-roster-join-date';
 const CACHE=`team-eysl-${VERSION}`;
-const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js'];
+const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js','/join-date-v96.js'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting()));
@@ -13,7 +13,8 @@ async function navigationResponse(req){
     const res=await fetch(req,{cache:'no-store'});
     if(!res.ok)return res;
     let html=await res.text();
-    if(!html.includes('/timestamp-v94.js'))html=html.replace('</body>','<script src="/timestamp-v94.js?v=final96"></script></body>');
+    if(!html.includes('/timestamp-v94.js'))html=html.replace('</body>','<script src="/timestamp-v94.js?v=final97"></script></body>');
+    if(!html.includes('/join-date-v96.js'))html=html.replace('</body>','<script src="/join-date-v96.js?v=final97"></script></body>');
     return new Response(html,{status:res.status,statusText:res.statusText,headers:new Headers(res.headers)});
   }catch(_){
     const cached=await caches.match('/index.html');
