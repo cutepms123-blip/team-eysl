@@ -1190,11 +1190,17 @@ if(window.pdfjsLib){
 }
 .rankLeft{gap:12px !important;}
 </style>
+
+<style>
+.boardListRow{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 14px;display:flex;align-items:center;gap:12px}
+.boardListRow .grow{min-width:0;flex:1}.boardListRow b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.boardListRow p{font-size:10px;color:#8a8e95;margin:6px 0 0}.boardListRow>span{color:#9da1a7;font-size:20px}
+</style>
 </head>
 <body>
 <div id="auth" class="auth">
  <div class="authbox">
-  <h1>TEAM EYSL</h1><small>TRAINING CLUB</small>
+  <h1>TEAM EYSL</h1><small>SWIMMING TEAM</small>
   <p id="authIntro">처음이라면 가입 신청을, 이미 승인된 회원이라면 로그인해주세요.<br>승인 후에는 로그인 상태가 유지됩니다.</p>
 
   <div id="authModeTabs" class="authModeTabs">
@@ -1234,7 +1240,7 @@ if(window.pdfjsLib){
 </div>
 <div class="app">
 <header class="top">
- <div class="brandbox"><button class="hamb" onclick="openDrawer()">☰</button><div class="brand"><b>TEAM EYSL</b><span>TRAINING CLUB</span></div></div>
+ <div class="brandbox"><button class="hamb" onclick="openDrawer()">☰</button><div class="brand"><b>TEAM EYSL</b><span>SWIMMING TEAM</span></div></div>
  <div class="userbox"><span id="roleBadge" class="role">회원</span><div id="avatar" class="avatar">EY</div></div>
 </header>
 
@@ -1258,6 +1264,22 @@ if(window.pdfjsLib){
 <section id="chat" class="page"><h1 class="title">채팅방</h1><div class="chatTabs"><button id="groupTab" class="active" onclick="switchChat('group')">전체채팅</button><button id="dmTab" onclick="switchChat('dm')">개인채팅</button></div><div id="groupView"><div id="groupChatBody" class="chatBody"></div><div id="groupEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('groupAttach').click()">＋</button><input id="groupAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'group')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('group')">☺</button><input id="groupInput" placeholder="메시지 보내기"><button class="primary" onclick="sendGroup()">전송</button></div></div><div id="dmView" class="chatModeHidden"><div id="dmList" class="list"></div></div></section>
 <section id="dmChat" class="page"><div class="pagehead"><button class="back" onclick="showPage('chat');switchChat('dm')">←</button><h1 id="dmTitle">개인채팅</h1><span></span></div><div id="dmBody" class="chatBody"></div><div id="dmEmojiPanel" class="emojiPanel"></div><div class="chatInput"><button class="attachBtn" onclick="document.getElementById('dmAttach').click()">＋</button><input id="dmAttach" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" multiple hidden onchange="chatAttach(this,'dm')"><button type="button" class="attachBtn" aria-label="이모티콘" onclick="toggleEmojiPanel('dm')">☺</button><input id="dmInput" placeholder="메시지 보내기"><button class="primary" onclick="sendDm()">전송</button></div></section>
 
+
+<section id="freeBoard" class="page">
+ <div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>자유게시판</h1><button class="circleMiniBtn" type="button" onclick="openBoardWrite()" aria-label="글 작성">＋</button></div>
+ <div class="section"><h2>게시글</h2><span class="meta">팀원 누구나 작성할 수 있어요.</span></div>
+ <div id="boardList" class="list"></div>
+</section>
+<section id="boardDetail" class="page">
+ <div class="pagehead"><button class="back" onclick="showPage('freeBoard')">←</button><h1>게시글</h1><span></span></div>
+ <div id="boardDetailBody"></div>
+</section>
+<section id="boardWrite" class="page">
+ <div class="pagehead"><button class="back" onclick="cancelBoardWrite()">←</button><h1 id="boardWriteTitle">글 작성</h1><span></span></div>
+ <div class="formrow"><label>제목</label><input id="boardPostTitle" maxlength="120" placeholder="제목을 입력해주세요"></div>
+ <div class="formrow"><label>내용</label><textarea id="boardPostBody" maxlength="10000" placeholder="자유롭게 작성해주세요" style="min-height:220px"></textarea></div>
+ <button class="btn primary" style="width:100%" onclick="saveBoardPost()">등록하기</button>
+</section>
 <section id="schedule" class="page"><h1 class="title">신청</h1><div class="filters" id="scheduleFilters"><button class="active" onclick="setScheduleFilter('all',this)">전체</button><button onclick="setScheduleFilter('training',this)">훈련</button><button onclick="setScheduleFilter('race',this)">대회</button><button onclick="setScheduleFilter('event',this)">기타</button></div><button id="otherFloatingCreate" class="otherFloatingCreate" type="button" onclick="openOtherActivityCreate()" aria-label="기타 등록">＋</button><div class="calendar"><div class="calhead"><button onclick="changeMonth(-1)">‹</button><b id="calTitle"></b><button onclick="changeMonth(1)">›</button></div><div class="week"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendarDays" class="days"></div></div><div id="dayInfo"></div><div class="section scheduleListHead"><h2>일정 목록</h2></div><div id="scheduleList" class="list"></div></section>
 
 <section id="trainingList" class="page"><div class="pagehead"><button class="back" onclick="showPage('schedule')">←</button><h1>훈련</h1><span></span></div><div id="trainingCards" class="list"></div></section>
@@ -1338,7 +1360,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v77</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v78</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1386,7 +1408,7 @@ if(window.pdfjsLib){
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="ditem main" onclick="drawerGo('notice')">공지</div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('all')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="dparent" onclick="toggleSub('boardSub')"><span>게시판</span><span>›</span></div><div id="boardSub" class="dsub"><div class="ditem" onclick="drawerGo('notice')">공지</div><div class="ditem" onclick="drawerGo('freeBoard')">자유게시판</div></div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('all')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -2050,6 +2072,7 @@ function showPage(id){
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
  window.scrollTo(0,0);
  if(id==='notice')renderNotices();
+ if(id==='freeBoard')void renderBoard();
  if(id==='home'){renderHome();updatePushSetupCard();if(Notification?.permission==='granted')void autoHealPushSubscription();}
  if(id==='chat'){bindChatEnterKeys();switchChat('group');void refreshChatIfStale()}
  if(id==='schedule'){updateScheduleViewLabels();renderCalendar();}
@@ -2394,6 +2417,101 @@ function renderHome(){
 
 
 function escAttr(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll("'",'&#39;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
+
+let boardPosts=[];
+let currentBoardPostId=null;
+let currentEditingBoardPostId=null;
+
+function boardAuthorName(post){
+ const m=members.find(x=>x.id===post.author_id);
+ return m?.nickname || (post.author_id===currentUser.memberId?currentUser.nickname:'팀원');
+}
+function boardDate(v){
+ if(!v)return '';
+ try{return new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}catch(_){return String(v)}
+}
+async function loadBoardPosts(){
+ const {data,error}=await dbClient.from('board_posts')
+  .select('id,author_id,title,body,created_at,updated_at')
+  .order('created_at',{ascending:false});
+ if(error){console.error('board load:',error);throw error}
+ boardPosts=data||[];
+ return boardPosts;
+}
+async function renderBoard(){
+ const box=document.getElementById('boardList');if(!box)return;
+ box.innerHTML='<div class="card meta">게시글 불러오는 중...</div>';
+ try{
+  await loadBoardPosts();
+  box.innerHTML=boardPosts.length?boardPosts.map(p=>`
+   <div class="boardListRow" onclick="openBoardPost('${p.id}')">
+    <div class="grow"><b>${escHtml(p.title)}</b><p>${escHtml(boardAuthorName(p))} · ${escHtml(boardDate(p.created_at))}</p></div>
+    <span>›</span>
+   </div>`).join(''):'<div class="card meta">아직 작성된 게시글이 없습니다.</div>';
+ }catch(_){box.innerHTML='<div class="card meta">게시글을 불러오지 못했습니다.</div>'}
+}
+function openBoardPost(id){
+ currentBoardPostId=id;
+ showPage('boardDetail');
+ renderBoardDetail();
+}
+function renderBoardDetail(){
+ const p=boardPosts.find(x=>x.id===currentBoardPostId);
+ const box=document.getElementById('boardDetailBody');if(!box)return;
+ if(!p){showPage('freeBoard');return}
+ const own=p.author_id===currentUser.memberId;
+ const canDelete=own||isAdminUser();
+ box.innerHTML=`<div class="article">
+   <div class="meta">${escHtml(boardAuthorName(p))} · ${escHtml(boardDate(p.created_at))}</div>
+   <h2>${escHtml(p.title)}</h2>
+   <p style="white-space:pre-wrap">${escHtml(p.body)}</p>
+   ${(own||canDelete)?`<div class="noticeAdminActions">${own?`<button class="btn outline" onclick="editBoardPost('${p.id}')">수정</button>`:''}${canDelete?`<button class="btn amber" onclick="deleteBoardPost('${p.id}')">삭제</button>`:''}</div>`:''}
+ </div>`;
+}
+function openBoardWrite(){
+ currentEditingBoardPostId=null;
+ document.getElementById('boardWriteTitle').textContent='글 작성';
+ document.getElementById('boardPostTitle').value='';
+ document.getElementById('boardPostBody').value='';
+ showPage('boardWrite');
+}
+function editBoardPost(id){
+ const p=boardPosts.find(x=>x.id===id);if(!p||p.author_id!==currentUser.memberId)return toast('작성자만 수정할 수 있습니다.');
+ currentEditingBoardPostId=id;
+ document.getElementById('boardWriteTitle').textContent='글 수정';
+ document.getElementById('boardPostTitle').value=p.title||'';
+ document.getElementById('boardPostBody').value=p.body||'';
+ showPage('boardWrite');
+}
+function cancelBoardWrite(){
+ currentEditingBoardPostId?openBoardPost(currentEditingBoardPostId):showPage('freeBoard');
+}
+async function saveBoardPost(){
+ const title=document.getElementById('boardPostTitle')?.value.trim()||'';
+ const body=document.getElementById('boardPostBody')?.value.trim()||'';
+ if(!title)return toast('제목을 입력해주세요.');
+ if(!body)return toast('내용을 입력해주세요.');
+ try{
+  if(currentEditingBoardPostId){
+   const {data,error}=await dbClient.from('board_posts').update({title,body}).eq('id',currentEditingBoardPostId).eq('author_id',currentUser.memberId).select('id');
+   if(error||!data?.length)throw(error||new Error('update denied'));
+   const id=currentEditingBoardPostId;await loadBoardPosts();currentEditingBoardPostId=null;currentBoardPostId=id;showPage('boardDetail');renderBoardDetail();toast('게시글이 수정됐습니다.');
+  }else{
+   const {data,error}=await dbClient.from('board_posts').insert({author_id:currentUser.memberId,title,body}).select('id').single();
+   if(error)throw error;
+   await loadBoardPosts();currentBoardPostId=data.id;showPage('boardDetail');renderBoardDetail();toast('게시글이 등록됐습니다.');
+  }
+ }catch(e){console.error('board save:',e);toast('게시글 저장에 실패했습니다.')}
+}
+async function deleteBoardPost(id){
+ const p=boardPosts.find(x=>x.id===id);if(!p)return;
+ if(!(p.author_id===currentUser.memberId||isAdminUser()))return toast('삭제 권한이 없습니다.');
+ if(!confirm('이 게시글을 삭제할까요?'))return;
+ const {data,error}=await dbClient.from('board_posts').delete().eq('id',id).select('id');
+ if(error||!data?.length){console.error(error);return toast('게시글 삭제에 실패했습니다.')}
+ currentBoardPostId=null;await loadBoardPosts();showPage('freeBoard');renderBoard();toast('게시글이 삭제됐습니다.');
+}
+
 function renderNotices(){
  const el=document.getElementById('noticeList');if(!el)return;
  const sorted=[...notices].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
@@ -4633,7 +4751,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final77-unified-rank-badges').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final78-swimming-team-board').catch(()=>{}));
 }
 </script>
 </body>
