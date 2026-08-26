@@ -1,6 +1,6 @@
-const VERSION='team-eysl-final95-notice-restore';
+const VERSION='team-eysl-final96-native-notices';
 const CACHE=`team-eysl-${VERSION}`;
-const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/enhancements-v93.js','/notice-fix-v95.js'];
+const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting()));
@@ -13,8 +13,7 @@ async function navigationResponse(req){
     const res=await fetch(req,{cache:'no-store'});
     if(!res.ok)return res;
     let html=await res.text();
-    if(!html.includes('/enhancements-v93.js'))html=html.replace('</body>','<script src="/enhancements-v93.js?v=final95"></script></body>');
-    if(!html.includes('/notice-fix-v95.js'))html=html.replace('</body>','<script src="/notice-fix-v95.js?v=final95"></script></body>');
+    if(!html.includes('/timestamp-v94.js'))html=html.replace('</body>','<script src="/timestamp-v94.js?v=final96"></script></body>');
     return new Response(html,{status:res.status,statusText:res.statusText,headers:new Headers(res.headers)});
   }catch(_){
     const cached=await caches.match('/index.html');
@@ -26,7 +25,7 @@ self.addEventListener('fetch',event=>{
   const req=event.request;if(req.method!=='GET')return;
   const url=new URL(req.url);if(url.origin!==self.location.origin)return;
   if(req.mode==='navigate'){event.respondWith(navigationResponse(req));return;}
-  event.respondWith(fetch(req).then(res=>{if(res&&res.ok){const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});}return res;}).catch(()=>caches.match(req)));
+  event.respondWith(fetch(req,{cache:'no-store'}).then(res=>{if(res&&res.ok){const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});}return res;}).catch(()=>caches.match(req)));
 });
 self.addEventListener('push',event=>{
   let data={};try{data=event.data?event.data.json():{}}catch(_){try{data={body:event.data?event.data.text():''}}catch(__){data={}}}
