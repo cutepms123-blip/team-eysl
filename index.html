@@ -1365,7 +1365,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v80</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v81</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1698,21 +1698,33 @@ async function pruneOldPushSubscriptions(memberId,currentEndpoint){
  }catch(e){console.error('prune push:',e)}
 }
 async function syncCurrentPushSubscription(){
- if(!('Notification'in window)||Notification.permission!=='granted'||!('serviceWorker'in navigator)||!('PushManager'in window))return {ok:false,count:0};
+ if(!('Notification'in window)||Notification.permission!=='granted'||!('serviceWorker'in navigator)||!('PushManager'in window))return {ok:false,count:0,error:'push unsupported or permission not granted'};
  try{
    const reg=await navigator.serviceWorker.ready;
    let sub=await reg.pushManager.getSubscription();
    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
-   const member=await memberFromSession();if(!member?.id||!sub)return {ok:false,count:0};
-   const json=sub.toJSON();
-   const {error}=await dbClient.from('push_subscriptions').upsert({
-     member_id:member.id,endpoint:json.endpoint,p256dh:json.keys?.p256dh,auth:json.keys?.auth,
-     user_agent:navigator.userAgent,updated_at:new Date().toISOString()
-   },{onConflict:'member_id,endpoint'});
-   if(error)throw error;
-   await pruneOldPushSubscriptions(member.id,json.endpoint);
-   const {count}=await dbClient.from('push_subscriptions').select('id',{count:'exact',head:true}).eq('member_id',member.id);
-   return {ok:true,count:Number(count||1),subscription:sub};
+   if(!sub)return {ok:false,count:0,error:'subscription not created'};
+   const payload=sub.toJSON();
+   if(!payload.endpoint||!payload.keys?.p256dh||!payload.keys?.auth)return {ok:false,count:0,error:'subscription keys missing'};
+   async function request(token){
+     const res=await fetch(`${SUPABASE_URL}/functions/v1/push-register`,{
+       method:'POST',
+       headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':`Bearer ${token}`},
+       body:JSON.stringify({endpoint:payload.endpoint,p256dh:payload.keys.p256dh,auth:payload.keys.auth,user_agent:navigator.userAgent})
+     });
+     let data={};try{data=await res.json()}catch(_){}
+     return {res,data};
+   }
+   let {data:{session}}=await dbClient.auth.getSession();
+   if(!session)return {ok:false,count:0,error:'로그인 세션 없음'};
+   let x=await request(session.access_token);
+   if(x.res.status===401){
+     const ref=await dbClient.auth.refreshSession();
+     session=ref.data?.session||session;
+     x=await request(session.access_token);
+   }
+   if(!x.res.ok)return {ok:false,count:0,error:x.data?.detail||x.data?.error||`HTTP ${x.res.status}`};
+   return {ok:true,count:Number(x.data?.count||1),subscription:sub};
  }catch(e){console.error('push sync:',e);return {ok:false,count:0,error:String(e?.message||e)}}
 }
 function isInstalledPwa(){
@@ -1834,7 +1846,7 @@ async function repairPushRegistration(){
   toast('서버 등록에 실패했습니다. 다시 시도해주세요.');
  }finally{
   pushRepairRunning=false;
-  if(btn&&!btn.disabled){btn.textContent='다시 등록';}
+  if(btn){btn.disabled=false;if(btn.textContent==='연결 중...')btn.textContent='다시 등록';}
  }
 }
 async function forceAutoRepairPush(){
@@ -4819,7 +4831,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final80-push-autofix').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final81-push-server-register').catch(()=>{}));
 }
 </script>
 </body>
