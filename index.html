@@ -1360,7 +1360,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v78</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v79</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -1714,10 +1714,16 @@ function isInstalledPwa(){
  return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
 }
 async function autoHealPushSubscription(){
- if(!isInstalledPwa())return false;
  if(!('Notification'in window)||Notification.permission!=='granted')return false;
+ if(/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!isInstalledPwa())return false;
  const result=await ensurePushRegisteredOnServer();
- return result.ok;
+ if(!result.ok){
+   console.warn('push auto-heal failed:',result);
+   updatePushSetupCard('repair');
+   return false;
+ }
+ updatePushSetupCard('ok');
+ return true;
 }
 async function getMyServerPushCount(){
  try{
@@ -1757,7 +1763,7 @@ async function ensurePushRegisteredOnServer(){
  const count=await getMyServerPushCount();
  return {ok:true,count,subscription:sub};
 }
-function updatePushSetupCard(){
+function updatePushSetupCard(serverState='unknown'){
  const card=document.getElementById('pushSetupCard');
  const title=document.getElementById('pushSetupTitle');
  const desc=document.getElementById('pushSetupDesc');
@@ -1772,22 +1778,29 @@ function updatePushSetupCard(){
    if(btn){btn.textContent='확인';btn.onclick=()=>toast('TEAM EYSL을 홈 화면에 추가한 뒤 앱에서 열어주세요.')}
    return;
  }
- if(Notification.permission==='granted'){
+ if(Notification.permission==='denied'){
+   card.style.display='flex';
+   if(title)title.textContent='알림이 차단되어 있어요';
+   if(desc)desc.textContent='아이폰 설정 → 알림 → TEAM EYSL에서 알림 허용을 켜주세요.';
+   if(btn){btn.textContent='확인';btn.onclick=()=>toast('아이폰 설정에서 TEAM EYSL 알림 허용을 켜주세요.')}
+   return;
+ }
+ if(Notification.permission!=='granted'){
+   card.style.display='flex';
+   if(title)title.textContent='TEAM EYSL 알림을 켜주세요';
+   if(desc)desc.textContent='새 공지, 가입 신청, 일정, 대기 자리 알림을 바로 받을 수 있어요.';
+   if(btn){btn.textContent='알림 켜기';btn.onclick=enablePushNotifications}
+   return;
+ }
+ if(serverState==='ok'){
    card.style.display='none';
    return;
  }
  card.style.display='flex';
- if(Notification.permission==='denied'){
-   if(title)title.textContent='알림이 차단되어 있어요';
-   if(desc)desc.textContent='아이폰 설정 → 알림 → TEAM EYSL에서 알림 허용을 켜주세요.';
-   if(btn){btn.textContent='확인';btn.onclick=()=>toast('아이폰 설정에서 TEAM EYSL 알림 허용을 켜주세요.')}
- }else{
-   if(title)title.textContent='TEAM EYSL 알림을 켜주세요';
-   if(desc)desc.textContent='새 공지, 훈련·대회·기타 일정, 대기 자리 알림을 바로 받을 수 있어요.';
-   if(btn){btn.textContent='알림 켜기';btn.onclick=enablePushNotifications}
- }
+ if(title)title.textContent=serverState==='repair'?'알림 서버 연결을 복구해주세요':'알림 서버 연결 확인 중';
+ if(desc)desc.textContent='알림 허용은 켜져 있어요. TEAM EYSL 서버 구독까지 연결되어야 실제 알림을 받을 수 있어요.';
+ if(btn){btn.textContent='다시 등록';btn.onclick=async()=>{const r=await syncCurrentPushSubscription();await refreshPushStatus();toast(r.ok?'알림 서버 연결이 복구됐습니다.':'서버 등록에 실패했습니다. 다시 시도해주세요.');}}
 }
-
 async function refreshPushStatus(){
  updatePushSetupCard();
  const text=document.getElementById('pushStatusText'),tag=document.getElementById('pushStatusTag');
@@ -1816,9 +1829,11 @@ async function refreshPushStatus(){
  if(result.ok&&browserSub){
    text.textContent=`푸시 알림이 서버에 정상 등록되어 있어요. · 기기 ${result.count}개`;
    tag.textContent='ON';
+   updatePushSetupCard('ok');
  }else{
    text.textContent='알림 권한은 켜져 있지만 서버 등록이 필요해요. 눌러서 다시 등록해주세요.';
    tag.textContent='등록 필요';
+   updatePushSetupCard('repair');
  }
 }
 async function enablePushNotifications(){
@@ -1833,11 +1848,10 @@ async function enablePushNotifications(){
     await refreshPushStatus();
     return toast('알림 권한이 허용되지 않았습니다.');
   }
-  const result=await ensurePushRegisteredOnServer();
-  updatePushSetupCard();
+  const result=await syncCurrentPushSubscription();
   await refreshPushStatus();
-  if(result.ok)toast('푸시 알림이 정상적으로 켜졌습니다.');
-  else toast('알림 권한은 켜졌지만 서버 등록에 실패했습니다. 다시 눌러주세요.');
+  if(result.ok)toast('푸시 알림이 서버까지 정상 연결됐습니다.');
+  else toast('알림 권한은 켜졌지만 서버 등록에 실패했습니다. 다시 등록해주세요.');
  }catch(e){
   console.error(e);
   toast('알림 설정 중 오류가 발생했습니다.');
@@ -2260,7 +2274,7 @@ function applyRole(){
  renderMyProfile();
 }
 async function logout(){try{await dbClient.auth.signOut()}catch(e){console.error(e)}currentUser={nickname:'',role:'member',actualRole:'member',memberId:null,avatarPath:null,avatarUrl:'',createdAt:null};location.reload()}
-function isAdminUser(){return ['admin','master_admin'].includes(currentUser.actualRole)}
+function isAdminUser(){return ['admin','sub_admin','master_admin'].includes(currentUser.actualRole)}
 function isMasterAdmin(){return currentUser.actualRole==='master_admin'}
 
 function approvalStatusLabel(status){
@@ -2271,7 +2285,7 @@ function approvalStatusLabel(status){
 }
 function memberRoleLabel(role){
  if(role==='master_admin')return '총관리자';
- if(role==='admin')return '부관리자';
+ if(role==='admin'||role==='sub_admin')return '부관리자';
  return '일반회원';
 }
 function makeApprovalCard(member,isPending){
@@ -2392,8 +2406,13 @@ async function manageMemberApproval(memberId,action){
    });
    const data=await res.json();
    if(!res.ok)return toast(data.error||'처리하지 못했습니다.');
-   if(action==='approve')await sendPush('member','TEAM EYSL 가입 승인','가입이 승인됐어요. 이제 TEAM EYSL 앱을 이용할 수 있어요 🎉',{target_member_id:memberId,tag:'member-approved'});
-   toast(action==='approve'?'회원 승인이 완료됐습니다.':'회원 요청을 거절했습니다.');
+   if(action==='approve'){
+     const sent=Number(data?.push?.sent||0);
+     const subs=Number(data?.push?.subscription_count||0);
+     if(sent>0)toast('회원 승인 완료 · 승인 알림도 발송됐습니다.');
+     else if(subs===0)toast('회원 승인 완료 · 대상 회원은 아직 푸시 구독 전입니다.');
+     else toast('회원 승인은 완료됐지만 승인 알림 발송을 확인해주세요.');
+   }else toast('회원 요청을 거절했습니다.');
    await renderApprovalRequests();await renderMembers();
  }catch(e){console.error(e);toast('회원 승인 처리 중 오류가 발생했습니다.')}
 }
@@ -4751,7 +4770,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final78-swimming-team-board').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final79-push-repair').catch(()=>{}));
 }
 </script>
 </body>
