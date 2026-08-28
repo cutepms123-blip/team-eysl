@@ -1,4 +1,4 @@
-/* TEAM EYSL v102 — live applications override seeded manual roster */
+/* TEAM EYSL v103 — preserve historical attendance, live-sync seeded/current trainings */
 (function(){
   const ADMIN_ORDER=['민선','창두','도의','태훈','창호','태진','민석','준혁'];
 
@@ -38,12 +38,25 @@
       (acts||[]).forEach(row=>{
         const t=trainings?.[row.id];if(!t)return;
         const d=row.details||{};
+        const isManualRoster=d.manual_roster===true;
+        t.manualRoster=isManualRoster;
+
+        // 과거 일반 훈련은 기존 loadPersistentContent가 만든 실제 출석부 배열을 그대로 보존한다.
+        if(!isManualRoster){
+          if(Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length&&activityHasStarted(t)){
+            t.participants=sortPeople(t.historicalParticipants);
+          }else if(Array.isArray(t.participants)){
+            t.participants=sortPeople(t.participants);
+          }
+          return;
+        }
+
+        // 8/29~9월 수기 세팅 일정: 수기 미가입자 + 현재 앱 신청자가 최종 명단.
         const manual=Array.isArray(d.manual_unregistered_participants)?d.manual_unregistered_participants:[];
         t.manualUnregisteredParticipants=sortPeople(manual);
-        // IMPORTANT: details.participants is only the initial seed. After launch, live application DB is authoritative.
         t.participants=sortPeople(uniqueByName([...(liveMap[row.id]||[]),...manual]));
       });
-    }catch(e){console.error('manual-roster-v102 hydrate:',e)}
+    }catch(e){console.error('manual-roster-v103 hydrate:',e)}
   }
 
   if(typeof loadPersistentContent==='function'){
@@ -79,10 +92,22 @@
       if(!t){box.innerHTML='<div class="card meta">훈련 정보를 찾을 수 없습니다.</div>';return}
       try{
         const all=await fetchApplicationPeople(selectedTrainingId);
-        let participants=all.filter(x=>x.type==='participant');
         const waitlist=all.filter(x=>x.type==='waitlist').sort((a,b)=>(a.order||999)-(b.order||999));
         const done=activityHasStarted(t);
-        // RPC already includes manual_unregistered_participants; do not restore seeded participant list.
+        let participants=[];
+
+        // 종료된 과거 일반 훈련은 실제 출석부가 정답.
+        if(done&&!t.manualRoster&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
+          const liveByName=new Map(all.filter(x=>x.type==='participant').map(p=>[p.name,p]));
+          participants=t.historicalParticipants.map(name=>({
+            ...(liveByName.get(name)||{}),name,type:'participant',historical:true,
+            avatarUrl:liveByName.get(name)?.avatarUrl||'',attendanceStatus:t.historicalAttendance?.[name]||'출석'
+          }));
+        }else{
+          // 수기 세팅 일정 및 앞으로의 일정은 RPC의 현재 신청 상태가 정답.
+          participants=all.filter(x=>x.type==='participant');
+        }
+
         participants=sortPeople(uniqueByName(participants));
         const people=participants.length?participants.map(p=>{
           const status=done?(t.historicalAttendance?.[p.name]||p.details?.attendance_status||p.attendanceStatus||'출석'):'신청완료';
@@ -90,7 +115,7 @@
         }).join(''):'<div class="meta">참석자가 없습니다.</div>';
         const waits=waitlist.length?waitlist.map(p=>{const offered=p.offerStatus==='offered'&&p.offerExpiresAt&&new Date(p.offerExpiresAt).getTime()>Date.now();return `<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${p.order||'-'}. ${escHtml(p.name)}</b><p class="meta">${offered?`응답 대기 · ${remaining(new Date(p.offerExpiresAt).getTime())} 남음`:'대기중'}</p></div>${offered?'<span class="offerBadge">응답중</span>':''}</div>`}).join(''):'<div class="meta">대기자가 없습니다.</div>';
         box.innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${escHtml(t.title)}</span></div><div class="detailrow"><b>${done?'참석':'신청'}</b><span>${participants.length}/${t.capacity}</span></div>${done?'':`<div class="detailrow"><b>대기</b><span>${waitlist.length}명</span></div>`}</div><div class="section"><h2>${done?'실제 참석':'신청완료'} ${participants.length}명</h2></div><div class="card">${people}</div>${done?'':`<div class="section"><h2>대기 ${waitlist.length}명</h2></div><div class="card">${waits}</div>`}`;
-      }catch(e){console.error('manual-roster-v102 status:',e);box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
+      }catch(e){console.error('manual-roster-v103 status:',e);box.innerHTML='<div class="card meta">신청현황을 불러오지 못했습니다. 다시 시도해주세요.</div>'}
     };
   }
 
