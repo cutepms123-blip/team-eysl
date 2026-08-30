@@ -1,0 +1,172 @@
+name: Attendance persistence patch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/attendance-persistence-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch attendance save flow
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          old = "const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes,historicalTrainingRes]=await Promise.all(["
+          new = "const [noticeRes,activityRes,memberRes,applicationRes,historyRes,raceHistoryRes,historicalTrainingRes,attendanceRes]=await Promise.all(["
+          if old not in text:
+              raise SystemExit('loadPersistentContent destructuring anchor not found')
+          text = text.replace(old, new, 1)
+
+          old = "  dbClient.rpc('team_attendance_canonical_v1')\n ]);"
+          new = "  dbClient.rpc('team_attendance_canonical_v1'),\n  dbClient.from('attendance').select('activity_id,member_id,roster_id,display_name,status,late_fee_paid,checked_at')\n ]);"
+          if old not in text:
+              raise SystemExit('attendance query anchor not found')
+          text = text.replace(old, new, 1)
+
+          old = " attendanceHistory=(historyRes.data||[]).map(x=>({date:String(x.activity_date),title:'팀아이슬 훈련',status:x.status,name:currentUser.nickname}));"
+          new = old + "\n attRecords={};"
+          if old not in text:
+              raise SystemExit('attendanceHistory anchor not found')
+          text = text.replace(old, new, 1)
+
+          load_start = text.index('async function loadPersistentContent(){')
+          snap_at = text.index('\n snapshotPlainData();', load_start)
+          overlay = r'''
+ const savedAttendanceRows=attendanceRes?.error?[]:(attendanceRes?.data||[]);
+ const savedAttendanceStatus={present:'출석',late:'지각',absent:'불참'};
+ savedAttendanceRows.forEach(row=>{
+  const name=row.display_name||members.find(m=>m.id===row.member_id)?.name||'';
+  if(!name||!row.activity_id)return;
+  if(!attRecords[row.activity_id])attRecords[row.activity_id]={};
+  attRecords[row.activity_id][name]={
+   status:savedAttendanceStatus[row.status]||row.status,
+   paid:row.status==='late'&&!!row.late_fee_paid,
+   persisted:true
+  };
+ });
+'''
+          text = text[:snap_at] + overlay + text[snap_at:]
+
+          start = text.index('function renderAttDetail(e){')
+          end = text.index('\n\nlet teamEventRankingCache', start)
+          replacement = r'''function renderAttDetail(e){
+ const body=document.getElementById('attAdminDetailBody');
+ if(!body)return;
+ if(!e){body.innerHTML='<div class="card meta">출석 일정을 찾을 수 없습니다.</div>';return}
+ if(!attRecords[e.id])attRecords[e.id]={};
+ const rec=attRecords[e.id];
+ const c=attCounts(e);
+ const displayPeople=[...new Set([...(e.people||[]),...Object.keys(rec||{})])];
+ const lateNames=displayPeople.filter(n=>rec[n]?.status==='지각');
+ const paid=lateNames.filter(n=>rec[n]?.paid===true).length;
+ const done=e.state==='done';
+ const peopleHtml=displayPeople.map(n=>{
+  const r=rec[n]||{status:'미체크',paid:false};
+  const idArg=escAttr(JSON.stringify(e.id));
+  const nameArg=escAttr(JSON.stringify(n));
+  return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${escHtml(n)}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick='setAtt(${idArg},${nameArg},"출석")'>출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick='setAtt(${idArg},${nameArg},"지각")'>지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick='setAtt(${idArg},${nameArg},"불참")'>불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" aria-pressed="${r.paid?'true':'false'}" onclick='togglePaid(${idArg},${nameArg})'>지각비 납부 완료</button>`:''}</div></div>`;
+ }).join('');
+ body.innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${escHtml(e.title)}</span></div><div class="detailrow"><b>${done?'참석 인원':'신청 인원'}</b><span>${displayPeople.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${peopleHtml||'<div class="meta">체크할 인원이 없습니다.</div>'}</div><div class="actions" style="margin-top:14px"><button id="attendanceSaveBtn" class="btn primary" style="width:100%" onclick="saveAttendanceEvent('${e.id}')">출석 저장</button></div>`;
+}
+function setAtt(id,name,status){
+ if(!attRecords[id])attRecords[id]={};
+ const prev=attRecords[id][name]||{};
+ attRecords[id][name]={...prev,status,paid:status==='지각'?!!prev.paid:false};
+ renderAttDetail(attEvents().find(x=>x.id===id));
+}
+function togglePaid(id,name){
+ if(!attRecords[id]?.[name]||attRecords[id][name].status!=='지각')return;
+ attRecords[id][name].paid=!attRecords[id][name].paid;
+ renderAttDetail(attEvents().find(x=>x.id===id));
+}
+function attendanceDbStatus(status){return ({'출석':'present','지각':'late','불참':'absent'})[status]||null}
+async function saveAttendanceEvent(id){
+ if(!isAdminUser())return toast('관리자만 출석을 저장할 수 있습니다.');
+ const e=attEvents().find(x=>x.id===id);
+ if(!e)return toast('출석 일정을 찾을 수 없습니다.');
+ const rec=attRecords[id]||{};
+ const names=[...new Set([...(e.people||[]),...Object.keys(rec)])]
+  .filter(name=>attendanceDbStatus(rec[name]?.status));
+ if(!names.length)return toast('저장할 출석 체크가 없습니다.');
+ const btn=document.getElementById('attendanceSaveBtn');
+ if(btn){btn.disabled=true;btn.textContent='저장 중...'}
+ try{
+  const rosterRes=await dbClient.from('team_roster').select('id,nickname').in('nickname',names);
+  if(rosterRes.error)throw rosterRes.error;
+  const rosterMap=new Map((rosterRes.data||[]).map(r=>[r.nickname,r.id]));
+  const memberMap=new Map(members.filter(m=>m.id).map(m=>[m.name,m.id]));
+  const checkedAt=new Date().toISOString();
+  const payload=names.map(name=>{
+   const r=rec[name];
+   const dbStatus=attendanceDbStatus(r.status);
+   return {
+    activity_id:id,
+    member_id:memberMap.get(name)||null,
+    roster_id:rosterMap.get(name)||null,
+    display_name:name,
+    status:dbStatus,
+    late_fee_paid:dbStatus==='late'&&r.paid===true,
+    checked_by:currentUser.memberId,
+    checked_at:checkedAt
+   };
+  });
+  const {error}=await dbClient.from('attendance').upsert(payload,{onConflict:'activity_id,display_name'});
+  if(error)throw error;
+  teamEventRankingCache=null;
+  await loadPersistentContent();
+  renderAttendanceAdmin();
+  const fresh=attEvents().find(x=>x.id===id);
+  if(fresh)renderAttDetail(fresh);
+  if(document.getElementById('attendance')?.classList.contains('active'))renderAttendance();
+  void renderMyAchievements();
+  toast('출석이 실제 데이터로 저장됐습니다.');
+ }catch(err){
+  console.error('attendance save:',err);
+  toast(`출석 저장에 실패했습니다${err?.message?' · '+err.message:''}`);
+ }finally{
+  const next=document.getElementById('attendanceSaveBtn');
+  if(next){next.disabled=false;next.textContent='출석 저장'}
+ }
+}
+'''
+          text = text[:start] + replacement + text[end:]
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify patch
+        shell: bash
+        run: |
+          git diff --check
+          grep -q "function saveAttendanceEvent" index.html
+          grep -q "지각비 납부 완료" index.html
+          grep -q "late_fee_paid" index.html
+          grep -q "attendanceSaveBtn" index.html
+
+      - name: Commit patched app
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index.html changes were needed."
+            exit 0
+          fi
+          git config user.name "team-eysl-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "Persist attendance and late-fee status"
+          git push origin HEAD:main
