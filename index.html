@@ -1206,6 +1206,39 @@ if(window.pdfjsLib){
 #pushSetupCard{position:relative!important;z-index:50!important}
 #pushSetupBtn{position:relative!important;z-index:60!important;pointer-events:auto!important;touch-action:manipulation!important;min-width:96px}
 </style>
+
+<!-- V114_DIRECT_INDEX -->
+<style id="V114_DIRECT_INDEX">
+#attendanceSaveBoxV105{
+  position:relative!important;
+  bottom:auto!important;
+  z-index:auto!important;
+  margin-top:18px!important;
+  box-shadow:none!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+}
+#attendanceAdminDetail.active #attAdminDetailBody{padding-bottom:120px!important}
+#memberDirectoryScrollTop{
+  position:fixed;
+  right:max(calc((100vw - 430px)/2 + 18px),18px);
+  bottom:96px;
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:50%;
+  background:#111;
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:95;
+  box-shadow:0 6px 18px rgba(0,0,0,.18)
+}
+</style>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1389,6 +1422,7 @@ if(window.pdfjsLib){
 <section id="adminScheduleDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('adminSchedule')">←</button><h1>등록 일정</h1><span></span></div><div id="adminScheduleDetailBody"></div></section>
 
 <section id="memberDirectory" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원리스트</h1><span></span></div><div id="memberDirectoryList" class="list"></div></section>
+<button id="memberDirectoryScrollTop" type="button" aria-label="회원리스트 맨 위로" onclick="scrollMemberDirectoryTop()">↑</button>
 
 <section id="memberApproval" class="page">
  <div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원 승인</h1><span></span></div>
@@ -1410,15 +1444,14 @@ if(window.pdfjsLib){
  <div id="memberActivityDetailBody" class="list"></div>
 </section>
 
-
-<section id="applicationAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>활동 취합본</h1><span></span></div><div class="filters" id="aggFilters"><button class="active" onclick="renderApplicationAdmin('all',this)">전체</button><button onclick="renderApplicationAdmin('training',this)">훈련</button><button onclick="renderApplicationAdmin('race',this)">대회</button><button onclick="renderApplicationAdmin('event',this)">기타</button></div><div id="applicationAdminBody"></div></section><section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">기타</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
+<section id="attendanceAdmin" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>출석 관리</h1><span></span></div><div class="filters" id="attTypeFilter"><button class="active" onclick="setAttType('all',this)">전체</button><button onclick="setAttType('training',this)">훈련</button><button onclick="setAttType('race',this)">대회</button><button onclick="setAttType('event',this)">기타</button></div><div class="filters" id="attStateFilter"><button class="active" onclick="setAttState('all',this)">전체</button><button onclick="setAttState('upcoming',this)">예정</button><button onclick="setAttState('done',this)">종료</button></div><div id="attAdminList" class="list"></div></section>
 <section id="attendanceAdminDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('attendanceAdmin')">←</button><h1>출석 체크</h1><span></span></div><div id="attAdminDetailBody"></div></section>
 
 <nav class="nav"><button data-page="teamEvents" onclick="showPage('teamEvents')"><i>◎</i>이벤트</button><button data-page="notice" onclick="showPage('notice')"><i>▤</i>공지</button><button class="active" data-page="home" onclick="showPage('home')"><i>⌂</i>홈</button><button data-page="schedule" onclick="showPage('schedule')"><i>◫</i>신청</button><button data-page="mypage" onclick="showPage('mypage')"><i>○</i>마이페이지</button></nav>
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="dparent" onclick="toggleSub('boardSub')"><span>게시판</span><span>›</span></div><div id="boardSub" class="dsub"><div class="ditem" onclick="drawerGo('notice')">공지</div><div class="ditem" onclick="drawerGo('freeBoard')">자유게시판</div></div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('applicationAdmin');renderApplicationAdmin('all')">활동 취합본</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="dparent" onclick="toggleSub('boardSub')"><span>게시판</span><span>›</span></div><div id="boardSub" class="dsub"><div class="ditem" onclick="drawerGo('notice')">공지</div><div class="ditem" onclick="drawerGo('freeBoard')">자유게시판</div></div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -2259,7 +2292,6 @@ function showPage(id){
  if(id==='memberAdmin'){void (async()=>{await renderMembers();await renderRoleManagement();})()}
  if(id==='memberApproval'){if(!isMasterAdmin()){toast('총관리자만 회원 승인을 관리할 수 있습니다.');return showPage('home')}renderApprovalRequests();}if(id==='memberDirectory')renderMemberDirectory();
  if(id==='attendanceAdmin')renderAttendanceAdmin();
- if(id==='applicationAdmin')renderApplicationAdmin('all');
  if(id==='media')renderMedia('all');
 
 }
@@ -4669,6 +4701,15 @@ function renderMembersFromCurrentData(){
  }).join(''):'<div class="card meta">승인된 회원이 없습니다.</div>';
  if(blockedList)blockedList.innerHTML=blocked.length?blocked.map(m=>`<div class="memberrow">${makeAvatar(m)}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div></div>`).join(''):'<div class="card meta">내보낸 회원이 없습니다.</div>';
 }
+function updateMemberDirectoryScrollTop(){
+ const btn=document.getElementById('memberDirectoryScrollTop');if(!btn)return;
+ const active=document.getElementById('memberDirectory')?.classList.contains('active');
+ btn.style.display=active&&window.scrollY>280?'flex':'none';
+}
+function scrollMemberDirectoryTop(){window.scrollTo({top:0,behavior:'smooth'})}
+window.addEventListener('scroll',updateMemberDirectoryScrollTop,{passive:true});
+window.addEventListener('resize',updateMemberDirectoryScrollTop,{passive:true});
+
 async function renderMemberDirectory(){
  const box=document.getElementById('memberDirectoryList');if(!box)return;
  box.innerHTML='<div class="card meta">팀 명단 불러오는 중...</div>';
@@ -4688,7 +4729,17 @@ async function renderMemberDirectory(){
    nickname:m.name,short_name:(m.name||'?').slice(0,1),team_role:m.teamRole||memberRoleLabel(m.role),
    lesson_level:m.lessonLevel||'-',attendance_count:m.att||0,late_count:m.late||0,_member:m,_appOnly:true
  }));
- const rows=[...rosterRows,...appOnly];
+ const memberDirectoryRoleRank=r=>{
+   const role=r?._member?.role||'';
+   if(role==='master_admin')return 0;
+   if(role==='admin'||role==='sub_admin')return 1;
+   return 2;
+ };
+ const rows=[...rosterRows,...appOnly].sort((a,b)=>{
+   const ar=memberDirectoryRoleRank(a),br=memberDirectoryRoleRank(b);
+   if(ar!==br)return ar-br;
+   return String(a.nickname||'').localeCompare(String(b.nickname||''),'ko',{numeric:true,sensitivity:'base'});
+ });
 
  box.innerHTML=rows.map(r=>{
   const linked=!!r._member;
@@ -4903,19 +4954,6 @@ function attEvents(){
   ...events.map(e=>({id:e.id,type:'event',label:'기타',title:e.title,date:e.date,start:e.start||'',people:e.participants,state:activityState(e)}))
  ];
 }
-function renderApplicationAdmin(kind='all',btn=null){
- const box=document.getElementById('applicationAdminBody');if(!box)return;
- document.querySelectorAll('#aggFilters button').forEach(x=>x.classList.remove('active'));
- if(btn)btn.classList.add('active');else{
-  [...document.querySelectorAll('#aggFilters button')].find(x=>x.getAttribute('onclick')?.includes(`'${kind}'`))?.classList.add('active');
- }
- const rows=attEvents().filter(e=>kind==='all'||e.type===kind).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
- box.innerHTML=rows.length?rows.map(e=>{
-  const people=[...new Set(e.people||[])];
-  const ended=e.state==='done';
-  return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(e.title)}</h3><p>${escHtml(e.date)} · ${escHtml(e.label)}</p></div><span class="tag ${ended?'done':''}">${ended?'종료':escHtml(e.label)}</span></div><div class="aggregationPeople">${people.length?people.map(n=>`<span class="tag">${escHtml(n)}</span>`).join(''):'<span class="meta">신청/참여 회원 없음</span>'}</div></div>`;
- }).join(''):'<div class="card meta">조건에 맞는 활동이 없습니다.</div>';
-}
 function setAttType(v,b){
  attendanceType=v;document.querySelectorAll('#attTypeFilter button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');renderAttendanceAdmin();
 }
@@ -4924,7 +4962,7 @@ function setAttState(v,b){
 }
 function renderAttendanceAdmin(){
  const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.state==='done'?Math.max(e.people.length,Object.keys(attRecords[e.id]||{}).length):e.people.length}</b><span>${e.state==='done'?'참석':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
+ document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>${e.state==='done'?'명단':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
 }
 function attCounts(e){
  const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;
@@ -4941,6 +4979,11 @@ function renderAttDetail(e){
  const rec=attRecords[e.id];
  const c=attCounts(e);
  const displayPeople=[...new Set([...(e.people||[]),...Object.keys(rec||{})])];
+ displayPeople.sort((a,b)=>{
+  const ag=/^일일체험/.test(String(a)),bg=/^일일체험/.test(String(b));
+  if(ag!==bg)return ag?1:-1;
+  return 0;
+ });
  const lateNames=displayPeople.filter(n=>rec[n]?.status==='지각');
  const paid=lateNames.filter(n=>rec[n]?.paid===true).length;
  const done=e.state==='done';
@@ -4950,7 +4993,7 @@ function renderAttDetail(e){
   const nameArg=escAttr(JSON.stringify(n));
   return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${escHtml(n)}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick='setAtt(${idArg},${nameArg},"출석")'>출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick='setAtt(${idArg},${nameArg},"지각")'>지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick='setAtt(${idArg},${nameArg},"불참")'>불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" aria-pressed="${r.paid?'true':'false'}" onclick='togglePaid(${idArg},${nameArg})'>지각비 납부 완료</button>`:''}</div></div>`;
  }).join('');
- body.innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${escHtml(e.title)}</span></div><div class="detailrow"><b>${done?'참석 인원':'신청 인원'}</b><span>${displayPeople.length}명</span></div><div class="detailrow"><b>현재 집계</b><span>출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${peopleHtml||'<div class="meta">체크할 인원이 없습니다.</div>'}</div><div class="actions" style="margin-top:14px"><button id="attendanceSaveBtn" class="btn primary" style="width:100%" onclick="saveAttendanceEvent('${e.id}')">출석 저장</button></div>`;
+ body.innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${escHtml(e.title)}</span></div><div class="detailrow"><b>${done?'명단 인원':'신청 인원'}</b><span>${done?(e.people||[]).length:displayPeople.length}명</span></div><div class="detailrow"><b>${done?'출석 집계':'현재 집계'}</b><span>${done?`최종 출석 ${c.present}명 · 지각 ${c.late}명 · 불참 ${c.absent}명`:`출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}`}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${peopleHtml||'<div class="meta">체크할 인원이 없습니다.</div>'}</div><div class="actions" style="margin-top:14px"><button id="attendanceSaveBtn" class="btn primary" style="width:100%" onclick="saveAttendanceEvent('${e.id}')">출석 저장</button></div>`;
 }
 function setAtt(id,name,status){
  if(!attRecords[id])attRecords[id]={};
@@ -5154,7 +5197,7 @@ window.addEventListener('load',async()=>{
   [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList,initAttendanceOptions,renderAttendance].forEach(fn=>{try{fn()}catch(_){}});
   try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}
  }
- const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders,()=>renderApplicationAdmin('training')];
+ const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders];
  boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
 });
 </script>
@@ -5206,7 +5249,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final92-unregistered-roster').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final114-direct-index').catch(()=>{}));
 }
 </script>
 </body>
