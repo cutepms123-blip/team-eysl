@@ -1,0 +1,48 @@
+name: Apply v114 direct app shell fixes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/patch_v114.py
+      - .github/workflows/apply-v114.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch index.html directly
+        run: python scripts/patch_v114.py
+
+      - name: Verify direct app shell
+        shell: bash
+        run: |
+          git diff --check
+          grep -q "V114_DIRECT_INDEX" index.html
+          grep -q "memberDirectoryScrollTop" index.html
+          grep -q "memberDirectoryRoleRank" index.html
+          grep -q "final114-direct-index" index.html
+          grep -q "최종 출석" index.html
+          if grep -q "활동 취합본" index.html; then exit 1; fi
+          if grep -q "applicationAdmin" index.html; then exit 1; fi
+
+      - name: Commit index.html
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index.html changes needed."
+            exit 0
+          fi
+          git config user.name "team-eysl-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "Apply v114 fixes directly to app shell"
+          git push origin HEAD:main
