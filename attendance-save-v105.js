@@ -1,4 +1,4 @@
-/* TEAM EYSL v105 — admin attendance: edit first, save once, sync all downstream stats */
+/* TEAM EYSL v106 — robust admin attendance save + downstream sync */
 (function(){
   let dirty=false;
   let activeEventId=null;
@@ -20,7 +20,7 @@
     return out;
   }
   function isChanged(id){
-    const a=cloneStatuses(id), b=originalByEvent[id]||{};
+    const a=cloneStatuses(id),b=originalByEvent[id]||{};
     return JSON.stringify(a)!==JSON.stringify(b);
   }
   function fmtSaved(ts){
@@ -29,17 +29,23 @@
   }
   function savedKey(id){return `eysl-attendance-last-saved:${id}`}
 
+  async function fetchCanonicalForEvent(e){
+    const {data,error}=await dbClient.rpc('team_attendance_canonical_v1');
+    if(error)throw error;
+    return (data||[]).filter(r=>String(r.activity_date||r.d)===String(e.date));
+  }
+
   async function loadDbStatuses(id){
-    const e=eventById(id); if(!e||e.kind!=='training')return;
+    const e=eventById(id);if(!e||e.kind!=='training')return;
     try{
-      const {data,error}=await dbClient.rpc('team_attendance_canonical_v1');
-      if(error)throw error;
-      const rows=(data||[]).filter(r=>String(r.activity_date||r.d)===String(e.date));
-      if(!attRecords[id])attRecords[id]={};
-      rows.forEach(r=>{attRecords[id][r.nickname]={status:r.status,paid:attRecords[id][r.nickname]?.paid??null};});
+      const rows=await fetchCanonicalForEvent(e);
+      const paidByName={};
+      Object.entries((attRecords&&attRecords[id])||{}).forEach(([n,v])=>paidByName[n]=v?.paid??null);
+      attRecords[id]={};
+      rows.forEach(r=>{attRecords[id][r.nickname]={status:r.status,paid:paidByName[r.nickname]??null};});
       originalByEvent[id]=cloneStatuses(id);
       dirty=false;
-    }catch(err){console.error('attendance-save-v105 load:',err);}
+    }catch(err){console.error('attendance-save-v106 load:',err);}
   }
 
   function addSaveUi(e){
@@ -49,36 +55,47 @@
     if(!box){
       box=document.createElement('div');
       box.id='attendanceSaveBoxV105';
-      box.style.cssText='position:sticky;bottom:82px;z-index:15;margin-top:14px;background:#fff;border:1px solid #dfe3e8;border-radius:18px;padding:12px;box-shadow:0 8px 30px rgba(0,0,0,.10)';
+      box.style.cssText='position:sticky;bottom:82px;z-index:25;margin-top:14px;background:#fff;border:1px solid #dfe3e8;border-radius:18px;padding:13px;box-shadow:0 8px 30px rgba(0,0,0,.14)';
       root.appendChild(box);
     }
     const last=localStorage.getItem(savedKey(e.id));
-    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b style="font-size:12px">${dirty?'저장 전 변경사항 있음':'저장된 상태'}</b><div style="font-size:9px;color:#8a9098;margin-top:4px">마지막 저장: ${fmtSaved(last)}</div></div><button id="attendanceSaveBtnV105" class="btn primary" style="min-width:96px" ${saving?'disabled':''}>${saving?'저장 중...':'출석 저장'}</button></div>`;
+    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div style="min-width:0"><b style="font-size:12px">${dirty?'저장 전 변경사항 있음':'저장된 상태'}</b><div style="font-size:9px;color:#8a9098;margin-top:4px">마지막 저장: ${fmtSaved(last)}</div><div style="font-size:9px;color:#8a9098;margin-top:3px">저장 시 회원관리 · 출석횟수 · 배지 · 출석왕/지각왕에 반영</div></div><button id="attendanceSaveBtnV105" class="btn primary" style="min-width:100px;flex:none" ${saving?'disabled':''}>${saving?'저장 중...':'출석 저장'}</button></div>`;
     const btn=document.getElementById('attendanceSaveBtnV105');
     if(btn)btn.onclick=()=>saveAttendanceBatch(e.id);
   }
 
   async function saveAttendanceBatch(id){
-    const e=eventById(id); if(!e||e.kind!=='training'||saving)return;
+    const e=eventById(id);if(!e||e.kind!=='training'||saving)return;
     const rec=(attRecords&&attRecords[id])||{};
     const statuses={};
     Object.entries(rec).forEach(([name,v])=>{if(v&&['출석','지각','불참'].includes(v.status))statuses[name]=v.status;});
     if(!Object.keys(statuses).length){if(typeof toast==='function')toast('저장할 출석 상태가 없습니다.');return;}
-    saving=true; addSaveUi(e);
+
+    saving=true;addSaveUi(e);
     try{
       const {error}=await dbClient.rpc('save_team_attendance_batch_v1',{p_activity_id:id,p_statuses:statuses});
       if(error)throw error;
+
+      const verifiedRows=await fetchCanonicalForEvent(e);
+      const verified=new Map(verifiedRows.map(r=>[r.nickname,r.status]));
+      const mismatches=Object.entries(statuses).filter(([name,status])=>verified.get(name)!==status);
+      if(mismatches.length)throw new Error(`저장 검증 실패: ${mismatches.map(x=>x[0]).join(', ')}`);
+
       originalByEvent[id]=cloneStatuses(id);
       dirty=false;
-      const now=new Date().toISOString(); localStorage.setItem(savedKey(id),now);
+      const now=new Date().toISOString();localStorage.setItem(savedKey(id),now);
       try{teamEventRankingCache=null;}catch(_){ }
       if(typeof loadPersistentContent==='function')await loadPersistentContent();
-      if(typeof toast==='function')toast('출석이 저장되었습니다.');
+      await loadDbStatuses(id);
       if(typeof renderAttDetail==='function')renderAttDetail(eventById(id));
+      if(typeof toast==='function')toast('출석 저장 완료 · 배지/랭킹까지 반영됐습니다.');
     }catch(err){
-      console.error('attendance-save-v105 save:',err);
-      if(typeof toast==='function')toast('출석 저장에 실패했습니다.');
-    }finally{saving=false;addSaveUi(eventById(id));}
+      console.error('attendance-save-v106 save:',err);
+      if(typeof toast==='function')toast('출석 저장에 실패했습니다. 다시 시도해주세요.');
+    }finally{
+      saving=false;
+      addSaveUi(eventById(id));
+    }
   }
   window.saveAttendanceBatchV105=saveAttendanceBatch;
 
@@ -94,7 +111,10 @@
   }
 
   if(oldRenderAttDetail){
-    renderAttDetail=function(e){oldRenderAttDetail(e);if(e&&e.id===activeEventId)addSaveUi(e);};
+    renderAttDetail=function(e){
+      oldRenderAttDetail(e);
+      if(e){activeEventId=e.id||activeEventId;addSaveUi(e);}
+    };
   }
 
   if(oldOpenAttEvent){
@@ -104,6 +124,7 @@
       await loadDbStatuses(id);
       showPage('attendanceAdminDetail');
       renderAttDetail(eventById(id));
+      setTimeout(()=>addSaveUi(eventById(id)),0);
     };
   }
 
@@ -113,11 +134,21 @@
         const ok=confirm('변경사항이 저장되지 않았습니다. 저장하지 않고 나갈까요?');
         if(!ok)return;
         if(originalByEvent[activeEventId])attRecords[activeEventId]=JSON.parse(JSON.stringify(originalByEvent[activeEventId]));
-        dirty=false; activeEventId=null;
+        dirty=false;activeEventId=null;
       }
       return oldShowPage(id);
     };
   }
+
+  const observer=new MutationObserver(()=>{
+    const page=document.getElementById('attendanceAdminDetail');
+    if(page?.classList.contains('active')&&activeEventId)addSaveUi(eventById(activeEventId));
+  });
+  if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+  setInterval(()=>{
+    const page=document.getElementById('attendanceAdminDetail');
+    if(page?.classList.contains('active')&&activeEventId)addSaveUi(eventById(activeEventId));
+  },800);
 
   window.addEventListener('beforeunload',function(e){if(!dirty)return;e.preventDefault();e.returnValue='';});
 })();
