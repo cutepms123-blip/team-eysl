@@ -1,4 +1,4 @@
-/* TEAM EYSL v107 — attendance save + late-fee persistence */
+/* TEAM EYSL v108 — attendance save + late-fee persistence */
 (function(){
   let dirty=false;
   let activeEventId=null;
@@ -24,9 +24,7 @@
     });
     return out;
   }
-  function isChanged(id){
-    return JSON.stringify(cloneStatuses(id))!==JSON.stringify(originalByEvent[id]||{});
-  }
+  function isChanged(id){return JSON.stringify(cloneStatuses(id))!==JSON.stringify(originalByEvent[id]||{})}
   function fmtSaved(ts){
     if(!ts)return '아직 저장되지 않음';
     try{return new Date(ts).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false})}catch(_){return ts}
@@ -56,9 +54,7 @@
       attRecords[id]=base;
       originalByEvent[id]=cloneStatuses(id);
       dirty=false;
-    }catch(err){
-      console.error('attendance v107 load:',err);
-    }
+    }catch(err){console.error('attendance v108 load:',err)}
   }
 
   function normalizeLateFeeButtons(){
@@ -75,6 +71,8 @@
   function addSaveUi(e){
     const root=document.getElementById('attAdminDetailBody');
     if(!root||!e)return;
+    const baseBtn=document.getElementById('attendanceSaveBtn');
+    if(baseBtn)baseBtn.style.display='none';
     let box=document.getElementById('attendanceSaveBoxV105');
     if(!box){
       box=document.createElement('div');
@@ -89,21 +87,16 @@
     if(btn)btn.onclick=()=>saveAttendanceBatch(e.id);
   }
 
-  function decorate(e){
-    normalizeLateFeeButtons();
-    addSaveUi(e);
-  }
+  function decorate(e){normalizeLateFeeButtons();addSaveUi(e)}
 
   async function saveAttendanceBatch(id){
     const e=eventById(id);if(!e||saving)return;
     const rec=(attRecords&&attRecords[id])||{};
     const rows={};
     Object.entries(rec).forEach(([name,v])=>{
-      if(v&&['출석','지각','불참'].includes(v.status)){
-        rows[name]={status:v.status,late_fee_paid:v.status==='지각'&&v.paid===true};
-      }
+      if(v&&['출석','지각','불참'].includes(v.status))rows[name]={status:v.status,late_fee_paid:v.status==='지각'&&v.paid===true};
     });
-    if(!Object.keys(rows).length){if(typeof toast==='function')toast('저장할 출석 상태가 없습니다.');return;}
+    if(!Object.keys(rows).length){if(typeof toast==='function')toast('저장할 출석 상태가 없습니다.');return}
 
     saving=true;addSaveUi(e);
     try{
@@ -123,8 +116,7 @@
       if(mismatches.length)throw new Error(`저장 검증 실패: ${mismatches.map(x=>x[0]).join(', ')}`);
 
       dirty=false;
-      const savedAt=new Date().toISOString();
-      localStorage.setItem(savedKey(id),savedAt);
+      localStorage.setItem(savedKey(id),new Date().toISOString());
       try{teamEventRankingCache=null}catch(_){ }
       if(typeof loadPersistentContent==='function')await loadPersistentContent();
       await loadDbStatuses(id);
@@ -133,7 +125,7 @@
       if(typeof renderMyAchievements==='function')void renderMyAchievements();
       if(typeof toast==='function')toast('출석 저장 완료 · 실제 데이터에 반영됐습니다.');
     }catch(err){
-      console.error('attendance v107 save:',err);
+      console.error('attendance v108 save:',err);
       if(typeof toast==='function')toast('출석 저장에 실패했습니다. 다시 시도해주세요.');
     }finally{
       saving=false;
@@ -141,6 +133,7 @@
     }
   }
   window.saveAttendanceBatchV105=saveAttendanceBatch;
+  window.saveAttendanceEvent=saveAttendanceBatch;
 
   if(typeof setAtt==='function'){
     setAtt=function(id,name,status){
@@ -182,7 +175,6 @@
       await loadDbStatuses(id);
       showPage('attendanceAdminDetail');
       renderAttDetail(eventById(id));
-      setTimeout(()=>decorate(eventById(id)),0);
     };
   }
 
@@ -206,11 +198,5 @@
     };
   }
 
-  const observer=new MutationObserver(()=>{
-    const page=document.getElementById('attendanceAdminDetail');
-    if(page?.classList.contains('active')&&activeEventId)decorate(eventById(activeEventId));
-  });
-  if(document.body)observer.observe(document.body,{childList:true,subtree:true});
-
-  window.addEventListener('beforeunload',function(e){if(!dirty)return;e.preventDefault();e.returnValue='';});
+  window.addEventListener('beforeunload',function(e){if(!dirty)return;e.preventDefault();e.returnValue=''});
 })();
