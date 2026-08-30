@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final107-attendance-persistence';
+const VERSION='team-eysl-final108-attendance-persistence';
 const CACHE=`team-eysl-${VERSION}`;
 const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js','/join-date-v96.js','/activity-comments-v98.js','/application-order-v99.js','/manual-roster-v100.js','/attendance-save-v105.js'];
 
@@ -13,12 +13,12 @@ async function navigationResponse(req){
     const res=await fetch(req,{cache:'no-store'});
     if(!res.ok)return res;
     let html=await res.text();
-    if(!html.includes('/timestamp-v94.js'))html=html.replace('</body>','<script src="/timestamp-v94.js?v=final107"></script></body>');
-    if(!html.includes('/join-date-v96.js'))html=html.replace('</body>','<script src="/join-date-v96.js?v=final107"></script></body>');
-    if(!html.includes('/activity-comments-v98.js'))html=html.replace('</body>','<script src="/activity-comments-v98.js?v=final107"></script></body>');
-    if(!html.includes('/application-order-v99.js'))html=html.replace('</body>','<script src="/application-order-v99.js?v=final107"></script></body>');
-    if(!html.includes('/manual-roster-v100.js'))html=html.replace('</body>','<script src="/manual-roster-v100.js?v=final107"></script></body>');
-    if(!html.includes('/attendance-save-v105.js'))html=html.replace('</body>','<script src="/attendance-save-v105.js?v=final107"></script></body>');
+    if(!html.includes('/timestamp-v94.js'))html=html.replace('</body>','<script src="/timestamp-v94.js?v=final108"></script></body>');
+    if(!html.includes('/join-date-v96.js'))html=html.replace('</body>','<script src="/join-date-v96.js?v=final108"></script></body>');
+    if(!html.includes('/activity-comments-v98.js'))html=html.replace('</body>','<script src="/activity-comments-v98.js?v=final108"></script></body>');
+    if(!html.includes('/application-order-v99.js'))html=html.replace('</body>','<script src="/application-order-v99.js?v=final108"></script></body>');
+    if(!html.includes('/manual-roster-v100.js'))html=html.replace('</body>','<script src="/manual-roster-v100.js?v=final108"></script></body>');
+    if(!html.includes('/attendance-save-v105.js'))html=html.replace('</body>','<script src="/attendance-save-v105.js?v=final108"></script></body>');
     return new Response(html,{status:res.status,statusText:res.statusText,headers:new Headers(res.headers)});
   }catch(_){
     const cached=await caches.match('/index.html');
