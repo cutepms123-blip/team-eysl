@@ -1,18 +1,17 @@
-/* TEAM EYSL v109 — reserve scroll space above sticky attendance save bar */
+/* TEAM EYSL v110 — keep attendance save box below roster */
 (function(){
   const style=document.createElement('style');
-  style.id='attendance-layout-v109';
+  style.id='attendance-layout-v110';
   style.textContent=`
     #attendanceAdminDetail.active #attAdminDetailBody{
-      padding-bottom:260px!important;
+      padding-bottom:120px!important;
     }
     #attendanceSaveBoxV105{
-      bottom:94px!important;
-    }
-    @media (max-width:430px){
-      #attendanceAdminDetail.active #attAdminDetailBody{
-        padding-bottom:280px!important;
-      }
+      position:relative!important;
+      bottom:auto!important;
+      z-index:auto!important;
+      margin-top:18px!important;
+      box-shadow:none!important;
     }
   `;
   document.head.appendChild(style);
