@@ -1,0 +1,39 @@
+name: Apply v117 notice engagement
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notice-engagement-v117.js'
+      - 'scripts/patch_v117.py'
+      - '.github/workflows/apply-v117.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch app shell and service worker
+        run: python scripts/patch_v117.py
+      - name: Verify v117
+        run: |
+          grep -q 'notice-engagement-v117.js?v=final117-notice-engagement' index.html
+          grep -q 'final117-notice-engagement' index.html
+          grep -q 'team-eysl-final117-notice-engagement' sw.js
+          grep -q '/notice-engagement-v117.js' sw.js
+      - name: Commit patched shell
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'team-eysl-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Enable notice readers and voter disclosure'
+          git push origin HEAD:main
