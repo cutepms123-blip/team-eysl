@@ -1,0 +1,39 @@
+name: Apply v121 notice deadline layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notice-deadline-layout-v121.js'
+      - 'scripts/patch_v121.py'
+      - '.github/workflows/apply-v121.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch app shell and service worker
+        run: python scripts/patch_v121.py
+      - name: Verify v121
+        run: |
+          grep -q 'notice-deadline-layout-v121.js?v=final121-notice-deadline-layout' index.html
+          grep -q 'final121-notice-deadline-layout' index.html
+          grep -q 'team-eysl-final121-notice-deadline-layout' sw.js
+          grep -q '/notice-deadline-layout-v121.js' sw.js
+      - name: Commit patched shell
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'team-eysl-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Fix notice deadline input width on mobile'
+          git push origin HEAD:main
