@@ -1,0 +1,39 @@
+name: Apply v119 notice date picker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notice-date-picker-v119.js'
+      - 'scripts/patch_v119.py'
+      - '.github/workflows/apply-v119.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch app shell and service worker
+        run: python scripts/patch_v119.py
+      - name: Verify v119
+        run: |
+          grep -q 'notice-date-picker-v119.js?v=final119-notice-date-picker' index.html
+          grep -q 'final119-notice-date-picker' index.html
+          grep -q 'team-eysl-final119-notice-date-picker' sw.js
+          grep -q '/notice-date-picker-v119.js' sw.js
+      - name: Commit patched shell
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'team-eysl-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Enable multi-select calendar for date polls'
+          git push origin HEAD:main
