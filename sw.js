@@ -1,6 +1,6 @@
-const VERSION='team-eysl-final123-race-attachment';
+const VERSION='team-eysl-final124-race-time-fields';
 const CACHE=`team-eysl-${VERSION}`;
-const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js','/join-date-v96.js','/activity-comments-v98.js','/application-order-v99.js','/manual-roster-v100.js','/attendance-save-v105.js','/attendance-layout-v109.js','/attendance-fix-v111.js','/ui-order-v112.js','/remove-aggregation-v113.js','/notice-poll-v115.js','/notice-upload-fix-v116.js','/notice-engagement-v117.js','/notice-interaction-fix-v118.js','/notice-date-picker-v119.js','/notice-deadline-layout-v121.js','/race-attachment-v123.js'];
+const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js','/join-date-v96.js','/activity-comments-v98.js','/application-order-v99.js','/manual-roster-v100.js','/attendance-save-v105.js','/attendance-layout-v109.js','/attendance-fix-v111.js','/ui-order-v112.js','/remove-aggregation-v113.js','/notice-poll-v115.js','/notice-upload-fix-v116.js','/notice-engagement-v117.js','/notice-interaction-fix-v118.js','/notice-date-picker-v119.js','/notice-deadline-layout-v121.js','/race-attachment-v123.js','/race-time-fields-v124.js'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting()));
@@ -30,6 +30,7 @@ async function navigationResponse(req){
     if(!html.includes('/notice-date-picker-v119.js'))html=html.replace('</body>','<script src="/notice-date-picker-v119.js?v=final119-notice-date-picker"></script></body>');
     if(!html.includes('/notice-deadline-layout-v121.js'))html=html.replace('</body>','<script src="/notice-deadline-layout-v121.js?v=final121-notice-deadline-layout"></script></body>');
     if(!html.includes('/race-attachment-v123.js'))html=html.replace('</body>','<script src="/race-attachment-v123.js?v=final123-race-attachment"></script></body>');
+    if(!html.includes('/race-time-fields-v124.js'))html=html.replace('</body>','<script src="/race-time-fields-v124.js?v=final124-race-time-fields"></script></body>');
     return new Response(html,{status:res.status,statusText:res.statusText,headers:new Headers(res.headers)});
   }catch(_){
     const cached=await caches.match('/index.html');
