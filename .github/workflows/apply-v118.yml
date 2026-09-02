@@ -1,0 +1,39 @@
+name: Apply v118 notice interaction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notice-interaction-fix-v118.js'
+      - 'scripts/patch_v118.py'
+      - '.github/workflows/apply-v118.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch app shell and service worker
+        run: python scripts/patch_v118.py
+      - name: Verify v118
+        run: |
+          grep -q 'notice-interaction-fix-v118.js?v=final118-notice-interaction' index.html
+          grep -q 'final118-notice-interaction' index.html
+          grep -q 'team-eysl-final118-notice-interaction' sw.js
+          grep -q '/notice-interaction-fix-v118.js' sw.js
+      - name: Commit patched shell
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'team-eysl-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Fix closed poll voter list and comment ownership actions'
+          git push origin HEAD:main
