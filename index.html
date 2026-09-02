@@ -1335,7 +1335,7 @@ if(window.pdfjsLib){
 <section id="applyStatus" class="page"><div class="pagehead"><button class="back" onclick="backFromApplyStatus()">←</button><h1>신청 현황</h1><span></span></div><div id="applyStatusBody"></div></section>
 
 <section id="raceDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>상세 내용</h1><span></span></div><div id="raceDetailBody"></div></section>
-<section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
+<section id="raceApply" class="page"><div class="pagehead"><button class="back" onclick="showPage('raceList')">←</button><h1>대회 신청</h1><span></span></div><div class="formrow"><label>이름</label><input id="raceApplicantName" autocomplete="name" placeholder="이름 입력"></div><div class="formrow"><label>생년월일</label><input id="raceApplicantBirth" type="date"></div><div class="formrow"><label>전화번호</label><input id="raceApplicantPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000"></div><div class="formrow"><label>그룹</label><select id="raceGroup"><option>여자 20대</option><option>여자 일반부</option><option>여자 30대</option></select></div><div class="formrow"><label>개인종목 1</label><select id="raceS1"><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>접영 50m</option></select></div><div class="formrow"><label>개인종목 2</label><select id="raceS2"><option>접영 50m</option><option>자유형 50m</option><option>배영 50m</option><option>평영 50m</option><option>신청 안 함</option></select></div><div class="formrow"><label>단체전 참가 <span class="meta">(중복 선택 가능)</span></label><div id="relayChoices" class="bigChoiceGrid"></div><button id="noRelay" type="button" class="bigChoice" style="width:100%;margin-top:9px" onclick="selectNoRelay()">단체전 참가 안 함</button></div><button id="raceSubmit" class="btn primary" style="width:100%" onclick="submitRace()">대회 신청하기</button></section>
 
 <section id="mypage" class="page">
 <h1 class="title">마이페이지</h1>
@@ -1418,7 +1418,7 @@ if(window.pdfjsLib){
 <div class="actions" id="resourceUploadActions"><button class="btn primary" onclick="document.getElementById('resourceUpload').click()">＋ 파일 등록</button><input id="resourceUpload" type="file" multiple hidden onchange="uploadResourceFiles(this)"></div>
 <div id="resourceFileList" class="list"></div></section>
 
-<section id="adminSchedule" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>일정 등록</h1><span></span></div><div class="formrow"><label>일정 종류</label><select id="aType" onchange="renderAdminFields()"><option value="training">훈련</option><option value="race">대회</option><option value="event">기타</option></select></div><div class="formrow"><label>제목</label><input id="aTitle"></div><div class="formrow"><label>날짜</label><input id="aDate" type="date"></div><div class="grid2"><div class="formrow"><label>시작 시간</label><input id="aStart" type="time"></div><div class="formrow"><label>종료 시간</label><input id="aEnd" type="time"></div></div><div class="formrow"><label>장소</label><input id="aPlace"></div><div id="trainingFields"><div class="formrow"><label>코치</label><input id="aCoach"></div><div class="formrow"><label>준비물</label><input id="aGear"></div><div class="formrow"><label>레인별 마감인원</label><input id="aCapacity" placeholder="예: A레인 10명 / B레인 10명"></div><div class="formrow"><label>훈련표 직접 작성</label><textarea id="aPlan" placeholder="워밍업 / 드릴 / 메인세트 / 쿨다운 등을 자유롭게 작성"></textarea></div><div class="formrow"><label>훈련표 파일</label><input id="aPlanFile" type="file" accept="image/*,.pdf,.doc,.docx"></div></div><div class="formrow"><label>상세 내용</label><textarea id="aDetail"></textarea></div><div class="formrow"><label>사진·파일·링크</label><input id="aAttach" type="file" multiple><input id="aLink" placeholder="https://..." style="margin-top:7px"></div><button id="scheduleSaveBtn" class="btn primary" style="width:100%" onclick="registerSchedule()">일정 등록</button><button id="scheduleCancelEditBtn" class="btn outline" style="width:100%;display:none;margin-top:8px" onclick="cancelActivityEdit()">수정 취소</button></section>
+<section id="adminSchedule" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>일정 등록</h1><span></span></div><div class="formrow"><label>일정 종류</label><select id="aType" onchange="renderAdminFields()"><option value="training">훈련</option><option value="race">대회</option><option value="event">기타</option></select></div><div class="formrow"><label>제목</label><input id="aTitle"></div><div class="formrow"><label>날짜</label><input id="aDate" type="date"></div><div id="scheduleTimeFields" class="grid2"><div class="formrow"><label>시작 시간</label><input id="aStart" type="time"></div><div class="formrow"><label>종료 시간</label><input id="aEnd" type="time"></div></div><div class="formrow"><label>장소</label><input id="aPlace"></div><div id="trainingFields"><div class="formrow"><label>코치</label><input id="aCoach"></div><div class="formrow"><label>준비물</label><input id="aGear"></div><div class="formrow"><label>레인별 마감인원</label><input id="aCapacity" placeholder="예: A레인 10명 / B레인 10명"></div><div class="formrow"><label>훈련표 직접 작성</label><textarea id="aPlan" placeholder="워밍업 / 드릴 / 메인세트 / 쿨다운 등을 자유롭게 작성"></textarea></div><div class="formrow"><label>훈련표 파일</label><input id="aPlanFile" type="file" accept="image/*,.pdf,.doc,.docx"></div></div><div class="formrow"><label>상세 내용</label><textarea id="aDetail"></textarea></div><div class="formrow"><label>사진·파일·링크</label><input id="aAttach" type="file" multiple><input id="aLink" placeholder="https://..." style="margin-top:7px"></div><button id="scheduleSaveBtn" class="btn primary" style="width:100%" onclick="registerSchedule()">일정 등록</button><button id="scheduleCancelEditBtn" class="btn outline" style="width:100%;display:none;margin-top:8px" onclick="cancelActivityEdit()">수정 취소</button></section>
 <section id="adminScheduleDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('adminSchedule')">←</button><h1>등록 일정</h1><span></span></div><div id="adminScheduleDetailBody"></div></section>
 
 <section id="memberDirectory" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>회원리스트</h1><span></span></div><div id="memberDirectoryList" class="list"></div></section>
@@ -3492,12 +3492,25 @@ function openRaceDetail(){
  <div class="actions">${done?'':`<button class="btn primary" onclick="openRaceApply()">${app?'신청 수정':'신청하기'}</button>`}<button class="btn outline" onclick="openGenericApplyStatus('race','${race.id}')">신청현황</button></div>
  ${adminActivityActions(race.id)}`;
 }
-function openRaceApply(){showPage('raceApply');document.getElementById('relayChoices').innerHTML=race.relays.map(r=>`<button type="button" class="bigChoice ${raceApplication?.relays.includes(r)?'on':''}" onclick="toggleRelay(this)">${r}</button>`).join('');document.getElementById('noRelay').classList.toggle('on',!!raceApplication?.noRelay);if(raceApplication){raceGroup.value=raceApplication.group;raceS1.value=raceApplication.s1;raceS2.value=raceApplication.s2;raceSubmit.textContent='수정 완료'}else raceSubmit.textContent='대회 신청하기'}
+function openRaceApply(){
+ showPage('raceApply');
+ document.getElementById('relayChoices').innerHTML=race.relays.map(r=>`<button type="button" class="bigChoice ${raceApplication?.relays.includes(r)?'on':''}" onclick="toggleRelay(this)">${r}</button>`).join('');
+ document.getElementById('noRelay').classList.toggle('on',!!raceApplication?.noRelay);
+ const selfMember=members.find(m=>m.id===currentUser.memberId||m.name===currentUser.nickname);
+ raceApplicantName.value=raceApplication?.applicantName||currentUser.realName||selfMember?.realName||'';
+ raceApplicantBirth.value=raceApplication?.birthDate||'';
+ raceApplicantPhone.value=raceApplication?.phone||'';
+ if(raceApplication){raceGroup.value=raceApplication.group;raceS1.value=raceApplication.s1;raceS2.value=raceApplication.s2;raceSubmit.textContent='수정 완료'}else raceSubmit.textContent='대회 신청하기';
+}
 function toggleRelay(b){document.getElementById('noRelay').classList.remove('on');b.classList.toggle('on')}
 function selectNoRelay(){document.querySelectorAll('#relayChoices .bigChoice').forEach(b=>b.classList.remove('on'));document.getElementById('noRelay').classList.add('on')}
 async function submitRace(){
+ const applicantName=(document.getElementById('raceApplicantName')?.value||'').trim();
+ const birthDate=(document.getElementById('raceApplicantBirth')?.value||'').trim();
+ const phone=(document.getElementById('raceApplicantPhone')?.value||'').trim();
+ if(applicantName.length<2||!birthDate||!phone)return toast('이름, 생년월일, 전화번호를 입력해주세요');
  const noRelay=document.getElementById('noRelay').classList.contains('on');
- const details={group:raceGroup.value,s1:raceS1.value,s2:raceS2.value,relays:noRelay?[]:[...document.querySelectorAll('#relayChoices .on')].map(b=>b.textContent),noRelay};
+ const details={applicantName,birthDate,phone,group:raceGroup.value,s1:raceS1.value,s2:raceS2.value,relays:noRelay?[]:[...document.querySelectorAll('#relayChoices .on')].map(b=>b.textContent),noRelay};
  if(!(await saveActivityApplication(race.id,'participant',details,null)).ok)return;
  await reloadApplicationsUI();renderMyStatus('race');toast('대회 신청 내용이 저장됐습니다');
 }
@@ -3543,7 +3556,7 @@ async function openGenericApplyStatus(kind,id){
    return;
   }
   const all=await fetchApplicationPeople(id),people=all.filter(x=>x.type==='participant');
-  const rows=people.length?people.map(p=>`<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(p.name)}</b><p class="meta">신청완료</p></div></div>`).join(''):'<div class="meta">신청자가 없습니다.</div>';
+  const rows=people.length?people.map(p=>{const info=kind==='race'&&isAdminUser()?`<br>${escHtml(p.details?.applicantName||'-')} · ${escHtml(p.details?.birthDate||'-')} · ${escHtml(p.details?.phone||'-')}`:'';return `<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(p.name)}</b><p class="meta">신청완료${info}</p></div></div>`}).join(''):'<div class="meta">신청자가 없습니다.</div>';
   box.innerHTML=`<div class="detail"><div class="detailrow"><b>${label}</b><span>${escHtml(item.title)}</span></div><div class="detailrow"><b>신청</b><span>${people.length}명</span></div></div><div class="section"><h2>신청완료 ${people.length}명</h2></div><div class="card">${rows}</div>`;
  }catch(e){
   console.error(e);
@@ -4595,9 +4608,15 @@ function openOtherActivityCreate(){
  const title=document.querySelector('#adminSchedule .pagehead h1');if(title)title.textContent='기타 등록';
 }
 function renderAdminFields(){
- const type=document.getElementById('aType'),kind=type.value;
+ const type=document.getElementById('aType');let kind=type.value;
+ if(!isAdminUser()&&kind!=='event'){type.value='event';kind='event'}
  document.getElementById('trainingFields').style.display=kind==='training'?'block':'none';
- if(!isAdminUser()&&kind!=='event'){type.value='event';document.getElementById('trainingFields').style.display='none'}
+ const timeFields=document.getElementById('scheduleTimeFields');
+ if(timeFields)timeFields.style.display=kind==='race'?'none':'grid';
+ if(kind==='race'){
+  const s=document.getElementById('aStart'),e=document.getElementById('aEnd');
+  if(s)s.value='';if(e)e.value='';
+ }
 }
 
 function parseCapacityText(v){const nums=(String(v||'').match(/\d+/g)||[]).map(Number);return nums.length?nums.reduce((a,b)=>a+b,0):20}
@@ -4635,8 +4654,8 @@ function editActivity(id){
  showPage('adminSchedule');
 }
 async function registerSchedule(){
- const title=document.getElementById('aTitle').value.trim(),date=document.getElementById('aDate').value,start=document.getElementById('aStart').value,end=document.getElementById('aEnd').value,place=document.getElementById('aPlace').value.trim(),type=document.getElementById('aType').value;
- if(!title||!date||!start||!end||!place)return toast('필수 항목을 입력해주세요');
+ const type=document.getElementById('aType').value,title=document.getElementById('aTitle').value.trim(),date=document.getElementById('aDate').value,start=type==='race'?'':document.getElementById('aStart').value,end=type==='race'?'':document.getElementById('aEnd').value,place=document.getElementById('aPlace').value.trim();
+ if(!title||!date||!place||(type!=='race'&&(!start||!end)))return toast('필수 항목을 입력해주세요');
  if(!canCreateActivityType(type))return toast('이 일정 종류의 작성 권한이 없습니다.');
  if(currentEditingActivityId){const existing=getActivityById(currentEditingActivityId),existingKind=getActivityKind(currentEditingActivityId);if(!canEditActivityItem(existing,existingKind))return toast('수정 권한이 없습니다.');}
  const lane=document.getElementById('aCapacity').value.trim();
@@ -4651,7 +4670,7 @@ async function registerSchedule(){
   planBy:currentUser.nickname,planDate:date,
   participants:old?.participants||[],waitlist:old?.waitlist||[],relays:old?.relays||[]
  };
- const payload={kind:type,title,activity_date:date,start_time:start,end_time:end,place,capacity:type==='training'?parseCapacityText(lane):null,details,updated_at:new Date().toISOString()};
+ const payload={kind:type,title,activity_date:date,start_time:type==='race'?null:start,end_time:type==='race'?null:end,place,capacity:type==='training'?parseCapacityText(lane):null,details,updated_at:new Date().toISOString()};
  let error;
  const wasEdit=!!currentEditingActivityId;
  if(wasEdit){({error}=await dbClient.from('activities').update(payload).eq('id',currentEditingActivityId))}
@@ -5249,7 +5268,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final121-notice-deadline-layout').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final122-race-form').catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
