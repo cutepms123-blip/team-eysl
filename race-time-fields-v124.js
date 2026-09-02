@@ -58,4 +58,12 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enforceRaceTimeFields);
   else enforceRaceTimeFields();
+
+  if(!document.querySelector('script[data-race-application-v125]')){
+    const script=document.createElement('script');
+    script.src='/race-application-v125.js?v=final125-race-application';
+    script.async=false;
+    script.dataset.raceApplicationV125='1';
+    document.body.appendChild(script);
+  }
 })();
