@@ -29,4 +29,12 @@
     }
   `;
   document.head.appendChild(style);
+
+  if(!document.querySelector('script[data-race-attachment-v123]')){
+    const script=document.createElement('script');
+    script.src='/race-attachment-v123.js?v=final123-race-attachment';
+    script.async=false;
+    script.dataset.raceAttachmentV123='1';
+    document.body.appendChild(script);
+  }
 })();
