@@ -1,0 +1,41 @@
+name: Apply v122 race form
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/patch_v122.py'
+      - '.github/workflows/apply-v122.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch race schedule and application form
+        run: python scripts/patch_v122.py
+      - name: Verify v122
+        run: |
+          grep -q 'id="scheduleTimeFields"' index.html
+          grep -q 'raceApplicantName' index.html
+          grep -q 'raceApplicantBirth' index.html
+          grep -q 'raceApplicantPhone' index.html
+          grep -q "start_time:type==='race'?null:start" index.html
+          grep -q 'final122-race-form' index.html
+          grep -q 'team-eysl-final122-race-form' sw.js
+      - name: Commit patched shell
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'team-eysl-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'Update race registration and application fields'
+          git push origin HEAD:main
