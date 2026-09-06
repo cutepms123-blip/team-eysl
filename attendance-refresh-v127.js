@@ -13,7 +13,8 @@
   }
 
   function myTrainingAttendance(date){
-    const row=(Array.isArray(window.attendanceHistory)?attendanceHistory:[]).find(x=>String(x.date||'')===String(date||'')&&(!x.name||x.name===currentUser.nickname));
+    const rows=Array.isArray(attendanceHistory)?attendanceHistory:[];
+    const row=rows.find(x=>String(x.date||'')===String(date||'')&&(!x.name||x.name===currentUser.nickname));
     return row?.status||'';
   }
 
