@@ -7,3 +7,4 @@ tag='<script src="/attendance-direct-v137.js?v=final137-direct-runtime"></script
 if 'attendance-direct-v137.js' not in s:
     s=s.replace(needle,tag+needle)
 p.write_text(s)
+# v137 delivery trigger 2026-09-07
