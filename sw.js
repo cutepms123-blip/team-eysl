@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final128-attendance-performance';
+const VERSION='team-eysl-final129-attendance-check';
 const CACHE=`team-eysl-${VERSION}`;
 const PRECACHE=['/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png','/timestamp-v94.js','/join-date-v96.js','/activity-comments-v98.js','/application-order-v99.js','/manual-roster-v100.js','/attendance-save-v105.js','/attendance-layout-v109.js','/attendance-fix-v111.js','/ui-order-v112.js','/remove-aggregation-v113.js','/notice-poll-v115.js','/notice-upload-fix-v116.js','/notice-engagement-v117.js','/notice-interaction-fix-v118.js','/notice-date-picker-v119.js','/notice-deadline-layout-v121.js','/race-attachment-v123.js','/race-time-fields-v124.js','/race-application-v125.js','/auth-session-v126.js','/attendance-refresh-v127.js'];
 
@@ -18,7 +18,7 @@ async function navigationResponse(req){
     if(!html.includes('/activity-comments-v98.js'))html=html.replace('</body>','<script src="/activity-comments-v98.js?v=final113"></script></body>');
     if(!html.includes('/application-order-v99.js'))html=html.replace('</body>','<script src="/application-order-v99.js?v=final113"></script></body>');
     if(!html.includes('/manual-roster-v100.js'))html=html.replace('</body>','<script src="/manual-roster-v100.js?v=final113"></script></body>');
-    if(!html.includes('/attendance-save-v105.js'))html=html.replace('</body>','<script src="/attendance-save-v105.js?v=final113"></script></body>');
+    if(!html.includes('/attendance-save-v105.js'))html=html.replace('</body>','<script src="/attendance-save-v105.js?v=final129-attendance-check"></script></body>');
     if(!html.includes('/attendance-layout-v109.js'))html=html.replace('</body>','<script src="/attendance-layout-v109.js?v=final113"></script></body>');
     if(!html.includes('/attendance-fix-v111.js'))html=html.replace('</body>','<script src="/attendance-fix-v111.js?v=final128-attendance-performance"></script></body>');
     if(!html.includes('/ui-order-v112.js'))html=html.replace('</body>','<script src="/ui-order-v112.js?v=final113"></script></body>');
