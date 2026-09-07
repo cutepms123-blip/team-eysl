@@ -1,4 +1,4 @@
-/* TEAM EYSL v108 — attendance save + late-fee persistence */
+/* TEAM EYSL v129 — attendance save + fast incremental status editing */
 (function(){
   let dirty=false;
   let activeEventId=null;
@@ -18,9 +18,7 @@
     const rec=(attRecords&&attRecords[id])||{};
     Object.keys(rec).forEach(name=>{
       const row=rec[name];
-      if(row&&['출석','지각','불참'].includes(row.status)){
-        out[name]={status:row.status,paid:row.status==='지각'&&row.paid===true};
-      }
+      if(row&&['출석','지각','불참'].includes(row.status))out[name]={status:row.status,paid:row.status==='지각'&&row.paid===true};
     });
     return out;
   }
@@ -43,18 +41,12 @@
       (data||[]).forEach(row=>{
         const name=row.display_name||members.find(m=>m.id===row.member_id)?.name||'';
         if(!name)return;
-        base[name]={
-          ...(base[name]||{}),
-          status:dbToUi(row.status),
-          paid:row.status==='late'&&row.late_fee_paid===true,
-          persisted:true,
-          checkedAt:row.checked_at||null
-        };
+        base[name]={...(base[name]||{}),status:dbToUi(row.status),paid:row.status==='late'&&row.late_fee_paid===true,persisted:true,checkedAt:row.checked_at||null};
       });
       attRecords[id]=base;
       originalByEvent[id]=cloneStatuses(id);
       dirty=false;
-    }catch(err){console.error('attendance v108 load:',err)}
+    }catch(err){console.error('attendance v129 load:',err)}
   }
 
   function normalizeLateFeeButtons(){
@@ -77,17 +69,84 @@
     if(!box){
       box=document.createElement('div');
       box.id='attendanceSaveBoxV105';
-      box.style.cssText='position:sticky;bottom:92px;z-index:25;margin-top:14px;background:#fff;border:1px solid #dfe3e8;border-radius:18px;padding:13px;box-shadow:0 8px 30px rgba(0,0,0,.14)';
+      box.style.cssText='position:relative;bottom:auto;z-index:auto;margin-top:18px;background:#fff;border:1px solid #dfe3e8;border-radius:18px;padding:13px;box-shadow:none';
       root.appendChild(box);
     }
     const last=localStorage.getItem(savedKey(e.id));
     const kindLabel=eventType(e)==='training'?'훈련':eventType(e)==='race'?'대회':'기타';
-    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div style="min-width:0"><b style="font-size:12px">${dirty?'저장 전 변경사항 있음':'저장된 상태'}</b><div style="font-size:9px;color:#8a9098;margin-top:4px">${kindLabel} · 마지막 저장: ${fmtSaved(last)}</div><div style="font-size:9px;color:#8a9098;margin-top:3px">지각비는 ‘지각비 납부 완료’를 체크하지 않으면 미납으로 저장됩니다.</div></div><button id="attendanceSaveBtnV105" class="btn primary" style="min-width:100px;flex:none" ${saving?'disabled':''}>${saving?'저장 중...':'출석 저장'}</button></div>`;
+    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div style="min-width:0"><b data-att-save-state style="font-size:12px">${dirty?'저장 전 변경사항 있음':'저장된 상태'}</b><div style="font-size:9px;color:#8a9098;margin-top:4px">${kindLabel} · 마지막 저장: ${fmtSaved(last)}</div><div style="font-size:9px;color:#8a9098;margin-top:3px">지각비는 ‘지각비 납부 완료’를 체크하지 않으면 미납으로 저장됩니다.</div></div><button id="attendanceSaveBtnV105" class="btn primary" style="min-width:100px;flex:none" ${saving?'disabled':''}>${saving?'저장 중...':'출석 저장'}</button></div>`;
     const btn=document.getElementById('attendanceSaveBtnV105');
     if(btn)btn.onclick=()=>saveAttendanceBatch(e.id);
   }
 
-  function decorate(e){normalizeLateFeeButtons();addSaveUi(e)}
+  function refreshSaveUiState(e){
+    const box=document.getElementById('attendanceSaveBoxV105');
+    if(!box)return addSaveUi(e);
+    const state=box.querySelector('[data-att-save-state]')||box.querySelector('b');
+    if(state)state.textContent=dirty?'저장 전 변경사항 있음':'저장된 상태';
+    const btn=document.getElementById('attendanceSaveBtnV105');
+    if(btn){btn.disabled=saving;btn.textContent=saving?'저장 중...':'출석 저장'}
+  }
+
+  function findPersonRow(name){
+    const root=document.getElementById('attAdminDetailBody');if(!root)return null;
+    const target=String(name||'').trim();
+    return [...root.querySelectorAll('.card > div')].find(row=>(row.querySelector('b')?.textContent||'').trim()===target)||null;
+  }
+
+  function refreshPersonRow(id,name){
+    const row=findPersonRow(name);if(!row)return false;
+    const rec=attRecords[id]?.[name]||{};
+    const actions=row.querySelector('.actions');if(!actions)return false;
+    const buttons=[...actions.querySelectorAll('.attChoice')];
+    buttons.forEach(btn=>{
+      const label=(btn.textContent||'').trim();
+      if(['출석','지각','불참'].includes(label))btn.classList.toggle('on',label===rec.status);
+    });
+    let paidBtn=buttons.find(btn=>(btn.textContent||'').trim().startsWith('지각비'))||null;
+    if(rec.status==='지각'){
+      if(!paidBtn){
+        paidBtn=document.createElement('button');
+        paidBtn.type='button';
+        paidBtn.className='attChoice';
+        paidBtn.textContent='지각비 납부 완료';
+        paidBtn.addEventListener('click',()=>togglePaid(id,name));
+        actions.appendChild(paidBtn);
+      }
+      paidBtn.classList.toggle('on',rec.paid===true);
+      paidBtn.setAttribute('title',rec.paid===true?'납부 완료로 체크됨':'체크하지 않으면 미납으로 저장');
+    }else if(paidBtn){
+      paidBtn.remove();
+    }
+    return true;
+  }
+
+  function refreshDetailSummary(e){
+    if(!e)return;
+    const root=document.getElementById('attAdminDetailBody');if(!root)return;
+    const rows=root.querySelectorAll('.detail .detailrow');
+    const c=typeof attCounts==='function'?attCounts(e):{present:0,late:0,absent:0};
+    if(rows[1]){
+      const b=rows[1].querySelector('b'),s=rows[1].querySelector('span');
+      if(b)b.textContent='명단 인원';
+      if(s)s.textContent=`${(e.people||[]).length}명`;
+    }
+    if(rows[2]){
+      const b=rows[2].querySelector('b'),s=rows[2].querySelector('span');
+      if(b)b.textContent='출석 집계';
+      if(s)s.textContent=`최종 출석 ${c.present}명 · 지각 ${c.late}명 · 불참 ${c.absent}명`;
+    }
+    if(rows[3]){
+      const rec=attRecords[e.id]||{};
+      const names=[...new Set([...(e.people||[]),...Object.keys(rec)])];
+      const late=names.filter(n=>rec[n]?.status==='지각');
+      const paid=late.filter(n=>rec[n]?.paid===true).length;
+      const s=rows[3].querySelector('span');
+      if(s)s.textContent=`발생 ${late.length}건 · 납부 ${paid}건 · 미납 ${late.length-paid}건`;
+    }
+  }
+
+  function decorate(e){normalizeLateFeeButtons();addSaveUi(e);refreshDetailSummary(e)}
 
   async function saveAttendanceBatch(id){
     const e=eventById(id);if(!e||saving)return;
@@ -98,15 +157,14 @@
     });
     if(!Object.keys(rows).length){if(typeof toast==='function')toast('저장할 출석 상태가 없습니다.');return}
 
-    saving=true;addSaveUi(e);
+    saving=true;refreshSaveUiState(e);
     try{
       const {data,error}=await dbClient.rpc('save_team_attendance_batch_v2',{p_activity_id:id,p_rows:rows});
       if(error)throw error;
       if(data?.ok===false)throw new Error(data?.error||'attendance save failed');
 
       const {data:verifiedRows,error:verifyError}=await dbClient.from('attendance')
-        .select('display_name,status,late_fee_paid')
-        .eq('activity_id',id);
+        .select('display_name,status,late_fee_paid').eq('activity_id',id);
       if(verifyError)throw verifyError;
       const verified=new Map((verifiedRows||[]).map(r=>[r.display_name,{status:dbToUi(r.status),paid:r.status==='late'&&r.late_fee_paid===true}]));
       const mismatches=Object.entries(rows).filter(([name,row])=>{
@@ -125,11 +183,11 @@
       if(typeof renderMyAchievements==='function')void renderMyAchievements();
       if(typeof toast==='function')toast('출석 저장 완료 · 실제 데이터에 반영됐습니다.');
     }catch(err){
-      console.error('attendance v108 save:',err);
+      console.error('attendance v129 save:',err);
       if(typeof toast==='function')toast('출석 저장에 실패했습니다. 다시 시도해주세요.');
     }finally{
       saving=false;
-      addSaveUi(eventById(id));
+      refreshSaveUiState(eventById(id));
     }
   }
   window.saveAttendanceBatchV105=saveAttendanceBatch;
@@ -143,8 +201,9 @@
       activeEventId=id;
       dirty=isChanged(id);
       const e=eventById(id);
-      if(oldRenderAttDetail)oldRenderAttDetail(e);
-      decorate(e);
+      if(!refreshPersonRow(id,name)&&oldRenderAttDetail){oldRenderAttDetail(e);decorate(e);return}
+      refreshDetailSummary(e);
+      refreshSaveUiState(e);
     };
   }
 
@@ -155,8 +214,9 @@
       activeEventId=id;
       dirty=isChanged(id);
       const e=eventById(id);
-      if(oldRenderAttDetail)oldRenderAttDetail(e);
-      decorate(e);
+      if(!refreshPersonRow(id,name)&&oldRenderAttDetail){oldRenderAttDetail(e);decorate(e);return}
+      refreshDetailSummary(e);
+      refreshSaveUiState(e);
     };
   }
 
