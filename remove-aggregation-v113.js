@@ -1,18 +1,12 @@
-/* TEAM EYSL v113 — remove activity aggregation menu/page */
+/* TEAM EYSL v140 — remove activity aggregation once, no global mutation scan */
 (function(){
+  if(window.__REMOVE_AGGREGATION_V140__)return;window.__REMOVE_AGGREGATION_V140__=true;
   function removeAggregationUi(){
-    document.querySelectorAll('[onclick]').forEach(el=>{
-      const handler=el.getAttribute('onclick')||'';
-      if(handler.includes("applicationAdmin")||handler.includes("renderApplicationAdmin")){
-        const label=(el.textContent||'').trim();
-        if(label.includes('활동 취합본')||handler.includes("drawerGo('applicationAdmin')"))el.remove();
-      }
+    document.querySelectorAll('[onclick*="applicationAdmin"],[onclick*="renderApplicationAdmin"]').forEach(el=>{
+      const handler=el.getAttribute('onclick')||'',label=(el.textContent||'').trim();
+      if(label.includes('활동 취합본')||handler.includes("drawerGo('applicationAdmin')"))el.remove();
     });
-    const page=document.getElementById('applicationAdmin');
-    if(page)page.remove();
+    document.getElementById('applicationAdmin')?.remove();
   }
-
-  removeAggregationUi();
-  const observer=new MutationObserver(removeAggregationUi);
-  if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeAggregationUi,{once:true});else removeAggregationUi();
 })();
