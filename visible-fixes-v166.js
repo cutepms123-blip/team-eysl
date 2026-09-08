@@ -1,5 +1,5 @@
-/* TEAM EYSL v169 — visible UI + canonical attendance */
-(()=>{if(window.__EYSL_VISIBLE_V169__)return;window.__EYSL_VISIBLE_V169__=true;
+/* TEAM EYSL v170 — visible UI + canonical attendance */
+(()=>{if(window.__EYSL_VISIBLE_V170__)return;window.__EYSL_VISIBLE_V170__=true;
 const css=document.createElement('style');css.textContent=`
 /* PB */
 .screenshotPbGrid .screenshotPb{position:relative!important;overflow:hidden!important;border:1.5px solid #d9cdef!important;background:linear-gradient(145deg,#fff 0%,#f3eefb 100%)!important;box-shadow:0 8px 22px rgba(91,69,132,.10)!important;padding:17px 16px!important}
@@ -14,7 +14,7 @@ const css=document.createElement('style');css.textContent=`
 /* status semantics */
 .eysl-status-closed{background:#fff2c9!important;color:#7a5b00!important;border-color:#f5e3aa!important}
 .eysl-status-applied{background:#eee6ff!important;color:#6d55a0!important;border-color:#eee6ff!important}
-.eysl-status-open{background:#eaf3ff!important;color:#3178c6!important;border-color:#eaf3ff!important}
+.eysl-status-open{background:#e7f7ec!important;color:#2f8050!important;border-color:#d6efdf!important}
 `;document.head.appendChild(css);
 
 async function unified(){
@@ -22,7 +22,7 @@ async function unified(){
  if(!memberId){try{const s=await dbClient.auth.getSession();memberId=s?.data?.session?.user?.id||null}catch(_){}}
  if(!memberId)return null;
  const {data,error}=await dbClient.rpc('get_unified_member_attendance_v1',{p_member_id:memberId});
- if(error){console.error('v169 unified attendance',error);return null}
+ if(error){console.error('v170 unified attendance',error);return null}
  return (data||[]).map(x=>({date:String(x.activity_date||''),title:x.title||'팀아이슬 훈련',status:x.status}));
 }
 function drawAttendance(rows){
@@ -63,9 +63,9 @@ function styleButtonsAndStatuses(){
  });
 }
 function fixRaceStatus(){document.querySelectorAll('#raceCards .statusCard').forEach(card=>{if(!/신청완료/.test(card.textContent||''))return;card.querySelectorAll('.tag,.statusPill').forEach(el=>{if(el.textContent.trim()==='신청 마감'){el.textContent='신청완료';el.classList.add('eysl-status-applied')}})})}
-function bindAllSchedule(){const el=[...document.querySelectorAll('#home .link')].find(x=>x.textContent.trim()==='전체보기');if(!el||el.dataset.v169)return;el.dataset.v169='1';el.onclick=null;el.addEventListener('click',e=>{e.preventDefault();window.showPage?.('schedule')})}
+function bindAllSchedule(){const el=[...document.querySelectorAll('#home .link')].find(x=>x.textContent.trim()==='전체보기');if(!el||el.dataset.v170)return;el.dataset.v170='1';el.onclick=null;el.addEventListener('click',e=>{e.preventDefault();window.showPage?.('schedule')})}
 function apply(){bindAllSchedule();fixRaceStatus();styleButtonsAndStatuses();celebratePB();if(document.getElementById('attendance')?.classList.contains('active'))window.renderAttendance()}
-['renderTrainingList','openTraining','openEventDetail','renderRaceList','openRaceDetail','renderMyProfile','setRecordMajor','setRecordSub','setRecordStroke','setRecordDistance'].forEach(name=>{const old=window[name];if(typeof old!=='function'||old.__v169)return;const wrapped=function(){const r=old.apply(this,arguments);requestAnimationFrame(()=>{styleButtonsAndStatuses();celebratePB();fixRaceStatus()});return r};wrapped.__v169=true;window[name]=wrapped});
+['renderTrainingList','openTraining','openEventDetail','renderRaceList','openRaceDetail','renderMyProfile','setRecordMajor','setRecordSub','setRecordStroke','setRecordDistance'].forEach(name=>{const old=window[name];if(typeof old!=='function'||old.__v170)return;const wrapped=function(){const r=old.apply(this,arguments);requestAnimationFrame(()=>{styleButtonsAndStatuses();celebratePB();fixRaceStatus()});return r};wrapped.__v170=true;window[name]=wrapped});
 const oldShow=window.showPage;if(typeof oldShow==='function'){window.showPage=function(id){const r=oldShow.apply(this,arguments);requestAnimationFrame(()=>{styleButtonsAndStatuses();celebratePB();if(id==='attendance')window.renderAttendance()});return r}}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',apply,{once:true}):apply();
 })();
