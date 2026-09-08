@@ -1,21 +1,17 @@
-/* TEAM EYSL v140 — list ordering without global DOM observer */
+/* TEAM EYSL v157 — canonical member ordering */
 (function(){
-  if(window.__UI_ORDER_V140__)return;window.__UI_ORDER_V140__=true;
-  const koCompare=(a,b)=>String(a||'').localeCompare(String(b||''),'ko',{sensitivity:'base',numeric:true});
-  function rowName(row){return (row?.querySelector('.grow b')?.textContent||row?.querySelector('b')?.textContent||'').trim()}
-  function sortAttendanceGuestLast(){
-    const root=document.getElementById('attAdminDetailBody');if(!root)return;
-    root.querySelectorAll('.card').forEach(card=>{
-      const rows=[...card.children].filter(el=>rowName(el)&&el.querySelector('.attChoice'));if(rows.length<2)return;
-      rows.sort((a,b)=>{const ag=/^일일체험/.test(rowName(a)),bg=/^일일체험/.test(rowName(b));return ag===bg?0:(ag?1:-1)});rows.forEach(row=>card.appendChild(row));
-    });
-  }
-  function memberRoleRank(name,row){try{const m=(members||[]).find(x=>x.name===name);if(m?.role==='master_admin')return 0;if(m?.role==='admin')return 1}catch(_){}const text=row?.textContent||'';return text.includes('총관리자')?0:(text.includes('부관리자')||text.includes('관리자')?1:2)}
-  function sortMemberDirectoryRows(){const box=document.getElementById('memberDirectoryList');if(!box)return;const rows=[...box.querySelectorAll(':scope > .memberrow')];if(rows.length<2)return;rows.sort((a,b)=>{const an=rowName(a),bn=rowName(b),ar=memberRoleRank(an,a),br=memberRoleRank(bn,b);return ar!==br?ar-br:koCompare(an,bn)});rows.forEach(row=>box.appendChild(row))}
-  if(typeof renderAttDetail==='function'){const prev=renderAttDetail;renderAttDetail=function(e){const out=prev(e);sortAttendanceGuestLast();return out}}
-  if(typeof renderMemberDirectory==='function'){const prev=renderMemberDirectory;renderMemberDirectory=async function(){const out=await prev.apply(this,arguments);sortMemberDirectoryRows();updateScrollTopButton();return out}}
-  function ensureScrollTopButton(){let btn=document.getElementById('memberDirectoryScrollTop');if(btn)return btn;btn=document.createElement('button');btn.id='memberDirectoryScrollTop';btn.type='button';btn.setAttribute('aria-label','회원리스트 맨 위로');btn.textContent='↑';btn.style.cssText='position:fixed;right:max(calc((100vw - 430px)/2 + 18px),18px);bottom:94px;width:46px;height:46px;border:0;border-radius:50%;background:#111;color:#fff;font-size:22px;font-weight:900;display:none;align-items:center;justify-content:center;z-index:35;box-shadow:0 6px 18px rgba(0,0,0,.18);';btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});document.body.appendChild(btn);return btn}
-  function updateScrollTopButton(){const btn=ensureScrollTopButton(),active=document.getElementById('memberDirectory')?.classList.contains('active');btn.style.display=active&&window.scrollY>280?'flex':'none'}
-  window.addEventListener('scroll',updateScrollTopButton,{passive:true});window.addEventListener('resize',updateScrollTopButton,{passive:true});
-  if(typeof showPage==='function'){const prev=showPage;showPage=function(id){const out=prev.apply(this,arguments);if(id==='attendanceAdminDetail')requestAnimationFrame(sortAttendanceGuestLast);if(id==='memberDirectory')requestAnimationFrame(()=>{sortMemberDirectoryRows();updateScrollTopButton()});return out}}
+ if(window.__UI_ORDER_V157__)return;window.__UI_ORDER_V157__=true;
+ const ko=(a,b)=>String(a||'').localeCompare(String(b||''),'ko',{sensitivity:'base',numeric:true});
+ const EXEC=['민선','창두','도의','태훈'];
+ const short=n=>String(n||'').trim().split('/')[0].trim();
+ function rowName(row){return (row?.querySelector('.grow b')?.textContent||row?.querySelector('b')?.textContent||'').trim()}
+ function rank(name){const s=short(name),i=EXEC.indexOf(s);if(i>=0)return[0,i,s];if(/^일일체험/.test(s))return[2,0,s];return[1,0,s]}
+ function cmp(a,b){const ar=rank(a),br=rank(b);return ar[0]-br[0]||ar[1]-br[1]||ko(ar[2],br[2])}
+ function sortRows(root,selector){if(!root)return;const rows=[...root.querySelectorAll(selector)].filter(x=>rowName(x));rows.sort((a,b)=>cmp(rowName(a),rowName(b)));rows.forEach(r=>r.parentElement?.appendChild(r))}
+ function sortAttendance(){const root=document.getElementById('attAdminDetailBody');if(!root)return;root.querySelectorAll('.card').forEach(card=>{const rows=[...card.children].filter(el=>rowName(el)&&el.querySelector('.attChoice'));rows.sort((a,b)=>cmp(rowName(a),rowName(b)));rows.forEach(r=>card.appendChild(r))})}
+ function sortDirectory(){sortRows(document.getElementById('memberDirectoryList'),':scope > .memberrow')}
+ if(typeof renderAttDetail==='function'){const p=renderAttDetail;renderAttDetail=function(){const o=p.apply(this,arguments);sortAttendance();return o}}
+ if(typeof renderMemberDirectory==='function'){const p=renderMemberDirectory;renderMemberDirectory=async function(){const o=await p.apply(this,arguments);sortDirectory();return o}}
+ if(typeof showPage==='function'){const p=showPage;showPage=function(id){const o=p.apply(this,arguments);if(id==='attendanceAdminDetail')requestAnimationFrame(sortAttendance);if(id==='memberDirectory')requestAnimationFrame(sortDirectory);return o}}
+ window.EYSL_MEMBER_ORDER_COMPARE=cmp;
 })();
