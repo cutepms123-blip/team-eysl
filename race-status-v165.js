@@ -1,0 +1,6 @@
+/* TEAM EYSL v165 — applied race always shows 신청완료 */
+(()=>{if(window.__EYSL_RACE_STATUS_V165__)return;window.__EYSL_RACE_STATUS_V165__=true;
+function appliedNames(a){const d=a?.details||{};return [...(Array.isArray(d.participants)?d.participants:[]),...(Array.isArray(d.historical_participants)?d.historical_participants:[])].map(String)}
+function meApplied(a){const me=String(window.currentUser?.nickname||'').trim();if(!me)return false;const short=me.split('/')[0];return appliedNames(a).some(n=>n===me||n.split('/')[0]===short)||(Array.isArray(a?.applicants)&&a.applicants.some(x=>x?.memberId===window.currentUser?.memberId||x?.nickname===me))}
+function paint(){for(const a of(window.activities||[])){if(a.kind!=='race'||!meApplied(a))continue;document.querySelectorAll('.statusCard').forEach(card=>{const txt=card.textContent||'';if(!(txt.includes(a.title||'')||txt.includes(a.activity_date||'')))return;[...card.querySelectorAll('*')].filter(x=>!x.children.length).forEach(el=>{if((el.textContent||'').trim()==='신청 마감')el.textContent='신청완료'})})}}
+const o=new MutationObserver(()=>requestAnimationFrame(paint));const start=()=>{paint();o.observe(document.body,{childList:true,subtree:true})};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start,{once:true}):start();})();
