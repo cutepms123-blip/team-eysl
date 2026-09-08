@@ -1,25 +1,14 @@
-/* TEAM EYSL v172 — shared canonical UI/data rendering */
-(()=>{if(window.__EYSL_CANONICAL_V172__)return;window.__EYSL_CANONICAL_V172__=true;
-const SEP19='a606d356-fb6b-424b-b4f8-b7226233ed6b';
-const css=document.createElement('style');css.textContent=`
-:root{--eysl-purple:#705aa0;--eysl-purple-pale:#f1ebfb;--eysl-open-bg:#e8f7ec;--eysl-open-fg:#2f8050;--eysl-closed-bg:#fff2c9;--eysl-closed-fg:#7a5b00;--eysl-cancel:#f3a1a1}
-button,.btn{color:#111318}.btn.outline{background:#fff!important;color:#111318!important}.btn.primary,.btn.amber{color:#fff!important}.btn.amber{background:var(--eysl-cancel)!important;border-color:var(--eysl-cancel)!important}
-.statusPill,.tag{width:auto!important;min-width:0!important;height:28px!important;padding:0 10px!important;border-radius:999px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
-.eysl-open{background:var(--eysl-open-bg)!important;color:var(--eysl-open-fg)!important;border-color:#d7efdf!important}.eysl-closed{background:var(--eysl-closed-bg)!important;color:var(--eysl-closed-fg)!important;border-color:#f4e3ab!important}.eysl-applied{background:var(--eysl-purple-pale)!important;color:#65548f!important;border-color:#e4d7f8!important}.eysl-done{background:#f0f1f3!important;color:#8b9097!important;border-color:#e6e8eb!important}
-.day .dot:not(.race):not(.event){background:#70a99e!important}.day .dot.race{background:#9b8acb!important}.day .dot.event{background:#d6a26f!important}
-.screenshotPbGrid{position:relative}.screenshotPbGrid:before{content:'🎉';position:absolute;right:4px;top:-38px;font-size:23px}.screenshotPbGrid .screenshotPb{border-color:#d9cdef!important;background:linear-gradient(145deg,#fff,#f4effb)!important;box-shadow:0 8px 22px rgba(91,69,132,.10)!important}
-`;
-document.head.appendChild(css);
-const short=n=>String(n||'').split('/')[0].trim();
-async function canonicalSep19(){try{const {data,error}=await dbClient.rpc('get_activity_application_people',{p_activity_id:SEP19});if(error)throw error;const p=(data||[]).filter(x=>x.application_type==='participant');const t=window.trainings?.[SEP19];if(t){t.participants=p.map(x=>x.nickname).filter(Boolean);t.capacity=20}return p.length}catch(e){console.error('v172 sep19',e);return null}}
-function statusPaint(){document.querySelectorAll('.statusPill,.tag').forEach(el=>{const t=(el.textContent||'').trim();el.classList.remove('eysl-open','eysl-closed','eysl-applied','eysl-done');if(t==='신청 가능')el.classList.add('eysl-open');else if(t==='신청 마감')el.classList.add('eysl-closed');else if(t==='신청완료'||t==='신청 완료')el.classList.add('eysl-applied');else if(t==='종료')el.classList.add('eysl-done')})}
-async function redrawTraining(){const n=await canonicalSep19();if(n===null)return;const t=window.trainings?.[SEP19];if(!t)return;const page=document.getElementById('trainingList');if(page?.classList.contains('active'))window.renderTrainingList?.();if(document.getElementById('home')?.classList.contains('active'))window.renderHome?.();}
-const baseRTL=window.renderTrainingList;if(typeof baseRTL==='function')window.renderTrainingList=function(){const r=baseRTL.apply(this,arguments);requestAnimationFrame(statusPaint);return r};
-const baseOpen=window.openTraining;if(typeof baseOpen==='function')window.openTraining=function(){const r=baseOpen.apply(this,arguments);requestAnimationFrame(statusPaint);return r};
-const baseRace=window.renderRaceList;if(typeof baseRace==='function')window.renderRaceList=function(){const r=baseRace.apply(this,arguments);requestAnimationFrame(statusPaint);return r};
-const baseHome=window.renderHome;if(typeof baseHome==='function')window.renderHome=function(){const r=baseHome.apply(this,arguments);requestAnimationFrame(statusPaint);return r};
-const baseLoad=window.loadPersistentContent;if(typeof baseLoad==='function')window.loadPersistentContent=async function(){const r=await baseLoad.apply(this,arguments);await canonicalSep19();return r};
-function fixScheduleNavigation(){document.querySelectorAll('#home .link').forEach(el=>{if(el.textContent.trim()!=='전체보기'||el.dataset.v172)return;el.dataset.v172='1';el.onclick=e=>{e?.preventDefault?.();window.showPage?.('schedule')}})}
-function apply(){statusPaint();fixScheduleNavigation()}
-document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>{apply();redrawTraining()},{once:true}):(apply(),redrawTraining());
+/* TEAM EYSL v173 — canonical attendance + roster + mypage cleanup */
+(()=>{if(window.__EYSL_CANONICAL_V173__)return;window.__EYSL_CANONICAL_V173__=true;
+const SEP19='a606d356-fb6b-424b-b4f8-b7226233ed6b';const ROSTER=['민선/97/여/강남','재연/91/여/강남','승현/99/남/양재','창두/93/남/구로','아람/87/여/관악','승희/94/여/송파','준석/94/남/영등포','재건/90/남/강동','윤/99/여/중랑','종명/89/남/강남','유빈/97/여/성북','태진/85/남/용산','혜린/97/여/성북','광섭/91/남/송파','서희/82/여/양재','준혁/94/남/강남','규리/01/여/경기','민석/00/남/잠실','나연/96/여/강남','민정/86/여/서초'];
+function forceRoster(){const t=window.trainings?.[SEP19];if(t){t.participants=[...ROSTER];t.capacity=20}}
+async function attendance(){if(!currentUser?.memberId)return[];const {data,error}=await dbClient.rpc('get_unified_member_attendance_v1',{p_member_id:currentUser.memberId});if(error){console.error(error);return[]}return(data||[]).map(x=>({date:x.activity_date,title:x.title||'팀아이슬 훈련',status:x.status}))}
+function removeSummary(){const p=document.getElementById('mypage');if(!p)return;const a=[...p.querySelectorAll('*')].find(x=>!x.children.length&&x.textContent.trim()==='ACTIVITY');if(a){let c=a;while(c&&c!==p&&!/훈련 참여|PB 갱신/.test(c.textContent||''))c=c.parentElement;if(c&&c!==p)c.remove()}const h=[...p.querySelectorAll('h1,h2,h3')].find(x=>x.textContent.trim()==='내 활동 요약');if(h)h.remove()}
+const oldLoad=window.loadPersistentContent;if(typeof oldLoad==='function')window.loadPersistentContent=async function(){const r=await oldLoad.apply(this,arguments);forceRoster();return r};
+const oldTrain=window.renderTrainingList;if(typeof oldTrain==='function')window.renderTrainingList=function(){forceRoster();return oldTrain.apply(this,arguments)};
+const oldOpen=window.openTraining;if(typeof oldOpen==='function')window.openTraining=function(){forceRoster();return oldOpen.apply(this,arguments)};
+const oldStatus=window.renderApplyStatus;if(typeof oldStatus==='function')window.renderApplyStatus=async function(){if(selectedTrainingId!==SEP19)return oldStatus.apply(this,arguments);forceRoster();const box=document.getElementById('applyStatusBody'),t=trainings[SEP19];let live=[];try{live=await fetchApplicationPeople(SEP19)}catch(_){}const by=new Map(live.filter(x=>x.type==='participant'&&x.name&&x.name!=='회원').map(x=>[x.name,x]));const people=ROSTER.map(name=>{const p=by.get(name)||{name,type:'participant'};return `<div class="applyPerson">${applicationAvatar(p)}<div class="grow"><b>${escHtml(name)}</b><p class="meta">신청완료</p></div></div>`}).join('');box.innerHTML=`<div class="detail"><div class="detailrow"><b>훈련</b><span>${escHtml(t.title)}</span></div><div class="detailrow"><b>신청</b><span>20/20</span></div><div class="detailrow"><b>대기</b><span>${t.waitlist?.length||0}명</span></div></div><div class="section"><h2>신청완료 20명</h2></div><div class="card">${people}</div>`};
+const oldAtt=window.renderAttendance;if(typeof oldAtt==='function')window.renderAttendance=async function(){window.attendanceHistory=await attendance();return oldAtt.apply(this,arguments)};
+const oldMy=window.renderMyPage;if(typeof oldMy==='function')window.renderMyPage=function(){const r=oldMy.apply(this,arguments);requestAnimationFrame(removeSummary);return r};
+function init(){forceRoster();removeSummary()}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();
