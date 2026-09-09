@@ -1,4 +1,4 @@
-/* TEAM EYSL auth session recovery v126 */
+/* TEAM EYSL v178 — robust auth session lookup without duplicate UI boot */
 (()=>{
   if(window.__AUTH_SESSION_V126__)return;
   window.__AUTH_SESSION_V126__=true;
@@ -52,7 +52,7 @@
       }catch(err){lastError=err}
       if(attempt<2)await sleep(attempt===0?120:300);
     }
-    if(lastError)console.warn('auth session v126:',lastError);
+    if(lastError)console.warn('auth session v178:',lastError);
     return null;
   }
 
@@ -86,30 +86,13 @@
       console.warn('auth member rpc temporary failure; using cached approved member',lastError);
       return cached;
     }
-    if(lastError)console.warn('auth member v126:',lastError);
+    if(lastError)console.warn('auth member v178:',lastError);
     return null;
   }
 
+  // Keep only the resilient session/member lookup. The old auth-state listener also
+  // called loadPersistentContent(), which could race the normal startup path and load
+  // the same data twice. Startup rendering/loading is owned by the main boot flow.
   window.memberFromSession=robustMemberFromSession;
   try{memberFromSession=robustMemberFromSession}catch(_){ }
-
-  // If Supabase finishes refreshing just after app load, recover the UI instead of
-  // leaving the login sheet open until the user manually signs in again.
-  let recovering=false;
-  dbClient.auth.onAuthStateChange(async(event,session)=>{
-    if(recovering||!session||!['SIGNED_IN','TOKEN_REFRESHED','INITIAL_SESSION'].includes(event))return;
-    if(currentUser?.memberId)return;
-    recovering=true;
-    try{
-      const member=await robustMemberFromSession();
-      if(member?.status==='approved'){
-        await setCurrentUserFromMember(member);
-        document.getElementById('auth')?.classList.remove('open');
-        applyRole();
-        try{restoreCoreSnapshot();restoreChatCache()}catch(_){ }
-        try{await loadPersistentContent()}catch(_){ }
-      }
-    }catch(err){console.warn('auth ui recovery v126:',err)}
-    finally{recovering=false}
-  });
 })();
