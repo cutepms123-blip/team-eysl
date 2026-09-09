@@ -2,15 +2,13 @@ name: One-time startup cleanup v179
 
 on:
   push:
-    branches:
-      - cleanup-startup-v179
+    branches: [cleanup-startup-v179]
 
 permissions:
   contents: write
 
 jobs:
   cleanup:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,87 +16,10 @@ jobs:
           ref: cleanup-startup-v179
           fetch-depth: 0
 
-      - name: Refactor duplicate startup paths
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
+      - name: Apply direct startup cleanup
+        run: python3 tools/cleanup_startup_v179.py
 
-          index_path = Path('index.html')
-          html = index_path.read_text()
-
-          old_login = '''  restoreCoreSnapshot();restoreChatCache();
-  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList].forEach(fn=>{try{fn()}catch(_){}});
-  showPage('home');
-  await loadPersistentContent();await loadPersistentChat();
-  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMembers,renderMemberDirectory,renderFolders,renderResourceFiles];
-  boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
-  showPage('home');handleOpenQuery();'''
-
-          new_login = '''  restoreCoreSnapshot();restoreChatCache();
-  await loadPersistentContent();await loadPersistentChat();
-  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMemberDirectory,renderFolders,renderResourceFiles];
-  boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
-  showPage('home');handleOpenQuery();'''
-
-          old_load = '''window.addEventListener('load',async()=>{
- const loggedIn=await initAuth();
- if(loggedIn){
-  restoreCoreSnapshot();restoreChatCache();
-  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList,initAttendanceOptions,renderAttendance].forEach(fn=>{try{fn()}catch(_){}});
-  try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}
- }
- const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders];
- boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
-});'''
-
-          new_load = '''window.addEventListener('load',async()=>{
- const loggedIn=await initAuth();
- if(loggedIn){
-  restoreCoreSnapshot();restoreChatCache();
-  try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}
- }
- const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderAttendanceAdmin,renderFolders];
- boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
-});'''
-
-          if html.count(old_login) != 1:
-              raise SystemExit(f'Expected exactly one legacy login startup block, found {html.count(old_login)}')
-          if html.count(old_load) != 1:
-              raise SystemExit(f'Expected exactly one legacy window startup block, found {html.count(old_load)}')
-
-          html = html.replace(old_login, new_login, 1)
-          html = html.replace(old_load, new_load, 1)
-          html = html.replace('/sw.js?v=final148-direct-runtime', '/sw.js?v=final179-centralized-startup')
-          index_path.write_text(html)
-
-          sw_path = Path('sw.js')
-          sw = sw_path.read_text()
-          sw = sw.replace("const VERSION='team-eysl-final178-runtime-stability';", "const VERSION='team-eysl-final179-centralized-startup';", 1)
-          sw = sw.replace("  '/canonical-ui-v172.js','/application-save-v175.js','/nav-wait-status-v176.js',\n  '/runtime-stability-v178.js'", "  '/canonical-ui-v172.js','/application-save-v175.js','/nav-wait-status-v176.js'", 1)
-          sw = sw.replace('?v=final178', '?v=final179')
-          if 'runtime-stability-v178.js' in sw:
-              raise SystemExit('runtime-stability-v178.js is still referenced by sw.js')
-          if 'startup-recovery-v163.js' in sw:
-              raise SystemExit('startup-recovery-v163.js unexpectedly referenced by sw.js')
-          sw_path.write_text(sw)
-
-          # High-confidence obsolete helpers: both are superseded and no longer referenced.
-          Path('runtime-stability-v178.js').unlink(missing_ok=True)
-          Path('startup-recovery-v163.js').unlink(missing_ok=True)
-
-          # Structural safety assertions: the direct startup path must not restore-and-render
-          # before the server load, and member/record live-query screens must not boot eagerly.
-          final_html = index_path.read_text()
-          if "[renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList].forEach" in final_html:
-              raise SystemExit('legacy pre-load login render block remains')
-          if "()=>setRecordMajor('meet'" in final_html.split("window.addEventListener('load',async()=>{",1)[1]:
-              raise SystemExit('record live load still runs in initial boot')
-          print('v179 direct startup cleanup assertions passed')
-          PY
-
-      - name: Validate changes
-        shell: bash
+      - name: Validate cleanup
         run: |
           git diff --check
           test ! -e runtime-stability-v178.js
@@ -107,9 +28,8 @@ jobs:
           grep -q "final179-centralized-startup" index.html
 
       - name: Commit cleanup to branch
-        shell: bash
         run: |
-          rm -f .github/workflows/cleanup-startup-v179.yml
+          rm -f .github/workflows/cleanup-startup-v179.yml tools/cleanup_startup_v179.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
