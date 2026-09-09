@@ -2398,7 +2398,7 @@ async function loginMember(){
   applyRole();
   restoreCoreSnapshot();restoreChatCache();
   await loadPersistentContent();await loadPersistentChat();
-  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMemberDirectory,renderFolders,renderResourceFiles];
+  const boot=[renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderFolders,renderResourceFiles];
   boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
   showPage('home');handleOpenQuery();
   toast('로그인됐습니다.');
