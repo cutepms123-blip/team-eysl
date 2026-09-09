@@ -1769,7 +1769,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final148-direct-runtime',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final179-centralized-startup',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -2397,10 +2397,8 @@ async function loginMember(){
   document.getElementById('auth')?.classList.remove('open');
   applyRole();
   restoreCoreSnapshot();restoreChatCache();
-  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList].forEach(fn=>{try{fn()}catch(_){}});
-  showPage('home');
   await loadPersistentContent();await loadPersistentChat();
-  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMembers,renderMemberDirectory,renderFolders,renderResourceFiles];
+  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMemberDirectory,renderFolders,renderResourceFiles];
   boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
   showPage('home');handleOpenQuery();
   toast('로그인됐습니다.');
@@ -5213,10 +5211,9 @@ window.addEventListener('load',async()=>{
  const loggedIn=await initAuth();
  if(loggedIn){
   restoreCoreSnapshot();restoreChatCache();
-  [renderHome,renderNotices,renderGroup,renderCalendar,renderTrainingList,renderRaceList,initAttendanceOptions,renderAttendance].forEach(fn=>{try{fn()}catch(_){}});
   try{await loadPersistentContent()}catch(err){console.error('TEAM EYSL content load:',err)}
  }
- const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,()=>setRecordMajor('meet',document.querySelector('#recordMajor button')),renderMembers,renderAttendanceAdmin,renderFolders];
+ const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderAttendanceAdmin,renderFolders];
  boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
 });
 </script>
@@ -5268,7 +5265,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final148-direct-runtime',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final179-centralized-startup',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
