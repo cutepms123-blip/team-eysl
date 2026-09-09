@@ -1,0 +1,44 @@
+name: One-time login startup cleanup v180
+
+on:
+  push:
+    branches: [cleanup-login-v180]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: cleanup-login-v180
+          fetch-depth: 0
+      - name: Remove final eager login renders
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderMemberDirectory,renderFolders,renderResourceFiles];"
+          new="const boot=[renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderFolders,renderResourceFiles];"
+          if s.count(old)!=1:
+              raise SystemExit(f'expected one explicit-login boot array, found {s.count(old)}')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          assert 'renderMemberDirectory,renderFolders,renderResourceFiles' not in s
+          print('v180 login startup assertions passed')
+          PY
+          git diff --check
+      - name: Commit direct cleanup
+        shell: bash
+        run: |
+          rm -f .github/workflows/cleanup-login-v180.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove final eager login renders v180"
+          git push origin HEAD:cleanup-login-v180
