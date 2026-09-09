@@ -32,7 +32,6 @@
     };
 
     window[name]=wrapped;
-    try{if(name==='loadPersistentContent')loadPersistentContent=wrapped;if(name==='loadPersistentChat')loadPersistentChat=wrapped}catch(_){ }
   }
 
   // Prevent the same network load from running twice when auth/session/update helpers
@@ -54,12 +53,10 @@
   gatedRenders.forEach(name=>{
     const original=window[name];
     if(typeof original!=='function')return;
-    const wrapped=function(...args){
+    window[name]=function(...args){
       if(!contentSettled)return undefined;
       return original.apply(this,args);
     };
-    window[name]=wrapped;
-    try{eval(`${name}=window[${JSON.stringify(name)}]`)}catch(_){ }
   });
 
   window.__eyslContentBootSettled=()=>contentSettled;
