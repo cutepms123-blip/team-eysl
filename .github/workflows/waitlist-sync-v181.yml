@@ -1,0 +1,36 @@
+name: One-time waitlist sync v181
+
+on:
+  push:
+    branches: [waitlist-sync-v181]
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: waitlist-sync-v181
+          fetch-depth: 0
+      - name: Apply waitlist realtime refactor
+        run: python3 tools/waitlist_sync_v181.py
+      - name: Validate
+        run: |
+          git diff --check
+          grep -q "apply_training_v3" index.html
+          grep -q "cancel_training_v3" index.html
+          grep -q "respond_waitlist_offer_v3" index.html
+          grep -q "ensureApplicationRealtime" index.html
+          grep -q "final181-waitlist-sync" index.html
+      - name: Commit refactor
+        run: |
+          rm -f .github/workflows/waitlist-sync-v181.yml tools/waitlist_sync_v181.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Wire atomic waitlist offers and realtime sync v181"
+          git push origin HEAD:waitlist-sync-v181
