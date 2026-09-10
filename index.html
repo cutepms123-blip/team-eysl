@@ -1584,7 +1584,8 @@ async function loadMediaContentInBackground(){
 }
 async function hydrateMemberAvatarsInBackground(){
  const rows=members.filter(m=>m.avatarPath&&!m.avatarUrl);
- if(rows.length)await Promise.all(rows.map(async m=>{try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}}));
+ if(!rows.length)return;
+ await Promise.all(rows.map(async m=>{try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}}));
  if(document.getElementById('memberAdmin')?.classList.contains('active'))renderMembersFromCurrentData();
  if(document.getElementById('memberDirectory')?.classList.contains('active'))void renderMemberDirectory();
  if(document.getElementById('applyStatus')?.classList.contains('active'))void renderApplyStatus();
@@ -1772,7 +1773,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final181-waitlist-sync',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final182-avatar-sync',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -4831,14 +4832,19 @@ async function refreshMemberDirectoryFromDb(){
  try{
   const {data,error}=await dbClient.rpc('member_directory_v4');
   if(error){console.error('member_directory_v4:',error);return false}
-  members=(data||[]).map(m=>({
-   id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',
-   gender:m.gender||'-',join:m.join_date_text||(m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-'),joinDate:m.created_at||null,
-   blocked:m.status==='blocked',status:m.status,role:m.role||'member',avatarPath:m.avatar_path||null,avatarUrl:'',
-   teamRole:m.team_role||'',shortName:m.short_name||'',joinReason:m.join_reason||'',birthDateText:m.birth_date_text||'',
-   lessonLevel:m.lesson_level||'',swimExperience:m.swim_experience||'',notes:m.notes||'',location:m.location||'',
-   att:Number(m.historical_attendance_count||0),late:Number(m.historical_late_count||0),pb:{},races:[],trains:[]
-  }));
+  const previousMembers=new Map(members.map(x=>[x.id,x]));
+  members=(data||[]).map(m=>{
+   const previous=previousMembers.get(m.id),nextAvatarPath=m.avatar_path||null;
+   return ({
+    id:m.id,name:m.nickname,realName:m.real_name||'',birthYear:m.birth_year||null,birth:m.birth_year?String(m.birth_year).slice(-2):'-',
+    gender:m.gender||'-',join:m.join_date_text||(m.created_at?String(m.created_at).slice(0,10).replaceAll('-','.'):'-'),joinDate:m.created_at||null,
+    blocked:m.status==='blocked',status:m.status,role:m.role||'member',avatarPath:nextAvatarPath,
+    avatarUrl:previous?.avatarPath===nextAvatarPath?(previous.avatarUrl||''):'',
+    teamRole:m.team_role||'',shortName:m.short_name||'',joinReason:m.join_reason||'',birthDateText:m.birth_date_text||'',
+    lessonLevel:m.lesson_level||'',swimExperience:m.swim_experience||'',notes:m.notes||'',location:m.location||'',
+    att:Number(m.historical_attendance_count||0),late:Number(m.historical_late_count||0),pb:{},races:[],trains:[]
+   });
+  });
   void hydrateMemberAvatarsInBackground();
   return true;
  }catch(err){console.error('member directory v4:',err);return false}
@@ -4901,7 +4907,10 @@ async function renderMemberDirectory(){
   const sub=r._appOnly
    ?`앱 가입 회원 · ${escHtml(r.team_role||'일반회원')}`
    :`${escHtml(r.team_role||'모임원')} · ${escHtml(r.lesson_level||'-')} · 출석 ${Number(r.attendance_count||0)} / 지각 ${Number(r.late_count||0)}`;
-  return `<div class="memberSimpleRow"><div class="memberFallback">${escHtml(String(r.short_name||r.nickname||'?').slice(0,1))}</div><div class="grow"><b>${escHtml(r.nickname)}</b><p>${sub}</p></div>${linked?'<span class="tag ok">앱 가입</span>':'<span class="tag done">앱 미가입</span>'}</div>`;
+  const avatar=r._member?.avatarUrl
+   ?`<img class="memberAvatar" src="${escAttr(r._member.avatarUrl)}" alt="${escAttr(r.nickname)}">`
+   :`<div class="memberFallback">${escHtml(String(r.short_name||r.nickname||'?').slice(0,1))}</div>`;
+  return `<div class="memberSimpleRow">${avatar}<div class="grow"><b>${escHtml(r.nickname)}</b><p>${sub}</p></div>${linked?'<span class="tag ok">앱 가입</span>':'<span class="tag done">앱 미가입</span>'}</div>`;
  }).join('')||'<div class="card meta">등록된 팀 명단이 없습니다.</div>';
 }
 async function renderMembers(){
@@ -5404,7 +5413,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final181-waitlist-sync',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final182-avatar-sync',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
