@@ -1584,9 +1584,12 @@ async function loadMediaContentInBackground(){
 }
 async function hydrateMemberAvatarsInBackground(){
  const rows=members.filter(m=>m.avatarPath&&!m.avatarUrl);
- if(!rows.length)return;
- await Promise.all(rows.map(async m=>{try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}}));
+ if(rows.length)await Promise.all(rows.map(async m=>{try{m.avatarUrl=await signedProfileImage(m.avatarPath)}catch(_){}}));
  if(document.getElementById('memberAdmin')?.classList.contains('active'))renderMembersFromCurrentData();
+ if(document.getElementById('memberDirectory')?.classList.contains('active'))void renderMemberDirectory();
+ if(document.getElementById('applyStatus')?.classList.contains('active'))void renderApplyStatus();
+ if(document.getElementById('chat')?.classList.contains('active')){try{renderGroup();renderDmList()}catch(_){}}
+ if(document.getElementById('dmChat')?.classList.contains('active')){try{renderDm()}catch(_){}}
 }
 async function hydrateNoticeAttachmentsInBackground(){
  const jobs=[];
@@ -1769,7 +1772,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final179-centralized-startup',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final181-waitlist-sync',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -2224,7 +2227,19 @@ async function sendTestPushNotification(){
   if(tag)tag.textContent='확인';
  }
 }
-function handleOpenQuery(){try{const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return;const map={home:'home',chat:'chat',schedule:'schedule',media:'media',resources:'files'};if(map[open])setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},250);history.replaceState({},'',location.pathname)}catch(_){}}
+function handleOpenQuery(){
+ try{
+  const p=new URLSearchParams(location.search),open=p.get('open');if(!open)return false;
+  if(open==='training'){
+   const id=p.get('activity');
+   if(id&&trainings[id])setTimeout(()=>openTraining(id),120);else setTimeout(()=>showPage('trainingList'),120);
+   history.replaceState({},'',location.pathname);return true;
+  }
+  const map={home:'home',chat:'chat',schedule:'schedule',media:'media',resources:'files'};
+  if(map[open]){setTimeout(()=>{showPage(map[open]);if(open==='chat')switchChat('group')},120);history.replaceState({},'',location.pathname);return true;}
+  return false;
+ }catch(_){return false}
+}
 
 const attendanceBadgeDefs=[
  {count:5,title:'5회',message:'팀아이슬, 이제 익숙해졌죠?'},
@@ -2400,7 +2415,8 @@ async function loginMember(){
   await loadPersistentContent();await loadPersistentChat();
   const boot=[renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderFolders,renderResourceFiles];
   boot.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
-  showPage('home');handleOpenQuery();
+  ensureApplicationRealtime();ensureMemberRealtime();
+  showPage('home');if(!handleOpenQuery())surfacePendingWaitlistOffer(true);
   toast('로그인됐습니다.');
  }catch(e){
   console.error(e);setAuthMessage('로그인 중 오류가 발생했습니다.','error');
@@ -3298,12 +3314,15 @@ function renderTrainingList(){
  const list=Object.values(trainings).sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
  trainingCards.innerHTML=list.map(t=>{
    const ended=activityHasStarted(t),inP=t.participants.includes(currentUser.nickname),w=t.waitlist.find(x=>x.name===currentUser.nickname);
-   const state=ended?'종료':inP?'신청완료':w?`대기 ${w.order}번`:'신청 전';
+   const isMyOffer=!ended&&!!(w&&w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
+   const state=ended?'종료':inP?'신청완료':isMyOffer?'내 차례 · 응답 필요':w?`대기 ${w.order}번`:'신청 전';
    const badgeClass=ended?'done':inP?'':w?'wait':'idle';
-   const seatBlocked=t.participants.length>=t.capacity||t.waitlist.length>0||!!t.offer;
+   const hasActiveQueue=t.waitlist.some(x=>x.offerStatus==='none'||(x.offerStatus==='offered'&&x.offerExpiresAt&&new Date(x.offerExpiresAt).getTime()>Date.now()));
+   const seatBlocked=t.participants.length>=t.capacity||hasActiveQueue;
    let action='';
    if(!ended){
      if(inP)action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">참석 취소</button>`;
+     else if(isMyOffer)action=`<button class="btn primary" onclick="openTraining('${t.id}')">참석 여부 선택</button>`;
      else if(w)action=`<button class="btn amber" onclick="cancelTraining('${t.id}')">대기 취소</button>`;
      else action=`<button class="btn ${seatBlocked?'amber':'primary'}" onclick="applyTraining('${t.id}')">${seatBlocked?'대기 신청':'참석 신청'}</button>`;
    }
@@ -3325,18 +3344,101 @@ async function removeActivityApplication(activityId){
  if(error){console.error('application delete',error);toast('신청 취소에 실패했습니다.');return false}
  return true;
 }
-async function reloadApplicationsUI(){
- await loadPersistentContent();
- renderHome();renderTrainingList();renderRaceList();renderActivity();
+let applicationRealtimeChannel=null,applicationRealtimeRefreshTimer=null;
+let memberRealtimeChannel=null,memberRealtimeRefreshTimer=null;
+let lastSurfacedWaitlistOffer='';
+
+async function reloadTrainingApplicationsOnly(){
+ const ids=Object.keys(trainings);
+ if(!ids.length)return;
+ const {data,error}=await dbClient.from('activity_applications')
+  .select('activity_id,member_id,application_type,wait_order,offer_status,offer_expires_at,updated_at')
+  .in('activity_id',ids);
+ if(error)throw error;
+ const byMemberId=id=>members.find(m=>m.id===id)?.name||null;
+ Object.values(trainings).forEach(t=>{t.participants=[];t.waitlist=[];t.offer=null});
+ (data||[]).forEach(a=>{
+  const t=trainings[a.activity_id];if(!t)return;
+  const name=byMemberId(a.member_id);if(!name)return;
+  if(a.application_type==='participant')t.participants.push(name);
+  else if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
+ });
+ Object.values(trainings).forEach(t=>{
+  normalizeWait(t);
+  if(activityHasStarted(t)&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
+   t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
+  }
+  const offered=t.waitlist.find(w=>w.offerStatus==='offered'&&w.offerExpiresAt&&new Date(w.offerExpiresAt).getTime()>Date.now());
+  t.offer=offered?{name:offered.name,memberId:offered.memberId,expiresAt:new Date(offered.offerExpiresAt).getTime()}:null;
+ });
+ snapshotPlainData();
+ renderHome();renderTrainingList();renderCalendar();renderActivity();
+ const active=document.querySelector('.page.active')?.id;
+ if(active==='trainingDetail'&&selectedTrainingId)openTraining(selectedTrainingId);
+ else if(active==='applyStatus'&&selectedTrainingId)void renderApplyStatus();
+ else if(active==='myStatus')renderMyStatusList();
 }
+
+async function reloadApplicationsUI(){
+ try{await reloadTrainingApplicationsOnly()}
+ catch(err){console.error('training application refresh:',err);await loadPersistentContent();renderHome();renderTrainingList();renderRaceList();renderActivity()}
+}
+
+function myPendingWaitlistOffer(){
+ return Object.values(trainings)
+  .filter(t=>!activityHasStarted(t))
+  .map(t=>({t,w:t.waitlist.find(x=>x.name===currentUser.nickname&&x.offerStatus==='offered'&&x.offerExpiresAt&&new Date(x.offerExpiresAt).getTime()>Date.now())}))
+  .filter(x=>x.w)
+  .sort((a,b)=>String(a.t.date+a.t.start).localeCompare(String(b.t.date+b.t.start)))[0]||null;
+}
+function surfacePendingWaitlistOffer(force=false){
+ const found=myPendingWaitlistOffer();if(!found)return false;
+ const key=`${found.t.id}:${found.w.offerExpiresAt}`;
+ if(!force&&lastSurfacedWaitlistOffer===key)return false;
+ lastSurfacedWaitlistOffer=key;
+ openTraining(found.t.id);
+ toast('대기 순번이 왔어요. 참석 여부를 선택해주세요.');
+ return true;
+}
+function ensureApplicationRealtime(){
+ if(applicationRealtimeChannel||!dbClient?.channel||!currentUser.memberId)return;
+ try{
+  applicationRealtimeChannel=dbClient.channel(`eysl-applications-${currentUser.memberId}`)
+   .on('postgres_changes',{event:'*',schema:'public',table:'activity_applications'},()=>{
+    clearTimeout(applicationRealtimeRefreshTimer);
+    applicationRealtimeRefreshTimer=setTimeout(async()=>{
+      try{await reloadTrainingApplicationsOnly();surfacePendingWaitlistOffer(false)}catch(e){console.error('application realtime:',e)}
+    },180);
+   }).subscribe();
+ }catch(e){console.error('application realtime setup:',e)}
+}
+function ensureMemberRealtime(){
+ if(memberRealtimeChannel||!dbClient?.channel||!currentUser.memberId)return;
+ try{
+  memberRealtimeChannel=dbClient.channel(`eysl-members-${currentUser.memberId}`)
+   .on('postgres_changes',{event:'*',schema:'public',table:'members'},()=>{
+    clearTimeout(memberRealtimeRefreshTimer);
+    memberRealtimeRefreshTimer=setTimeout(async()=>{
+      try{
+       await refreshMemberDirectoryFromDb();
+       const me=members.find(m=>m.id===currentUser.memberId);
+       if(me){currentUser.avatarPath=me.avatarPath||null;currentUser.avatarUrl=me.avatarPath?(await signedProfileImage(me.avatarPath))||'':'';applyRole();renderMyProfile()}
+       await hydrateMemberAvatarsInBackground();
+      }catch(e){console.error('member realtime:',e)}
+    },220);
+   }).subscribe();
+ }catch(e){console.error('member realtime setup:',e)}
+}
+
 async function applyTraining(id){
  const t=trainings[id];if(!t)return toast('훈련 정보를 찾을 수 없습니다.');
  if(activityHasStarted(t))return toast('종료된 훈련은 신청할 수 없습니다.');
- const type=t.participants.length<t.capacity?'participant':'waitlist';
- const order=type==='waitlist'?t.waitlist.length+1:null;
- if(!(await saveActivityApplication(id,type,{},order)).ok)return;
+ const {data,error}=await dbClient.rpc('apply_training_v3',{p_activity_id:id,p_details:{}});
+ if(error){console.error(error);return toast(error.message?.includes('activity_started')?'종료된 훈련은 신청할 수 없습니다.':'신청 저장에 실패했습니다.');}
+ if(Number(data?.offered_count||0)>0)void sendPush('waitlist_offer','','',{activity_id:id});
  await reloadApplicationsUI();openTraining(id);
- toast(type==='participant'?'훈련 신청완료':'대기 신청완료');
+ if(data?.status==='participant')toast('훈련 신청완료');
+ else toast(`대기 신청완료${data?.wait_order?` · ${data.wait_order}번`:''}`);
 }
 function openTraining(id){
  selectedTrainingId=id;showPage('trainingDetail');
@@ -3371,24 +3473,22 @@ function openTraining(id){
 }
 function openTrainingEdit(id){const t=trainings[id],inP=t.participants.includes(currentUser.nickname);showPage('trainingDetail');document.getElementById('trainingDetailBody').innerHTML=`<div class="section"><h2>${t.title} 신청 변경</h2></div><div class="card"><p style="font-size:12px">현재 상태: <b>${inP?'신청완료':'대기중'}</b></p><div class="formrow"><label>변경할 상태</label><select id="trainingEditState"><option value="attend" ${inP?'selected':''}>참석 신청</option><option value="wait" ${!inP?'selected':''}>대기 신청</option></select></div><button class="btn primary" style="width:100%" onclick="saveTrainingEdit('${id}')">수정 완료</button></div>`}
 async function saveTrainingEdit(id){
- const t=trainings[id],v=document.getElementById('trainingEditState').value;
- const type=v==='attend'&&t.participants.length<t.capacity?'participant':'waitlist';
- const order=type==='waitlist'?t.waitlist.filter(w=>w.name!==currentUser.nickname).length+1:null;
- if(!(await saveActivityApplication(id,type,{},order)).ok)return;
- await reloadApplicationsUI();openApplyStatus(id);toast('수정 내용이 반영됐습니다');
+ toast('신청 상태 변경은 참석 취소/대기 취소 후 다시 신청해주세요. 대기 순번은 자동으로 보호됩니다.');
+ openTraining(id);
 }
 async function cancelTraining(id){
  const before=trainings[id];
  if(before&&activityHasStarted(before))return toast('종료된 훈련은 신청 상태를 변경할 수 없습니다.');
- const wasParticipant=!!before?.participants?.includes(currentUser.nickname);
- if(!(await removeActivityApplication(id)))return;
- if(wasParticipant)await sendPush('waitlist_offer','','',{activity_id:id});
+ const {data,error}=await dbClient.rpc('cancel_training_v3',{p_activity_id:id});
+ if(error){console.error(error);return toast(error.message?.includes('activity_started')?'종료된 훈련은 신청 상태를 변경할 수 없습니다.':'신청 취소에 실패했습니다.');}
+ if(!data?.ok)return toast('취소할 신청 내역이 없습니다.');
+ if(Number(data?.offered_count||0)>0)void sendPush('waitlist_offer','','',{activity_id:id});
  await reloadApplicationsUI();
  const active=document.querySelector('.page.active')?.id;
  if(active==='trainingDetail')openTraining(id);
  else if(active==='applyStatus')openApplyStatus(id);
  else if(active==='myStatus')renderMyStatusList();
- toast('훈련 신청이 취소됐습니다.');
+ toast(data?.cancelled_type==='participant'?'훈련 참석을 취소했습니다.':'대기 신청을 취소했습니다.');
 }
 function normalizeWait(t){t.waitlist.forEach((w,i)=>w.order=i+1)}
 async function fetchApplicationPeople(activityId){
@@ -3444,12 +3544,19 @@ async function respondWaitlistOffer(activityId,action){
  const t=trainings[activityId];
  if(t&&activityHasStarted(t))return toast('종료된 훈련은 대기 응답을 변경할 수 없습니다.');
  if(action==='decline'&&!confirm('이번 기회를 넘기고 다음 대기자에게 전달할까요?'))return;
- const {data,error}=await dbClient.rpc('respond_waitlist_offer',{p_activity_id:activityId,p_action:action});
- if(error){console.error(error);return toast('대기 응답 처리에 실패했습니다.')}
- if(!data?.ok&&data?.status==='expired'){await reloadApplicationsUI();openTraining(activityId);return toast('24시간 응답 시간이 지나 다음 대기자에게 넘어갔습니다.')}
- if(action==='decline')await sendPush('waitlist_offer','','',{activity_id:activityId});
- await reloadApplicationsUI();openTraining(activityId);
- toast(action==='accept'?'참석이 확정됐습니다.':'다음 대기자에게 기회를 넘겼습니다.');
+ const {data,error}=await dbClient.rpc('respond_waitlist_offer_v3',{p_activity_id:activityId,p_action:action});
+ if(error){console.error(error);return toast('대기 응답 처리에 실패했습니다.');}
+ if(Number(data?.offered_count||0)>0)void sendPush('waitlist_offer','','',{activity_id:activityId});
+ await reloadApplicationsUI();
+ if(!data?.ok&&data?.status==='expired'){
+   showPage('trainingList');
+   return toast('24시간 응답 시간이 지나 다음 대기자에게 넘어갔습니다.');
+ }
+ if(action==='accept'){
+   openTraining(activityId);toast('참석이 확정됐습니다.');
+ }else{
+   showPage('trainingList');toast(Number(data?.offered_count||0)>0?'다음 대기자에게 기회를 넘겼습니다.':'다음 대기자가 없어 빈자리로 전환됐습니다.');
+ }
 }
 async function acceptOffer(){return respondWaitlistOffer(selectedTrainingId,'accept')}
 async function declineOffer(){return respondWaitlistOffer(selectedTrainingId,'decline')}
@@ -4436,7 +4543,38 @@ async function saveMyRealName(){
  const me=members.find(m=>m.id===currentUser.memberId);if(me)me.realName=name;
  renderMyProfile();void renderMyPageRecords();toast('실명이 저장됐습니다.');
 }
-async function uploadMyProfilePhoto(input){const f=input.files?.[0];input.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg',path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`;try{const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;const old=currentUser.avatarPath;const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}if(old)await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}applyRole();renderMyProfile();toast('프로필 사진이 변경됐습니다.')}catch(e){console.error(e);toast('프로필 사진 업로드에 실패했습니다.')}}
+async function uploadMyProfilePhoto(input){
+ const f=input.files?.[0];input.value='';if(!f)return;
+ if(!f.type.startsWith('image/'))return toast('이미지 파일만 등록할 수 있습니다.');
+ if(f.size>5*1024*1024)return toast('프로필 사진은 5MB 이하로 올려주세요.');
+ if(!currentUser.memberId)return toast('회원 정보를 확인할 수 없습니다.');
+ const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+ const path=`${currentUser.memberId}/avatar-${Date.now()}.${ext}`,old=currentUser.avatarPath;
+ let dbSaved=false;
+ try{
+  const {error:upErr}=await dbClient.storage.from('profile-images').upload(path,f,{upsert:false,contentType:f.type});if(upErr)throw upErr;
+  const {error:rpcErr}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:path});
+  if(rpcErr){await dbClient.storage.from('profile-images').remove([path]);throw rpcErr}
+  dbSaved=true;
+  let verified=false;
+  for(let i=0;i<2;i++){
+   const {data,error}=await dbClient.rpc('get_my_member');
+   const saved=Array.isArray(data)?data[0]:data;
+   if(!error&&saved?.avatar_path===path){verified=true;break}
+   if(i===0)await new Promise(r=>setTimeout(r,180));
+  }
+  if(!verified)throw new Error('프로필 사진 서버 저장 확인 실패');
+  if(old&&old!==path)await dbClient.storage.from('profile-images').remove([old]);
+  currentUser.avatarPath=path;currentUser.avatarUrl=await signedProfileImage(path);
+  const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=path;me.avatarUrl=currentUser.avatarUrl}
+  applyRole();renderMyProfile();await hydrateMemberAvatarsInBackground();
+  toast('프로필 사진이 변경됐습니다.');
+ }catch(e){
+  console.error('profile upload:',e);
+  if(!dbSaved)try{await dbClient.storage.from('profile-images').remove([path])}catch(_){}
+  toast(dbSaved?'사진은 저장됐지만 서버 확인에 실패했습니다. 앱을 다시 열어 확인해주세요.':'프로필 사진 업로드에 실패했습니다.');
+ }
+}
 async function deleteMyProfilePhoto(){if(!currentUser.avatarPath)return;if(!confirm('프로필 사진을 삭제할까요?'))return;const old=currentUser.avatarPath;try{const {error}=await dbClient.rpc('set_my_avatar_path',{p_avatar_path:null});if(error)throw error;await dbClient.storage.from('profile-images').remove([old]);currentUser.avatarPath=null;currentUser.avatarUrl='';const me=members.find(m=>m.id===currentUser.memberId);if(me){me.avatarPath=null;me.avatarUrl=''}applyRole();renderMyProfile();toast('프로필 사진이 삭제됐습니다.')}catch(e){console.error(e);toast('프로필 사진 삭제에 실패했습니다.')}}
 function renderChatMessage(m,label){
  const safe=(v)=>typeof escHtml==='function'?escHtml(v):String(v??'');
@@ -5215,6 +5353,7 @@ window.addEventListener('load',async()=>{
  }
  const boot=[renderHome,renderNotices,renderGroup,renderDmList,renderCalendar,renderTrainingList,renderRaceList,renderActivity,initAttendanceOptions,renderAttendance,renderAttendanceAdmin,renderFolders];
  boot.forEach(fn=>{try{fn()}catch(err){console.error('TEAM EYSL init:',err)}});
+ if(loggedIn){ensureApplicationRealtime();ensureMemberRealtime();if(!handleOpenQuery())surfacePendingWaitlistOffer(true);}
 });
 </script>
 
@@ -5265,7 +5404,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final179-centralized-startup',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final181-waitlist-sync',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
