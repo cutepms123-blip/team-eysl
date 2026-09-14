@@ -1,6 +1,6 @@
-/* TEAM EYSL v187 — event visual refresh + medal ordering copy + event icons */
+/* TEAM EYSL v188 — event visual refresh + medal ordering copy */
 (()=>{
- if(window.__EYSL_UI_V187__)return;window.__EYSL_UI_V187__=true;
+ if(window.__EYSL_UI_V188__)return;window.__EYSL_UI_V188__=true;
  const css=document.createElement('style');css.textContent=`
 :root{--eysl-purple:#9b8acb;--eysl-purple-pale:#f2effa;--eysl-purple-soft:#e9e3f6;--eysl-purple-dark:#65548f}
 .link,.good{color:var(--eysl-purple-dark)!important}.filters button.active,.recordTabs button.active,.chatTabs button.active,.bigChoice.on{background:var(--eysl-purple-dark)!important;border-color:var(--eysl-purple-dark)!important}.tag.ok{background:var(--eysl-purple-pale)!important;color:var(--eysl-purple-dark)!important}.day.selected{background:var(--eysl-purple-dark)!important}
@@ -8,7 +8,7 @@
 .eysl-cal-race{background:#9b8acb!important}.eysl-cal-training{background:#79a9a3!important}.eysl-cal-other{background:#d6a26f!important}
 `;document.head.appendChild(css);
  const icons={'출석왕':'🏊','지각왕':'⏰','단축왕':'⚡','PB 수집왕':'🎉','대회왕':'🏆','메달왕':'🏅','영법별 랭킹':'🏁'};
- function decorateEvents(){document.querySelectorAll('.card,.menuCard,.row,.eventHubBtn').forEach(card=>{const text=(card.textContent||'').trim();const key=Object.keys(icons).find(k=>text.includes(k));if(!key)return;card.dataset.eyslDecorated='1';card.classList.add('eysl-event-row');let ic=card.querySelector(':scope > .eysl-event-icon');if(!ic){ic=document.createElement('div');ic.className='eysl-event-icon';card.insertBefore(ic,card.firstChild)}ic.textContent=icons[key];});}
+ function decorateEvents(){document.querySelectorAll('.card,.menuCard,.row').forEach(card=>{const text=(card.textContent||'').trim();const key=Object.keys(icons).find(k=>text.includes(k));if(!key)return;card.dataset.eyslDecorated='1';card.classList.add('eysl-event-row');let ic=card.querySelector(':scope > .eysl-event-icon');if(!ic){ic=document.createElement('div');ic.className='eysl-event-icon';card.insertBefore(ic,card.firstChild)}ic.textContent=icons[key];});document.querySelectorAll('#teamEvents .eventHubBtn > .eysl-event-icon').forEach(x=>x.remove())}
  function hideListStatus(){document.querySelectorAll('.statusCard>.actions').forEach(actions=>[...actions.querySelectorAll('button')].forEach(b=>{if(/신청현황/.test((b.textContent||'').trim()))b.dataset.eyslStatusHidden='1'}));}
  function trainingCounts(){for(const a of(window.activities||[])){if(a.kind!=='training')continue;const n=Array.isArray(a.details?.participants)?a.details.participants.length:null;if(n==null)continue;const cap=Number(a.capacity)||n;document.querySelectorAll('.statusCard').forEach(card=>{if(!card.textContent.includes(a.activity_date||''))return;[...card.querySelectorAll('*')].filter(x=>!x.children.length).forEach(el=>{const t=(el.textContent||'').trim();if(/^\d+\/\d+\s*·/.test(t))el.textContent=t.replace(/^\d+\/\d+/,`${n}/${cap}`)})})}}
  function colorCalendar(){document.querySelectorAll('.dot,[class*="calendar"] [class*="event"],[class*="schedule"] .dot').forEach(el=>{const t=(el.getAttribute('title')||el.getAttribute('aria-label')||el.textContent||'').toLowerCase();el.classList.remove('eysl-cal-race','eysl-cal-training','eysl-cal-other');if(/대회|race/.test(t))el.classList.add('eysl-cal-race');else if(/훈련|training/.test(t))el.classList.add('eysl-cal-training');else if(t.trim())el.classList.add('eysl-cal-other')});}
