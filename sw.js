@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final190-status-attendance-medals';
+const VERSION='team-eysl-final191-attendance-race-range-arena';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final190"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final191"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
