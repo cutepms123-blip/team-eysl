@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final187-medal-order-icons';
+const VERSION='team-eysl-final188-event-icon-dedupe';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final187"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final188"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
