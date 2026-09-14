@@ -1,18 +1,19 @@
 name: medal-detail-v186
 on:
   push:
-    branches: [medal-detail-v186]
+    branches:
+      - medal-detail-v186
 permissions:
   contents: write
 jobs:
   patch:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: medal-detail-v186
       - name: Patch medal detail UI
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -33,7 +34,7 @@ jobs:
           assert old in s, 'loadFunEventRaw marker not found'
           s=s.replace(old,new,1)
 
-          marker="""function parseRaceSeconds(v){"""
+          marker="function parseRaceSeconds(v){"
           insert="""function ensureMedalDetailPage(){
  let page=document.getElementById('medalDetail');
  if(page)return page;
@@ -84,11 +85,6 @@ window.openMedalDetail=function(rosterId,scope='all'){
   }"""
           assert old_medal in s, 'medal block marker not found'
           s=s.replace(old_medal,new_medal,1)
-
-          old_ver='<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage(\'home\')">←</button><h1>이벤트</h1><span class="meta">v94</span></div><div class="eventHub">'
-          new_ver='<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage(\'home\')">←</button><h1>이벤트</h1><span class="meta">v95</span></div><div class="eventHub">'
-          if old_ver in s:s=s.replace(old_ver,new_ver,1)
-
           p.write_text(s)
           PY
           git rm .github/workflows/medal-detail-v186.yml
