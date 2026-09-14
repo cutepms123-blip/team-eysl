@@ -1,0 +1,35 @@
+name: One-time monthly card click guard
+on:
+  push:
+    branches: [fix-monthly-highlights-v185]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix-monthly-highlights-v185
+      - name: Remove parent click and keep metric clicks isolated
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('canonical-ui-v172.js')
+          s=p.read_text()
+          old=';card.innerHTML=`<small style="color:#92979d;letter-spacing:.4px">THIS MONTH</small>'
+          new=';card.onclick=null;card.innerHTML=`<small style="color:#92979d;letter-spacing:.4px">THIS MONTH</small>'
+          if s.count(old) != 1:
+              raise SystemExit(f'expected exactly one monthly summary target, found {s.count(old)}')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commit patch and remove one-time workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-monthly-v185-once.yml
+          git add canonical-ui-v172.js
+          git commit -m 'Prevent monthly card parent navigation v185'
+          git push origin fix-monthly-highlights-v185
