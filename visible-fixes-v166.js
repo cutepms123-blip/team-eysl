@@ -22,3 +22,32 @@ function bindAllSchedule(){const el=[...document.querySelectorAll('#home .link')
 function apply(){bindAllSchedule();fixRaceStatus();styleButtonsAndStatuses();celebratePB();if(document.getElementById('attendance')?.classList.contains('active'))window.renderAttendance()}
 ['renderTrainingList','openTraining','openEventDetail','renderRaceList','openRaceDetail','renderMyProfile','setRecordMajor','setRecordSub','setRecordStroke','setRecordDistance'].forEach(name=>{const old=window[name];if(typeof old!=='function'||old.__v191)return;const wrapped=function(){const r=old.apply(this,arguments);requestAnimationFrame(()=>{styleButtonsAndStatuses();celebratePB();fixRaceStatus()});return r};wrapped.__v191=true;window[name]=wrapped});const oldShow=window.showPage;if(typeof oldShow==='function'){window.showPage=function(id){const r=oldShow.apply(this,arguments);requestAnimationFrame(()=>{styleButtonsAndStatuses();celebratePB();if(id==='attendance')window.renderAttendance()});return r}}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',apply,{once:true}):apply();
 })();
+
+/* v193 — surface relay records directly in member management */
+(()=>{
+ if(window.__EYSL_MEMBER_RELAY_V193__)return;window.__EYSL_MEMBER_RELAY_V193__=true;
+ const esc=v=>typeof escHtml==='function'?escHtml(String(v??'')):String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+ const relayRows=()=>{try{return (Array.isArray(adminSelectedMemberRecords)?adminSelectedMemberRecords:[]).filter(r=>String(r.subcategory||'')==='relay'&&(typeof recordSeconds==='function'?(recordSeconds(r.result)??0)>0:true)).sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||'')))}catch(_){return[]}};
+ const dateOf=r=>typeof recordDisplayDate==='function'?recordDisplayDate(r):String(r.event_date||'');
+ const resultOf=r=>typeof formatSwimResult==='function'?formatSwimResult(r.result):String(r.result||'');
+ function injectRelaySummary(){
+  const page=document.getElementById('memberDetail');if(!page?.classList.contains('active'))return;
+  const body=document.getElementById('memberDetailBody');if(!body)return;
+  body.querySelector('#memberRelaySummaryV193')?.remove();
+  const rows=relayRows();if(!rows.length)return;
+  const activityTitle=[...body.querySelectorAll('.section h2')].find(x=>(x.textContent||'').trim()==='활동 현황');
+  const anchor=activityTitle?.parentElement;if(!anchor)return;
+  const wrap=document.createElement('div');wrap.id='memberRelaySummaryV193';
+  const cards=rows.slice(0,4).map(r=>{const dist=Number(r.metadata?.distance||0);const title=[r.stroke,dist?`${dist}M`:''].filter(Boolean).join(' ');return `<div class="recordRow" style="margin-bottom:8px"><div><b>${esc(title||'단체전')}</b><p>${esc(r.event_name||'-')}${dateOf(r)?` · ${esc(dateOf(r))}`:''}</p></div><strong>${esc(resultOf(r))}</strong></div>`}).join('');
+  wrap.innerHTML=`<div class="section memberSummaryHead"><h2>단체전 기록 <span class="meta">${rows.length}개</span></h2><button class="plainDetailBtn" type="button" onclick="openMemberRelayDetailV193()">전체보기 ›</button></div><div>${cards}</div>`;
+  body.insertBefore(wrap,anchor);
+ }
+ window.openMemberRelayDetailV193=function(){
+  const rows=relayRows();if(!rows.length||typeof openMemberRecordDetail!=='function')return;
+  openMemberRecordDetail();
+  if(typeof setAdminMemberRecordSub==='function')setAdminMemberRecordSub('relay');
+  const stroke=String(rows[0]?.stroke||'');if(stroke&&typeof setAdminMemberRecordStroke==='function')setAdminMemberRecordStroke(stroke);
+ };
+ const old=window.openMember;
+ if(typeof old==='function'&&!old.__relayV193){const wrapped=async function(){const r=await old.apply(this,arguments);requestAnimationFrame(injectRelaySummary);return r};wrapped.__relayV193=true;window.openMember=wrapped}
+})();
