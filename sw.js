@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final179-centralized-startup';
+const VERSION='team-eysl-final187-medal-order-icons';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final179"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final187"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
