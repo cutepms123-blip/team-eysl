@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final192-race-range-relays';
+const VERSION='team-eysl-final193-member-relay';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final192"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final193"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
