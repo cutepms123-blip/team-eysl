@@ -923,6 +923,8 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .filteredHistory h3{margin-top:0!important}
 .relayFilteredList{margin-top:16px!important}
 #recordMinor{margin-bottom:14px!important}
+#recordMinor button{color:#111317!important;-webkit-text-fill-color:#111317!important;opacity:1!important}
+#recordMinor button.active{color:#fff!important;-webkit-text-fill-color:#fff!important}
 
 /* ===== FINAL47 strict result parsing ===== */
 .historyMeet{font-weight:700;color:#555d66}
@@ -1352,7 +1354,7 @@ if(window.pdfjsLib){
  <div class="menuCard" onclick="renderMyStatus('training')"><b>나의 훈련 신청 내역</b><span>전체 · 예정 · 종료</span></div>
  <div class="menuCard" onclick="renderMyStatus('event')"><b>나의 기타 신청 내역</b><span>전체 · 예정 · 종료</span></div>
  <div class="menuCard" onclick="showPage('attendance')"><b>출석 현황</b><span>연도 · 월별 확인</span></div>
- <div class="menuCard" onclick="showPage('teamEvents')"><b>이벤트</b><span>출석왕 · 단축왕 · PB · 대회 · 영법별 랭킹</span></div>
+ <div class="menuCard" onclick="showPage('teamEvents')"><b>이벤트</b><span>출석왕 · 단축왕 · PB · 대회 · 메달 · 영법별 랭킹</span></div>
 </div>
 <div class="section"><h2>나의 출석 배지</h2><span id="myBadgeYear" class="meta">연간 누적</span></div>
 <div id="myAttendanceBadges" class="achievementBadgeGrid"><div class="card meta">배지 불러오는 중...</div></div>
@@ -1403,7 +1405,7 @@ if(window.pdfjsLib){
 <section id="myStatus" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1 id="myStatusTitle">신청현황</h1><span></span></div><div class="filters"><button class="active" onclick="filterMyStatus('all',this)">전체</button><button onclick="filterMyStatus('upcoming',this)">예정</button><button onclick="filterMyStatus('done',this)">종료</button></div><div id="myStatusList" class="list"></div></section>
 <section id="attendance" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>출석 현황</h1><span></span></div><div id="attSix" class="attSix"></div><div class="yearMonth"><div class="formrow"><label>연도</label><select id="attYear" onchange="renderAttendance()"></select></div><div class="formrow"><label>월</label><select id="attMonth" onchange="renderAttendance()"></select></div></div><div class="section"><h2>출석 내역</h2></div><div id="attList" class="list"></div></section>
 <section id="eventDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('otherList')">←</button><h1>기타 상세</h1><span></span></div><div id="eventDetailBody"></div></section>
-<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v93</span></div><div class="eventHub">
+<section id="teamEvents" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>이벤트</h1><span class="meta">v94</span></div><div class="eventHub">
 <button class="eventHubBtn" onclick="openEventRankingPage('attendance')"><span>출석왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('late')"><span>지각왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openEventRankingPage('improve')"><span>단축왕</span><b>›</b></button>
@@ -3782,7 +3784,7 @@ function renderRecordFilteredContent(){
      const older=previousSameDistance(filtered,i);
      const delta=older?historyDeltaLabel(r,older):'첫 기록';
      const faster=delta.startsWith('▼'),slower=delta.startsWith('▲');
-     return `<div class="historyCard"><div><b>${escHtml(recordEventTitle(r))} · ${escHtml(formatSwimResult(r.result))}초</b><p><strong class="historyMeet">${escHtml(r.event_name||'대회명 미등록')}</strong>${r.event_date?` · ${escHtml(r.event_date)}`:''}</p></div><span class="${faster?'improve':slower?'slower':''}">${escHtml(delta)}</span></div>`;
+     return `<div class="historyCard"><div><b>${escHtml(recordEventTitle(r))} · ${escHtml(formatSwimResult(r.result))}초</b><p><strong class="historyMeet">${escHtml(r.event_name||'대회명 미등록')}</strong>${recordDisplayDate(r)?` · ${escHtml(recordDisplayDate(r))}`:''}</p></div><span class="${faster?'improve':slower?'slower':''}">${escHtml(delta)}</span></div>`;
    }).join(''):'<div class="card meta">해당 조건의 기록이 없습니다.</div>';
 
    const pbBlock=recordMajor==='meet'?`<div class="section recordScreenHead"><h2>MY PB · 50M</h2></div><div class="recordSummaryGrid screenshotPbGrid">${pb}</div>`:'';
@@ -3794,7 +3796,7 @@ function renderRecordFilteredContent(){
    .filter(r=>relayKind(r)===recordDetailFilter)
    .filter(r=>!recordDistanceFilter||recordDistance(r)===recordDistanceFilter)
    .sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
- const list=filtered.length?filtered.map(r=>`<div class="recordRow cleanRecordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ')}</p>${Array.isArray(r.teammates)&&r.teammates.length?`<small>${escHtml(r.teammates.join(' · '))}</small>`:''}</div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join(''):'<div class="card meta">해당 단체전 기록이 없습니다.</div>';
+ const list=filtered.length?filtered.map(r=>`<div class="recordRow cleanRecordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,recordDisplayDate(r)].filter(Boolean).map(escHtml).join(' · ')}</p>${Array.isArray(r.teammates)&&r.teammates.length?`<small>${escHtml(r.teammates.join(' · '))}</small>`:''}</div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join(''):'<div class="card meta">해당 단체전 기록이 없습니다.</div>';
  box.innerHTML=`${detailTabs}${distanceTabs}<div class="recordList recordPageList relayFilteredList">${list}</div>`;
 }
 function setRecordMajor(v,b){
@@ -4496,6 +4498,12 @@ function recordEventTitle(r){
  if(stroke&&dist)return `${stroke} ${dist}m`;
  return stroke||r?.event_name||'기록';
 }
+function recordDisplayDate(r){
+ const start=String(r?.metadata?.event_start_date||'').trim();
+ const end=String(r?.metadata?.event_end_date||'').trim();
+ if(start&&end&&start!==end)return `${start} ~ ${end}`;
+ return String(r?.event_date||'');
+}
 function normalizeResultForStorage(v){
  const sec=recordSeconds(v);
  if(sec==null||!Number.isFinite(sec)||sec<=0)return '';
@@ -4534,7 +4542,7 @@ async function renderMyPageRecords(){
  const rows=(data||[]).filter(r=>(recordSeconds(r.result)??0)>0);
  const strokes=['자유형','배영','평영','접영'];
  summary.innerHTML=strokes.map(st=>{const r=bestRecordByStroke(rows,st);return `<div class="pbCard"><span>${st}</span><b>${r?formatSwimResult(r.result):'-'}</b></div>`}).join('');
- list.innerHTML=rows.map(r=>`<div class="recordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,r.event_date].filter(Boolean).map(escHtml).join(' · ')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join('');
+ list.innerHTML=rows.map(r=>`<div class="recordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,recordDisplayDate(r)].filter(Boolean).map(escHtml).join(' · ')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join('');
 }
 async function saveMyRealName(){
  const input=document.getElementById('myRealName'),name=(input?.value||'').trim();
@@ -5057,7 +5065,7 @@ function renderMemberRecordDetail(){
  box.innerHTML=rows.length?rows.map(r=>{
    const dist=Number(r.metadata?.distance||0);
    const title=[r.stroke,dist?`${dist}M`:''].filter(Boolean).join(' ')||'기록';
-   const meta=[r.event_name,r.event_date].filter(Boolean).join(' · ');
+   const meta=[r.event_name,recordDisplayDate(r)].filter(Boolean).join(' · ');
    return `<div class="recordRow"><div><b>${escHtml(title)}</b><p>${escHtml(meta||'-')}</p></div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`;
  }).join(''):'<div class="card meta">해당 조건의 기록이 없습니다.</div>';
 }
