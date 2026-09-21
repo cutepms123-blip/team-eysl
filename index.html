@@ -2518,26 +2518,73 @@ function makeApprovalCard(member,isPending){
  }
  card.appendChild(meta);
 
+ if(isPending&&member.prior_member_id){
+   const warning=document.createElement('div');
+   warning.className='approvalEmpty';
+   warning.style.marginTop='10px';
+   warning.style.textAlign='left';
+   warning.textContent='동일 닉네임의 내보낸 회원 기록이 있습니다. 동일인이면 기존 기록을 이어서 복귀시키고, 동명이인/새 회원이면 기록 없이 새 회원으로 승인해주세요.';
+   card.appendChild(warning);
+ }
+
  if(isPending){
    const actions=document.createElement('div');
    actions.className='actions';
 
-   const approve=document.createElement('button');
-   approve.className='btn primary';
-   approve.type='button';
-   approve.textContent='승인';
-   approve.addEventListener('click',()=>manageMemberApproval(member.id,'approve'));
+   if(member.prior_member_id){
+     const restore=document.createElement('button');
+     restore.className='btn primary';
+     restore.type='button';
+     restore.textContent='기존 회원 복귀';
+     restore.addEventListener('click',()=>approveRejoinCandidate(member.id,true));
+
+     const approveNew=document.createElement('button');
+     approveNew.className='btn outline';
+     approveNew.type='button';
+     approveNew.textContent='새 회원으로 승인';
+     approveNew.addEventListener('click',()=>approveRejoinCandidate(member.id,false));
+
+     actions.append(restore,approveNew);
+   }else{
+     const approve=document.createElement('button');
+     approve.className='btn primary';
+     approve.type='button';
+     approve.textContent='승인';
+     approve.addEventListener('click',()=>manageMemberApproval(member.id,'approve'));
+     actions.appendChild(approve);
+   }
 
    const reject=document.createElement('button');
    reject.className='btn outline';
    reject.type='button';
    reject.textContent='거절';
    reject.addEventListener('click',()=>manageMemberApproval(member.id,'reject'));
-
-   actions.append(approve,reject);
+   actions.appendChild(reject);
    card.appendChild(actions);
  }
  return card;
+}
+async function approveRejoinCandidate(memberId,restoreHistory){
+ if(!isMasterAdmin())return toast('총관리자만 회원 승인을 처리할 수 있습니다.');
+ const message=restoreHistory
+   ?'기존에 내보낸 회원과 동일인으로 확인했나요? 기존 출석·대회·기록을 그대로 이어서 복귀시킵니다.'
+   :'동명이인 또는 새 회원으로 승인할까요? 이전 회원의 출석·대회·기록은 연결하지 않습니다.';
+ if(!confirm(message))return;
+ try{
+   let approveId=memberId;
+   if(restoreHistory){
+     const {data,error}=await dbClient.rpc('prepare_member_rejoin_restore_v1',{p_member_id:memberId});
+     if(error)throw error;
+     approveId=data;
+   }else{
+     const {error}=await dbClient.rpc('approve_member_as_new_v1',{p_member_id:memberId});
+     if(error)throw error;
+   }
+   await manageMemberApproval(approveId,'approve');
+ }catch(e){
+   console.error('rejoin approval:',e);
+   toast('재가입 승인 처리 중 오류가 발생했습니다.');
+ }
 }
 async function renderApprovalRequests(){
  if(!isMasterAdmin())return;
@@ -2556,14 +2603,14 @@ async function renderApprovalRequests(){
  pendingBox.appendChild(loading);
 
  try{
-   const {data,error}=await dbClient.rpc('get_member_approval_queue');
+   const {data,error}=await dbClient.rpc('get_member_approval_queue_v2');
    if(error)throw error;
 
    const rows=Array.isArray(data)?data:[];
    const pending=rows.filter(x=>x&&x.status==='pending');
    // 최근 처리 회원: 총관리자 본인은 제외하고, 최근 승인/처리된 회원 순으로 표시.
    const processed=rows
-     .filter(x=>x&&x.status!=='pending'&&x.role!=='master_admin')
+     .filter(x=>x&&x.status!=='pending'&&x.status!=='reset'&&x.role!=='master_admin')
      .sort((a,b)=>new Date(b.approved_at||b.created_at||0)-new Date(a.approved_at||a.created_at||0))
      .slice(0,10);
 
@@ -5108,6 +5155,36 @@ async function openMemberActivityDetail(kind){
   const rows=(data||[]).filter(x=>x.activities?.kind==='event').sort((a,b)=>String(b.activities?.activity_date||'').localeCompare(String(a.activities?.activity_date||'')));
   box.innerHTML=rows.length?rows.map(x=>`<div class="row"><div class="grow"><b>${escHtml(x.activities.title||'기타')}</b><p>${escHtml(String(x.activities.activity_date||''))}</p></div><span class="tag ok">참여</span></div>`).join(''):'<div class="card meta">기타 참여 기록이 없습니다.</div>';
  }catch(e){console.error(e);box.innerHTML='<div class="card meta">활동 현황을 불러오지 못했습니다.</div>'}
+}
+
+async function kickMember(name){
+ if(!isMasterAdmin())return toast('총관리자만 회원을 내보낼 수 있습니다.');
+ const m=members.find(x=>x.name===name);
+ if(!m||!m.id)return toast('회원 정보를 찾을 수 없습니다.');
+ const ok=confirm(`${name} 회원을 내보낼까요?\n\n로그인 계정과 푸시 연결은 초기화되고 앱 접근은 즉시 중단됩니다. 기존 출석·대회·수영 기록 등 과거 데이터는 보존됩니다. 이후 같은 닉네임으로 다시 가입 신청할 수 있지만 반드시 총관리자 승인을 받아야 합니다.`);
+ if(!ok)return;
+ const {data:{session}}=await dbClient.auth.getSession();
+ if(!session)return toast('다시 로그인해주세요.');
+ try{
+   const res=await fetch(`${SUPABASE_URL}/functions/v1/remove-member`,{
+     method:'POST',
+     headers:{
+       'Content-Type':'application/json',
+       'apikey':SUPABASE_PUBLISHABLE_KEY,
+       'Authorization':`Bearer ${session.access_token}`
+     },
+     body:JSON.stringify({member_id:m.id})
+   });
+   const data=await res.json();
+   if(!res.ok)throw new Error(data.error||'회원 내보내기에 실패했습니다.');
+   await refreshMemberDirectoryFromDb();
+   renderMembersFromCurrentData();
+   showPage('memberAdmin');
+   toast('회원 내보내기가 완료됐습니다.');
+ }catch(e){
+   console.error('member removal:',e);
+   toast(e?.message||'회원 내보내기 중 오류가 발생했습니다.');
+ }
 }
 
 async function renderRoleManagement(){return;}
