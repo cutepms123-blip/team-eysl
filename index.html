@@ -2384,7 +2384,10 @@ async function signupMember(){
  if(!validPassword(password))return setAuthMessage('비밀번호는 8자 이상으로 설정해주세요.','error');
  setAuthBusy(true);setAuthMessage('가입 신청을 등록하고 있어요.');
  try{
-  const result=await callAuthFunction('register-member',{nickname,password});
+  let result=await callAuthFunction('rejoin-register',{nickname,password});
+  if(!result.ok&&result.data?.code==='new_signup_required'){
+   result=await callAuthFunction('register-member',{nickname,password});
+  }
   if(!result.ok)return setAuthMessage(result.data.error||'가입 신청에 실패했습니다.','error');
   if(result.data.session?.access_token&&result.data.session?.refresh_token){
    const {error}=await dbClient.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
@@ -4914,7 +4917,7 @@ function renderMembersFromCurrentData(){
  const makeAvatar=m=>m.avatarUrl?`<img class="memberAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(m.name)}">`:`<div class="memberFallback">${escHtml(String(m.name||'?').slice(0,1))}</div>`;
  list.innerHTML=active.length?active.map(m=>{
    const roleText=m.role==='master_admin'?'총관리자':m.role==='admin'?'부관리자':'일반회원';
-   return `<div class="memberrow">${makeAvatar(m)}<div class="grow"><b>${escHtml(m.name)}</b><p>${roleText} · 가입 ${escHtml(m.join||'-')}</p></div><button class="plainArrow" type="button" onclick="openMember('${escAttr(m.name)}')">›</button></div>`;
+   return `<div class="memberrow">${makeAvatar(m)}<div class="grow"><b>${escHtml(m.name)}</b><p>${roleText} · 가입 ${escHtml(m.join||'-')}</p></div><button class="plainArrow" type="button" onclick="openMember('${escAttr(m.id)}')">›</button></div>`;
  }).join(''):'<div class="card meta">승인된 회원이 없습니다.</div>';
  if(blockedList)blockedList.innerHTML=blocked.length?blocked.map(m=>`<div class="memberrow">${makeAvatar(m)}<div class="grow"><b>${escHtml(m.name)}</b><p>내보내기 처리됨</p></div></div>`).join(''):'<div class="card meta">내보낸 회원이 없습니다.</div>';
 }
@@ -4939,7 +4942,7 @@ async function renderMemberDirectory(){
  const rosterNames=new Set(roster.map(r=>r.nickname));
 
  const rosterRows=roster.map(r=>{
-   const linkedMember=approved.find(m=>m.name===r.nickname);
+   const linkedMember=approved.find(m=>m.id===r.linked_member_id);
    return {...r,_member:linkedMember||null};
  });
  const appOnly=approved.filter(m=>!rosterNames.has(m.name)).map(m=>({
@@ -5019,11 +5022,12 @@ async function changeMemberRoleFromDetail(memberId,action,name){
   await refreshMemberDirectoryFromDb();
   renderMembersFromCurrentData();
   toast(action==='grant_admin'?'부관리자로 지정했습니다.':'권한을 해제했습니다.');
-  await openMember(name);
+  await openMember(memberId);
  }catch(e){console.error(e);toast('권한 변경에 실패했습니다.')}
 }
-async function openMember(name){
- const m=members.find(x=>x.name===name);if(!m)return;
+async function openMember(memberRef){
+ const m=members.find(x=>x.id===memberRef)||members.find(x=>x.name===memberRef);if(!m)return;
+ const name=m.name;
  adminSelectedMember=m;
  showPage('memberDetail');
  const body=document.getElementById('memberDetailBody');if(!body)return;
@@ -5053,7 +5057,7 @@ async function openMember(name){
    <button onclick="openMemberActivityDetail('race')"><b>대회 참가 현황</b><span>›</span></button>
    <button onclick="openMemberActivityDetail('event')"><b>기타 참여 현황</b><span>›</span></button>
  </div>
- ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(name)}')">회원 내보내기</button></div>`:''}`;
+ ${isMasterAdmin()&&m.role!=='master_admin'?`<div class="actions"><button class="btn amber" onclick="kickMember('${escAttr(m.id)}')">회원 내보내기</button></div>`:''}`;
 }
 
 function adminMemberRecordRule(){
@@ -5157,10 +5161,11 @@ async function openMemberActivityDetail(kind){
  }catch(e){console.error(e);box.innerHTML='<div class="card meta">활동 현황을 불러오지 못했습니다.</div>'}
 }
 
-async function kickMember(name){
+async function kickMember(memberRef){
  if(!isMasterAdmin())return toast('총관리자만 회원을 내보낼 수 있습니다.');
- const m=members.find(x=>x.name===name);
+ const m=members.find(x=>x.id===memberRef)||members.find(x=>x.name===memberRef);
  if(!m||!m.id)return toast('회원 정보를 찾을 수 없습니다.');
+ const name=m.name;
  const ok=confirm(`${name} 회원을 내보낼까요?\n\n로그인 계정과 푸시 연결은 초기화되고 앱 접근은 즉시 중단됩니다. 기존 출석·대회·수영 기록 등 과거 데이터는 보존됩니다. 이후 같은 닉네임으로 다시 가입 신청할 수 있지만 반드시 총관리자 승인을 받아야 합니다.`);
  if(!ok)return;
  const {data:{session}}=await dbClient.auth.getSession();
