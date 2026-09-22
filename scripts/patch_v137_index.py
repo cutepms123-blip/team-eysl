@@ -22,6 +22,7 @@ async def login(page,nick,pw):
     await page.wait_for_selector("#auth", state="hidden", timeout=30000)
 
 async def kick_from_admin(page,target):
+    await page.wait_for_function("(target)=>typeof members!=='undefined' && members.some(m=>m.name===target)", target, timeout=30000)
     member_id=await page.evaluate("(target)=>members.find(m=>m.name===target)?.id||null",target)
     assert member_id, "target member id not found"
     dialog_task=asyncio.create_task(page.wait_for_event("dialog", timeout=10000))
