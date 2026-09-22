@@ -2407,6 +2407,11 @@ async function loginMember(){
  try{
   const result=await callAuthFunction('login-member',{nickname,password});
   if(!result.ok){
+   if(result.data?.code==='blocked'){
+    const msg='사용이 정지된 계정입니다. 관리자에게 문의해주세요.';
+    alert(msg);
+    return setAuthMessage(msg,'error');
+   }
    if(result.data?.code==='pending')return setAuthMessage('아직 총관리자 승인 대기 중입니다.','error');
    return setAuthMessage(result.data.error||'로그인에 실패했습니다.','error');
   }
@@ -3466,11 +3471,45 @@ function ensureApplicationRealtime(){
    }).subscribe();
  }catch(e){console.error('application realtime setup:',e)}
 }
+let memberSessionExpiryHandling=false;
+async function forceExpiredSessionToLogin(){
+ if(memberSessionExpiryHandling)return;
+ memberSessionExpiryHandling=true;
+ try{
+  try{await dbClient.auth.signOut({scope:'local'})}catch(e){console.error('local signout:',e)}
+  currentUser={nickname:'',role:'member',actualRole:'member',memberId:null,avatarPath:null,avatarUrl:'',createdAt:null};
+  applyRole();
+  showAuthRequest();
+  switchAuthMode('login');
+  alert('세션이 만료됐습니다. 다시 로그인해주세요.');
+ }finally{
+  setTimeout(()=>{memberSessionExpiryHandling=false},0);
+ }
+}
+async function validateActiveMemberSession(){
+ if(!currentUser.memberId||memberSessionExpiryHandling)return true;
+ try{
+  const {data,error}=await dbClient.rpc('get_my_member');
+  if(error){
+   console.error('active member session check:',error);
+   return true;
+  }
+  const member=Array.isArray(data)?data[0]:data;
+  if(member&&member.id===currentUser.memberId&&member.status==='approved')return true;
+  await forceExpiredSessionToLogin();
+  return false;
+ }catch(e){
+  console.error('active member session check:',e);
+  return true;
+ }
+}
 function ensureMemberRealtime(){
  if(memberRealtimeChannel||!dbClient?.channel||!currentUser.memberId)return;
  try{
   memberRealtimeChannel=dbClient.channel(`eysl-members-${currentUser.memberId}`)
-   .on('postgres_changes',{event:'*',schema:'public',table:'members'},()=>{
+   .on('postgres_changes',{event:'*',schema:'public',table:'members'},payload=>{
+    const ownChanged=payload?.new?.id===currentUser.memberId||payload?.old?.id===currentUser.memberId;
+    if(ownChanged)void validateActiveMemberSession();
     clearTimeout(memberRealtimeRefreshTimer);
     memberRealtimeRefreshTimer=setTimeout(async()=>{
       try{
@@ -3483,6 +3522,8 @@ function ensureMemberRealtime(){
    }).subscribe();
  }catch(e){console.error('member realtime setup:',e)}
 }
+window.addEventListener('focus',()=>{void validateActiveMemberSession()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void validateActiveMemberSession()});
 
 async function applyTraining(id){
  const t=trainings[id];if(!t)return toast('훈련 정보를 찾을 수 없습니다.');
