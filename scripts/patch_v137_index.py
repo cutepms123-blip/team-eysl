@@ -28,9 +28,9 @@ async def kick_from_admin(page,target):
     await row.locator("button.plainArrow").click()
     await page.wait_for_selector("#memberDetail.active", timeout=30000)
     btn=page.get_by_role("button", name="회원 내보내기")
-    async with page.expect_dialog(timeout=10000) as di:
-        await btn.click()
-    dialog=await di.value
+    dialog_task=asyncio.create_task(page.wait_for_event("dialog", timeout=10000))
+    await btn.click()
+    dialog=await dialog_task
     assert target in dialog.message
     await dialog.accept()
     await page.wait_for_function("document.querySelector('#toast')?.textContent?.includes('회원 내보내기가 완료됐습니다.')", timeout=30000)
@@ -55,9 +55,9 @@ async def main():
             await closed_page.click("#loginTabBtn")
             await closed_page.fill("#authLoginNickname",USER)
             await closed_page.fill("#authLoginPassword",USER_OLD_PW)
-            async with closed_page.expect_dialog(timeout=10000) as di:
-                await closed_page.click("#loginBtn")
-            dialog=await di.value
+            dialog_task=asyncio.create_task(closed_page.wait_for_event("dialog", timeout=10000))
+            await closed_page.click("#loginBtn")
+            dialog=await dialog_task
             assert dialog.message=="사용이 정지된 계정입니다. 관리자에게 문의해주세요.",dialog.message
             await dialog.accept()
             assert await closed_page.locator("#auth").evaluate("(e)=>e.classList.contains('open')")
