@@ -19,7 +19,7 @@ async def login(page,nick,pw):
     await page.fill("#authLoginNickname",nick)
     await page.fill("#authLoginPassword",pw)
     await page.click("#loginBtn")
-    await page.wait_for_selector("#auth:not(.open)", timeout=30000)
+    await page.wait_for_selector("#auth", state="hidden", timeout=30000)
 
 async def kick_from_admin(page,target):
     await page.evaluate("showPage('memberAdmin')")
