@@ -7,7 +7,6 @@ from playwright.async_api import async_playwright
 
 BASE = "https://team-eysl-7vrd.vercel.app"
 ACCOUNTS = [
-    "__E2E_UI_ADMIN_260922_1909",
     "__E2E_UI_CLOSED_260922_1909",
     "__E2E_UI_OPEN_260922_1909",
 ]
@@ -20,11 +19,11 @@ async def signup(page, nick):
     await page.wait_for_selector("#auth.open", timeout=30000)
     await page.fill("#authNickname", nick)
     await page.fill("#authSignupPassword", pw(nick))
-    await page.click("#signupBtn")
-    await page.wait_for_selector("#authPending.open", timeout=30000)
-    text = (await page.locator("#pendingNickname").inner_text()).strip()
-    assert nick in text, (nick, text)
-    print("E2E_SIGNUP_OK", nick, flush=True)
+    async with page.expect_response(lambda r: "/functions/v1/register-member" in r.url, timeout=30000) as info:
+        await page.click("#signupBtn")
+    response = await info.value
+    assert response.status == 201, (nick, response.status, await response.text())
+    print("E2E_SIGNUP_BACKEND_OK", nick, flush=True)
 
 async def main():
     async with async_playwright() as p:
