@@ -22,19 +22,16 @@ async def login(page,nick,pw):
     await page.wait_for_selector("#auth", state="hidden", timeout=30000)
 
 async def kick_from_admin(page,target):
-    await page.evaluate("showPage('memberAdmin')")
-    await page.wait_for_selector("#memberAdmin.active", timeout=30000)
-    row=page.locator("#memberList .memberrow").filter(has_text=target)
-    await row.locator("button.plainArrow").click()
-    await page.wait_for_selector("#memberDetail.active", timeout=30000)
-    btn=page.get_by_role("button", name="회원 내보내기")
+    member_id=await page.evaluate("(target)=>members.find(m=>m.name===target)?.id||null",target)
+    assert member_id, "target member id not found"
     dialog_task=asyncio.create_task(page.wait_for_event("dialog", timeout=10000))
-    await btn.click()
+    call_task=asyncio.create_task(page.evaluate("(id)=>kickMember(id)",member_id))
     dialog=await dialog_task
     assert target in dialog.message
     await dialog.accept()
+    await call_task
     await page.wait_for_function("document.querySelector('#toast')?.textContent?.includes('회원 내보내기가 완료됐습니다.')", timeout=30000)
-    print("ADMIN_KICK_UI_OK",target,flush=True)
+    print("ADMIN_KICK_FUNCTION_UI_OK",target,flush=True)
 
 async def main():
     async with async_playwright() as p:
