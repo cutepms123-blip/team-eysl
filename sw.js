@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final195-member-session-expiry';
+const VERSION='team-eysl-final196-attendance-fresh-roster';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
