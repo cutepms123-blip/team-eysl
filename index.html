@@ -3410,17 +3410,40 @@ let lastSurfacedWaitlistOffer='';
 async function reloadTrainingApplicationsOnly(){
  const ids=Object.keys(trainings);
  if(!ids.length)return;
- const {data,error}=await dbClient.from('activity_applications')
-  .select('activity_id,member_id,application_type,wait_order,offer_status,offer_expires_at,updated_at')
-  .in('activity_id',ids);
- if(error)throw error;
+ const [applicationRes,activityRes]=await Promise.all([
+  dbClient.from('activity_applications')
+   .select('activity_id,member_id,roster_id,application_type,wait_order,offer_status,offer_expires_at,updated_at')
+   .in('activity_id',ids),
+  dbClient.from('activities')
+   .select('id,details,updated_at')
+   .in('id',ids)
+ ]);
+ if(applicationRes.error)throw applicationRes.error;
+ if(activityRes.error)throw activityRes.error;
+
+ (activityRes.data||[]).forEach(row=>{
+  const t=trainings[row.id];if(!t)return;
+  const d=row.details||{};
+  t.historicalParticipants=Array.isArray(d.historical_participants)?d.historical_participants:[];
+  t.historicalAttendance=(d.historical_attendance&&typeof d.historical_attendance==='object')?d.historical_attendance:{};
+ });
+
+ const data=applicationRes.data||[];
+ const rosterIds=[...new Set(data.map(a=>a.roster_id).filter(Boolean))];
+ let rosterMap=new Map();
+ if(rosterIds.length){
+  const rosterRes=await dbClient.from('team_roster').select('id,nickname').in('id',rosterIds);
+  if(rosterRes.error)throw rosterRes.error;
+  rosterMap=new Map((rosterRes.data||[]).map(r=>[r.id,r.nickname]));
+ }
  const byMemberId=id=>members.find(m=>m.id===id)?.name||null;
+ const byRosterId=id=>rosterMap.get(id)||null;
  Object.values(trainings).forEach(t=>{t.participants=[];t.waitlist=[];t.offer=null});
- (data||[]).forEach(a=>{
+ data.forEach(a=>{
   const t=trainings[a.activity_id];if(!t)return;
-  const name=byMemberId(a.member_id);if(!name)return;
+  const name=byMemberId(a.member_id)||byRosterId(a.roster_id);if(!name)return;
   if(a.application_type==='participant')t.participants.push(name);
-  else if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
+  else if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,rosterId:a.roster_id||null,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
  });
  Object.values(trainings).forEach(t=>{
   normalizeWait(t);
@@ -3436,6 +3459,14 @@ async function reloadTrainingApplicationsOnly(){
  if(active==='trainingDetail'&&selectedTrainingId)openTraining(selectedTrainingId);
  else if(active==='applyStatus'&&selectedTrainingId)void renderApplyStatus();
  else if(active==='myStatus')renderMyStatusList();
+ else if(active==='attendanceAdmin')renderAttendanceAdmin();
+ else if(active==='attendanceAdminDetail'){
+  const currentId=document.getElementById('attAdminDetailBody')?.dataset?.activityId||'';
+  if(currentId){
+   const fresh=attEvents().find(x=>x.id===currentId);
+   if(fresh)renderAttDetail(fresh);
+  }
+ }
 }
 
 async function reloadApplicationsUI(){
@@ -3462,13 +3493,16 @@ function surfacePendingWaitlistOffer(force=false){
 function ensureApplicationRealtime(){
  if(applicationRealtimeChannel||!dbClient?.channel||!currentUser.memberId)return;
  try{
+  const refreshApplications=()=>{
+   clearTimeout(applicationRealtimeRefreshTimer);
+   applicationRealtimeRefreshTimer=setTimeout(async()=>{
+    try{await reloadTrainingApplicationsOnly();surfacePendingWaitlistOffer(false)}catch(e){console.error('application realtime:',e)}
+   },180);
+  };
   applicationRealtimeChannel=dbClient.channel(`eysl-applications-${currentUser.memberId}`)
-   .on('postgres_changes',{event:'*',schema:'public',table:'activity_applications'},()=>{
-    clearTimeout(applicationRealtimeRefreshTimer);
-    applicationRealtimeRefreshTimer=setTimeout(async()=>{
-      try{await reloadTrainingApplicationsOnly();surfacePendingWaitlistOffer(false)}catch(e){console.error('application realtime:',e)}
-    },180);
-   }).subscribe();
+   .on('postgres_changes',{event:'*',schema:'public',table:'activity_applications'},refreshApplications)
+   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'activities'},refreshApplications)
+   .subscribe();
  }catch(e){console.error('application realtime setup:',e)}
 }
 let memberSessionExpiryHandling=false;
@@ -5266,7 +5300,25 @@ function attCounts(e){
  names.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});
  return {present,late,absent};
 }
-function openAttEvent(id){const e=attEvents().find(x=>x.id===id);if(!attRecords[id])attRecords[id]={};showPage('attendanceAdminDetail');renderAttDetail(e)}
+async function openAttEvent(id){
+ showPage('attendanceAdminDetail');
+ const body=document.getElementById('attAdminDetailBody');
+ if(body){body.dataset.activityId=id;body.innerHTML='<div class="card meta">최신 명단을 불러오는 중...</div>'}
+ try{
+  await loadPersistentContent();
+  const e=attEvents().find(x=>x.id===id);
+  if(!attRecords[id])attRecords[id]={};
+  if(body)body.dataset.activityId=id;
+  renderAttDetail(e);
+ }catch(err){
+  console.error('attendance detail refresh:',err);
+  const e=attEvents().find(x=>x.id===id);
+  if(!attRecords[id])attRecords[id]={};
+  if(body)body.dataset.activityId=id;
+  renderAttDetail(e);
+  toast('최신 출석 명단을 불러오지 못했습니다.');
+ }
+}
 function renderAttDetail(e){
  const body=document.getElementById('attAdminDetailBody');
  if(!body)return;
