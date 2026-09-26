@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final196-attendance-fresh-roster';
+const VERSION='team-eysl-final197-live-training-roster';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -10,7 +10,7 @@ const PRECACHE=[
   '/race-attachment-v123.js','/race-time-fields-v124.js','/race-application-v125.js',
   '/race-ui-v142.js','/schedule-deadline-race-v142.js','/race-detail-v150.js',
   '/author-monthly-deadline-v145.js','/attendance-nav-ui-v153.js','/attendance-schedule-race-v154.js',
-  '/training-roster-v159.js','/compact-status-v155.js','/ui-refresh-v160.js','/runtime-fix-v162.js',
+  '/compact-status-v155.js','/ui-refresh-v160.js','/runtime-fix-v162.js',
   '/auth-session-v126.js','/records-style-v164.js','/race-status-v165.js','/visible-fixes-v166.js',
   '/canonical-ui-v172.js','/application-save-v175.js','/nav-wait-status-v176.js'
 ];

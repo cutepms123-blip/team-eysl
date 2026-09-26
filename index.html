@@ -1613,7 +1613,7 @@ async function loadPersistentContent(){
   dbClient.from('notices').select('id,title,body,attachments,comments,created_by,created_at,updated_at').order('created_at',{ascending:false}),
   dbClient.from('activities').select('id,kind,title,activity_date,start_time,end_time,place,capacity,details,created_by,created_at,updated_at').order('activity_date',{ascending:true}),
   dbClient.rpc('member_directory_v4'),
-  dbClient.from('activity_applications').select('id,activity_id,member_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at'),
+  dbClient.from('activity_applications').select('id,activity_id,member_id,roster_id,application_type,wait_order,details,offer_status,offer_expires_at,created_at,updated_at'),
   historyPromise,
   raceHistoryPromise,
   dbClient.rpc('team_attendance_canonical_v1'),
@@ -1654,13 +1654,21 @@ async function loadPersistentContent(){
  myRaceHistory=(raceHistoryRes?.data||[]).map(x=>({title:x.title||'대회',date:String(x.activity_date||''),status:x.status||'종료',source:x.source||'history'}));
 
  const apps=applicationRes?.data||[];
+ const rosterIds=[...new Set(apps.map(a=>a.roster_id).filter(Boolean))];
+ let rosterNameMap=new Map();
+ if(rosterIds.length){
+  const rosterNameRes=await dbClient.from('team_roster').select('id,nickname').in('id',rosterIds);
+  if(!rosterNameRes.error)rosterNameMap=new Map((rosterNameRes.data||[]).map(r=>[r.id,r.nickname]));
+  else console.error('roster application names:',rosterNameRes.error);
+ }
  const byMemberId=id=>members.find(m=>m.id===id)?.name||null;
+ const byRosterId=id=>rosterNameMap.get(id)||null;
  Object.values(trainings).forEach(t=>{t.participants=[];t.waitlist=[]});
  events.forEach(e=>{e.participants=[]});
  races.forEach(r=>{r.participants=[];r.application=null});
  raceApplication=race?.application||null;
  apps.forEach(a=>{
-  const name=byMemberId(a.member_id);if(!name)return;
+  const name=byMemberId(a.member_id)||byRosterId(a.roster_id);if(!name)return;
   const t=trainings[a.activity_id];
   if(t){
    if(a.application_type==='waitlist')t.waitlist.push({name,memberId:a.member_id,order:Number(a.wait_order||9999),offerStatus:a.offer_status||'none',offerExpiresAt:a.offer_expires_at||null});
