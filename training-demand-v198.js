@@ -64,7 +64,7 @@
 
   nav.insertAdjacentHTML('beforebegin',
    '<section id="trainingDemand" class="page">'+
-    '<div class="pagehead"><button class="back" onclick="showPage(\'schedule\')">←</button><h1>훈련 수요조사</h1><button id="dpCreateTop" class="circleMiniBtn" type="button" onclick="openTrainingDemandCreate()" aria-label="수요조사 만들기">＋</button></div>'+
+    '<div class="pagehead"><button class="back" onclick="showPage(\'schedule\')">←</button><h1>훈련 수요조사</h1><button id="dpCreateTop" class="circleMiniBtn" type="button" style="display:none" onclick="openTrainingDemandCreate()" aria-label="수요조사 만들기">＋</button></div>'+
     '<div class="dpHero"><h3>가능한 날짜만 체크하면 돼요 🏊</h3><p>수요조사는 실제 참석 신청이 아니에요. 훈련이 확정되면 그때 다시 참석 신청을 받습니다.</p></div>'+
     '<div id="trainingDemandList" class="list"></div>'+
    '</section>'+
@@ -310,7 +310,13 @@
    var r=await dbClient.rpc('confirm_training_demand_option_v1',{p_poll_id:pollId,p_option_id:optionId,p_force:below});
    if(r.error)throw r.error;
    var d=r.data||{};
-   try{await sendPush('all','TEAM EYSL 훈련 확정',fmtDay(d.date)+' 훈련이 확정됐어요. 앱에서 실제 참석 신청을 해주세요.',{tag:'training-confirmed-'+d.activity_id,url_path:'/?open=training&activity='+d.activity_id})}catch(_){}
+   try{
+    var voterIds=[];
+    (p.options||[]).forEach(function(opt){(opt.voters||[]).forEach(function(v){if(v&&v.member_id&&v.member_id!==currentUser.memberId&&voterIds.indexOf(v.member_id)<0)voterIds.push(v.member_id)})});
+    await Promise.all(voterIds.map(function(memberId){
+     return sendPush('member','TEAM EYSL 훈련 확정',fmtDay(d.date)+' 훈련이 확정됐어요. 앱에서 실제 참석 신청을 해주세요.',{target_member_id:memberId,tag:'training-confirmed-'+d.activity_id,url_path:'/?open=training&activity='+d.activity_id});
+    }));
+   }catch(_){}
    try{await loadPersistentContent()}catch(_){}
    toast('훈련을 확정하고 실제 신청을 열었습니다.');
    await loadPolls();
