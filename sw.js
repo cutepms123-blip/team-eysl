@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final199-training-demand-verified';
+const VERSION='team-eysl-final200-training-automation';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -12,7 +12,7 @@ const PRECACHE=[
   '/author-monthly-deadline-v145.js','/attendance-nav-ui-v153.js','/attendance-schedule-race-v154.js',
   '/compact-status-v155.js','/ui-refresh-v160.js','/runtime-fix-v162.js',
   '/auth-session-v126.js','/records-style-v164.js','/race-status-v165.js','/visible-fixes-v166.js',
-  '/canonical-ui-v172.js','/application-save-v175.js','/nav-wait-status-v176.js','/training-demand-v198.js'
+  '/canonical-ui-v172.js','/application-save-v175.js','/nav-wait-status-v176.js','/training-automation-v200.js'
 ];
 
 self.addEventListener('install',event=>{
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final193"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final200"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
