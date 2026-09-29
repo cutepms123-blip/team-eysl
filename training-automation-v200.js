@@ -52,7 +52,7 @@
   style.textContent=
    '#trainingSignupWindows{margin-bottom:16px}.taHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:4px 0 10px}.taHead h2{margin:0;font-size:15px}'+
    '.taWindow{border:1px solid #e7e8ec;border-radius:18px;background:#fff;padding:14px;margin-bottom:11px}.taWindowTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.taWindowTop h3{margin:0;font-size:15px}.taWindowTop p{margin:5px 0 0;font-size:10px;color:#777;line-height:1.5}'+
-   '.taPill{display:inline-flex;padding:4px 8px;border-radius:999px;background:#eef8f0;font-size:10px;font-weight:800;white-space:nowrap}.taOption{display:block;border:1px solid #ececf0;border-radius:14px;padding:11px;margin-top:9px}.taOption.me{border-width:2px}.taOptionRow{display:flex;gap:9px;align-items:flex-start}.taOptionRow input{width:18px;height:18px;margin-top:2px}.taOptionMain{flex:1;min-width:0}.taOptionMain b{font-size:12px}.taOptionMain p{font-size:10px;color:#777;margin:4px 0 0;line-height:1.5}.taCount{font-weight:900;font-size:16px;white-space:nowrap}.taNames{font-size:10px;color:#666;line-height:1.65;padding-top:8px;margin-top:8px;border-top:1px solid #eee}'+
+   '.taPill{display:inline-flex;padding:4px 8px;border-radius:999px;background:#eef8f0;font-size:10px;font-weight:800;white-space:nowrap}.taOption{display:block;border:1px solid #ececf0;border-radius:14px;padding:12px;margin-top:9px;cursor:pointer}.taOption.me{border-width:2px}.taOptionRow{display:flex;gap:9px;align-items:flex-start}.taOptionMain{flex:1;min-width:0}.taOptionMain b{font-size:12px}.taOptionMain p{font-size:10px;color:#777;margin:4px 0 0;line-height:1.5}.taCount{font-weight:900;font-size:16px;white-space:nowrap}.taOptionActions{display:flex;gap:7px;align-items:center;margin-top:10px}.taOptionActions .btn{flex:1}.taNames{font-size:10px;color:#666;line-height:1.65;padding-top:8px;margin-top:8px;border-top:1px solid #eee}'+
    '.taEditor{border:1px solid #e8e9ed;border-radius:16px;padding:12px;margin-bottom:10px;background:#fff}.taEditorTop{display:flex;justify-content:space-between;align-items:center}.taEditorTop button{border:0;background:transparent;font-size:18px}.taInline{display:flex;gap:7px;flex-wrap:wrap}.taInline>*{flex:1;min-width:110px}'+
    '.taFinance{margin-top:14px}.taFinance .detail{margin-bottom:10px}.taPayRow,.taRefundRow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eef0f2}.taPayRow:last-child,.taRefundRow:last-child{border-bottom:0}.taPayRow b,.taRefundRow b{font-size:11px}.taPayRow p,.taRefundRow p{margin:3px 0 0;font-size:9px;color:#777}.taStatus{font-size:9px;font-weight:800;padding:4px 7px;border-radius:999px;background:#f1f2f4;white-space:nowrap}'+
    '.taNoticeOverlay{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:9999;display:none;align-items:flex-end;justify-content:center}.taNoticeBox{width:min(430px,100%);background:#fff;border-radius:22px 22px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -12px 30px rgba(0,0,0,.15)}.taNoticeBox h3{margin:0 0 8px;font-size:17px}.taNoticeBox p{white-space:pre-line;margin:0;color:#555;font-size:12px;line-height:1.6}.taNoticeActions{display:flex;gap:8px;margin-top:16px}.taNoticeActions .btn{flex:1}'+
@@ -73,12 +73,15 @@
    '<section id="trainingSignupCreate" class="page">'+
     '<div class="pagehead"><button class="back" onclick="showPage(\'trainingList\')">←</button><h1>훈련 신청 등록</h1><span></span></div>'+
     '<div class="formrow"><label>제목</label><input id="taTitle" placeholder="예: 10월 TEAM EYSL 훈련"></div>'+
-    '<div class="grid2"><div class="formrow"><label>최소 진행 인원</label><input id="taMin" type="number" min="1" inputmode="numeric"></div><div class="formrow"><label>최대 인원</label><input id="taCap" type="number" min="1" inputmode="numeric" value="20"></div></div>'+
-    '<div class="formrow"><label>신청 마감</label><input id="taDeadline" type="datetime-local"></div>'+
+    '<div class="formrow"><label>투표 마감</label><input id="taDeadline" type="datetime-local"></div>'+
     '<div class="formrow"><label>안내 <span class="meta">(선택)</span></label><textarea id="taNotes" placeholder="훈련 관련 참고사항"></textarea></div>'+
-    '<div class="section"><h2>훈련 후보 일정</h2><button class="link" type="button" onclick="addTrainingSignupOption()">＋ 일정 추가</button></div>'+
+    '<div class="section"><h2>훈련 일정</h2><button class="link" type="button" onclick="addTrainingSignupOption()">＋ 일정 추가</button></div>'+
     '<div id="taEditors"></div>'+
     '<button id="taSaveCreate" class="btn primary" style="width:100%" onclick="saveTrainingSignupWindow()">훈련 신청 열기</button>'+
+   '</section>'+
+   '<section id="trainingSignupDetail" class="page">'+
+    '<div class="pagehead"><button class="back" onclick="showPage(\'trainingList\')">←</button><h1>훈련 상세</h1><span></span></div>'+
+    '<div id="trainingSignupDetailBody"></div>'+
    '</section>'+
    '<section id="trainingOpsLog" class="page">'+
     '<div class="pagehead"><button class="back" onclick="showPage(\'home\')">←</button><h1>훈련 운영 기록</h1><span></span></div>'+
@@ -109,13 +112,13 @@
   var box=document.getElementById('trainingSignupWindows');if(!box)return;
   var rows=signupWindows.filter(function(p){return p.status==='open'&&p.is_open});
   if(!rows.length){box.innerHTML='';return}
-  var body='<div class="taHead"><h2>신청 접수 중</h2><span class="meta">마감 후 자동 확정</span></div>';
+  var body='<div class="taHead"><h2>신청 접수 중</h2><span class="meta">투표 마감 후 자동 확정</span></div>';
   rows.forEach(function(p){
    var opts=Array.isArray(p.options)?p.options:[];
-   body+='<div class="taWindow"><div class="taWindowTop"><div><h3>'+e(p.title)+'</h3><p>마감 '+e(fmtDateTime(p.deadline))+' · 최소 '+Number(p.minimum_people||0)+'명 · 최대 '+Number(p.capacity||0)+'명</p></div><span class="taPill">신청 가능</span></div>';
+   body+='<div class="taWindow"><div class="taWindowTop"><div><h3>'+e(p.title)+'</h3><p>투표 마감 '+e(fmtDateTime(p.deadline))+'</p></div><span class="taPill">신청 가능</span></div>';
    if(p.details&&p.details.notes)body+='<p class="meta" style="margin:9px 0 0">'+e(p.details.notes)+'</p>';
    opts.forEach(function(o){
-    var count=Number(o.count||0),cap=Number(p.capacity||0),min=Number(p.minimum_people||0);
+    var count=Number(o.count||0),cap=Number(o.capacity||p.capacity||0),min=Number(o.minimum_people||p.minimum_people||0);
     var selected=!!o.selected,ord=Number(o.selected_order||0);
     var mine=selected?(ord<=cap?'참석 예정':'대기 예상 '+Math.max(1,ord-cap)+'번'):'';
     var progress=count>=min?'최소 인원 충족':'최소 인원까지 '+Math.max(0,min-count)+'명';
@@ -125,24 +128,74 @@
       return e(v.nickname)+' <b>'+e(v.status==='participant'?'참석 예정':'대기 '+v.wait_order+'번')+'</b>';
      }).join(' · ')+'</div>';
     }
-    body+='<label class="taOption '+(selected?'me':'')+'"><div class="taOptionRow">'+
-      '<input class="taSignupCheck" data-poll="'+e(p.id)+'" type="checkbox" value="'+e(o.id)+'" '+(selected?'checked':'')+'>'+
-      '<div class="taOptionMain"><b>'+e(optionLabel(o))+'</b><p>'+e(progress)+(mine?' · 내 상태: '+e(mine):'')+'</p></div>'+
-      '<div class="taCount">'+count+'명</div></div>'+names+'</label>';
+    body+='<div class="taOption '+(selected?'me':'')+'" onclick="openTrainingSignupOption(\''+e(p.id)+'\',\''+e(o.id)+'\')">'+
+      '<div class="taOptionRow"><div class="taOptionMain"><b>'+e(optionLabel(o))+'</b>'+
+      '<p>최소 '+min+'명 · 최대 '+cap+'명 · '+e(progress)+(mine?' · 내 상태: '+e(mine):'')+'</p></div>'+
+      '<div class="taCount">'+count+'명</div></div>'+names+
+      '<div class="taOptionActions"><button class="btn '+(selected?'amber':'primary')+'" onclick="event.stopPropagation();toggleTrainingSignup(\''+e(p.id)+'\',\''+e(o.id)+'\','+(selected?'true':'false')+')">'+(selected?'훈련 취소':'훈련 신청')+'</button>'+
+      '<button class="btn outline" onclick="event.stopPropagation();openTrainingSignupOption(\''+e(p.id)+'\',\''+e(o.id)+'\')">상세 보기</button></div>'+
+      '</div>';
    });
-   body+='<button class="btn primary" style="width:100%;margin-top:10px" onclick="saveTrainingSignup(\''+p.id+'\')">훈련 신청 저장</button>';
-   if(admin())body+='<button class="btn amber" style="width:100%;margin-top:7px" onclick="cancelTrainingSignupWindow(\''+p.id+'\')">신청 모집 취소</button>';
+   if(admin())body+='<button class="btn amber" style="width:100%;margin-top:10px" onclick="cancelTrainingSignupWindow(\''+p.id+'\')">신청 모집 취소</button>';
    body+='</div>';
   });
   box.innerHTML=body;
  }
 
+ window.toggleTrainingSignup=async function(pollId,optionId,isSelected){
+  var p=signupWindows.find(function(x){return String(x.id)===String(pollId)});
+  if(!p)return toast('훈련 정보를 찾을 수 없습니다.');
+  var ids=(p.options||[]).filter(function(x){return x.selected}).map(function(x){return x.id});
+  if(isSelected)ids=ids.filter(function(id){return String(id)!==String(optionId)});
+  else if(!ids.some(function(id){return String(id)===String(optionId)}))ids.push(optionId);
+  try{
+   var r=await dbClient.rpc('set_training_demand_votes_v1',{p_poll_id:pollId,p_option_ids:ids});
+   if(r.error)throw r.error;
+   toast(isSelected?'훈련 신청을 취소했습니다.':'훈련 신청이 완료됐습니다.');
+   await loadSignupWindows();
+   if(activePage()==='trainingSignupDetail')openTrainingSignupOption(pollId,optionId);
+  }catch(err){
+   console.error(err);
+   toast(String(err.message||'').includes('poll closed')?'투표가 이미 마감됐습니다.':'훈련 신청 처리에 실패했습니다.');
+  }
+ };
+
+ window.openTrainingSignupOption=function(pollId,optionId){
+  var p=signupWindows.find(function(x){return String(x.id)===String(pollId)});
+  var o=p&&(p.options||[]).find(function(x){return String(x.id)===String(optionId)});
+  if(!p||!o)return toast('훈련 정보를 찾을 수 없습니다.');
+  var count=Number(o.count||0),cap=Number(o.capacity||p.capacity||0),min=Number(o.minimum_people||p.minimum_people||0);
+  var selected=!!o.selected,ord=Number(o.selected_order||0);
+  var mine=selected?(ord<=cap?'참석 예정':'대기 예상 '+Math.max(1,ord-cap)+'번'):'미신청';
+  var voters='';
+  if(admin()&&Array.isArray(o.voters)){
+   voters='<div class="section"><h2>신청 현황</h2><span class="meta">'+count+'명</span></div><div class="card">'+
+    (o.voters.length?o.voters.map(function(v){
+      return '<div class="taPayRow"><div><b>'+e(v.nickname)+'</b><p>'+e(v.status==='participant'?'참석 예정':'대기 '+v.wait_order+'번')+'</p></div><span class="taStatus">'+e(v.order)+'번째 신청</span></div>';
+    }).join(''):'<div class="meta">아직 신청자가 없습니다.</div>')+'</div>';
+  }
+  showPage('trainingSignupDetail');
+  var body=document.getElementById('trainingSignupDetailBody');if(!body)return;
+  body.innerHTML='<div class="detail">'+
+    '<div class="detailrow"><b>훈련</b><span>'+e(p.title)+'</span></div>'+
+    '<div class="detailrow"><b>일정</b><span>'+e(fmtDay(o.date))+(o.start?' · '+e(o.start)+(o.end?'–'+e(o.end):''):'')+'</span></div>'+
+    '<div class="detailrow"><b>장소</b><span>'+e(o.place||'-')+'</span></div>'+
+    '<div class="detailrow"><b>최소 인원</b><span>'+min+'명</span></div>'+
+    '<div class="detailrow"><b>최대 인원</b><span>'+cap+'명</span></div>'+
+    '<div class="detailrow"><b>현재 신청</b><span>'+count+'명</span></div>'+
+    '<div class="detailrow"><b>투표 마감</b><span>'+e(fmtDateTime(p.deadline))+'</span></div>'+
+    '<div class="detailrow"><b>내 상태</b><span>'+e(mine)+'</span></div>'+
+   '</div>'+
+   ((p.details&&p.details.notes)?'<div class="section"><h2>안내</h2></div><div class="card"><p style="margin:0;white-space:pre-line">'+e(p.details.notes)+'</p></div>':'')+
+   '<div class="actions" style="margin-top:14px"><button class="btn '+(selected?'amber':'primary')+'" style="width:100%" onclick="toggleTrainingSignup(\''+e(p.id)+'\',\''+e(o.id)+'\','+(selected?'true':'false')+')">'+(selected?'훈련 취소':'훈련 신청')+'</button></div>'+
+   voters;
+ };
+
+
  window.openTrainingSignupCreate=function(){
   if(!admin())return toast('관리자만 등록할 수 있습니다.');
   inject();showPage('trainingSignupCreate');
   document.getElementById('taTitle').value='';
-  document.getElementById('taMin').value='';
-  document.getElementById('taCap').value='20';
   document.getElementById('taDeadline').value='';
   document.getElementById('taNotes').value='';
   document.getElementById('taEditors').innerHTML='';
@@ -156,26 +209,37 @@
   d.innerHTML='<div class="taEditorTop"><b>일정 '+createSeq+'</b><button type="button" onclick="this.closest(\'.taEditor\').remove()">×</button></div>'+
    '<div class="formrow"><label>날짜</label><input class="taDate" type="date"></div>'+
    '<div class="taInline"><div class="formrow"><label>시작</label><input class="taStart" type="time"></div><div class="formrow"><label>종료</label><input class="taEnd" type="time"></div></div>'+
-   '<div class="formrow"><label>장소 <span class="meta">(선택)</span></label><input class="taPlace" placeholder="예: 남부터미널"></div>';
+   '<div class="formrow"><label>장소 <span class="meta">(선택)</span></label><input class="taPlace" placeholder="예: 남부터미널"></div>'+
+   '<div class="taInline"><div class="formrow"><label>최소 인원</label><input class="taMin" type="number" min="1" inputmode="numeric" placeholder="예: 8"></div><div class="formrow"><label>최대 인원</label><input class="taCap" type="number" min="1" inputmode="numeric" placeholder="예: 15"></div></div>';
   box.appendChild(d);
  };
 
  window.saveTrainingSignupWindow=async function(){
   if(!admin())return;
   var title=(document.getElementById('taTitle').value||'').trim();
-  var minimum=Number(document.getElementById('taMin').value||0);
-  var capacity=Number(document.getElementById('taCap').value||0);
   var deadline=document.getElementById('taDeadline').value;
   var notes=(document.getElementById('taNotes').value||'').trim();
   var options=[].slice.call(document.querySelectorAll('#taEditors .taEditor')).map(function(row){
-   return {date:row.querySelector('.taDate').value,start:row.querySelector('.taStart').value,end:row.querySelector('.taEnd').value,place:(row.querySelector('.taPlace').value||'').trim()};
+   return {
+    date:row.querySelector('.taDate').value,
+    start:row.querySelector('.taStart').value,
+    end:row.querySelector('.taEnd').value,
+    place:(row.querySelector('.taPlace').value||'').trim(),
+    minimum_people:Number(row.querySelector('.taMin').value||0),
+    capacity:Number(row.querySelector('.taCap').value||0)
+   };
   }).filter(function(x){return x.date});
   if(!title)return toast('제목을 입력해주세요.');
-  if(!minimum||minimum<1)return toast('최소 진행 인원을 입력해주세요.');
-  if(!capacity||capacity<minimum)return toast('최대 인원은 최소 진행 인원 이상으로 설정해주세요.');
-  if(!deadline||new Date(deadline).getTime()<=Date.now())return toast('신청 마감 시간을 확인해주세요.');
+  if(!deadline||new Date(deadline).getTime()<=Date.now())return toast('투표 마감 시간을 확인해주세요.');
   if(!options.length)return toast('훈련 일정을 1개 이상 입력해주세요.');
-  for(var i=0;i<options.length;i++)if(options[i].start&&options[i].end&&options[i].end<=options[i].start)return toast('종료 시간을 확인해주세요.');
+  for(var i=0;i<options.length;i++){
+   var x=options[i];
+   if(x.start&&x.end&&x.end<=x.start)return toast('종료 시간을 확인해주세요.');
+   if(!x.minimum_people||x.minimum_people<1)return toast((i+1)+'번째 훈련의 최소 인원을 입력해주세요.');
+   if(!x.capacity||x.capacity<x.minimum_people)return toast((i+1)+'번째 훈련의 최대 인원을 확인해주세요.');
+  }
+  var minimum=Math.min.apply(null,options.map(function(x){return x.minimum_people}));
+  var capacity=Math.max.apply(null,options.map(function(x){return x.capacity}));
   var btn=document.getElementById('taSaveCreate');btn.disabled=true;btn.textContent='등록 중...';
   try{
    var r=await dbClient.rpc('create_training_demand_poll_v1',{
@@ -183,22 +247,14 @@
     p_details:{notes:notes,training_title:title,registration_mode:'auto_signup'}
    });
    if(r.error)throw r.error;
-   try{await sendPush('all','TEAM EYSL 훈련 신청',title+' 신청이 열렸어요. 가능한 일정을 선택해주세요.',{tag:'training-signup-'+r.data,url_path:'/?open=training'})}catch(_){}
-   toast('훈련 신청을 열었습니다.');
+   try{await sendPush('all','TEAM EYSL 훈련 신청',title+' 투표가 열렸어요. 참석할 훈련을 신청해주세요.',{tag:'training-signup-'+r.data,url_path:'/?open=training'})}catch(_){}
+   toast('훈련 투표를 열었습니다.');
    await loadSignupWindows();showPage('trainingList');
-  }catch(err){console.error(err);toast('훈련 신청 등록에 실패했습니다.')}
+  }catch(err){console.error(err);toast('훈련 투표 등록에 실패했습니다.')}
   finally{btn.disabled=false;btn.textContent='훈련 신청 열기'}
  };
 
- window.saveTrainingSignup=async function(pollId){
-  var ids=[].slice.call(document.querySelectorAll('.taSignupCheck[data-poll="'+pollId+'"]:checked')).map(function(x){return x.value});
-  try{
-   var r=await dbClient.rpc('set_training_demand_votes_v1',{p_poll_id:pollId,p_option_ids:ids});
-   if(r.error)throw r.error;
-   toast(ids.length?'훈련 신청을 저장했습니다.':'신청을 모두 취소했습니다.');
-   await loadSignupWindows();
-  }catch(err){console.error(err);toast(String(err.message||'').includes('poll closed')?'신청이 이미 마감됐습니다.':'훈련 신청 저장에 실패했습니다.')}
- };
+
 
  window.cancelTrainingSignupWindow=async function(id){
   if(!admin())return;
