@@ -314,7 +314,7 @@
    }else if(r.data&&r.data.status==='waitlist'&&Number(r.data.wait_order||0)===1){
     try{await sendPush('operators','TEAM EYSL 운영 알림',t.title+' 정원이 찼습니다. '+currentUser.nickname+'님이 대기 1번으로 등록됐습니다.',{tag:'training-full-'+id,url_path:'/?open=training&activity='+id})}catch(_){}
    }
-   await reloadApplicationsUI();openTraining(id);
+   await reloadApplicationsUI();openTraining(id);setTimeout(surfaceNotice,120);
    if(r.data&&r.data.status==='participant')toast('훈련 신청완료');
    else toast('대기 신청완료'+(r.data&&r.data.wait_order?' · '+r.data.wait_order+'번':''));
   }catch(err){console.error(err);toast(String(err.message||'').includes('activity_started')?'종료된 훈련은 신청할 수 없습니다.':'신청 저장에 실패했습니다.')}
@@ -369,7 +369,7 @@
    try{await sendPush('operators','TEAM EYSL 운영 알림',currentUser.nickname+'님이 '+(action==='accept'?'대기 승급을 수락했습니다.':'대기 승급을 거절했습니다.'),{tag:'wait-response-'+activityId,url_path:'/?open=training&activity='+activityId})}catch(_){}
    await reloadApplicationsUI();
    if(!r.data.ok&&r.data.status==='expired'){showPage('trainingList');return toast('응답 시간이 지나 다음 대기자에게 넘어갔습니다.')}
-   if(action==='accept'){openTraining(activityId);toast('참석이 확정됐습니다.')}
+   if(action==='accept'){openTraining(activityId);setTimeout(surfaceNotice,120);toast('참석이 확정됐습니다.')}
    else{showPage('trainingList');toast(Number(r.data.offered_count||0)>0?'다음 대기자에게 기회를 넘겼습니다.':'다음 대기자가 없어 빈자리로 전환됐습니다.')}
   }catch(err){console.error(err);toast('대기 응답 처리에 실패했습니다.')}
  };
@@ -535,5 +535,5 @@
  document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='visible'&&currentUser&&currentUser.memberId){if(activePage()==='trainingList')loadSignupWindows();surfaceNotice()}
  });
- setInterval(function(){if(currentUser&&currentUser.memberId&&activePage()==='trainingList')loadSignupWindows()},30000);
+ setInterval(function(){if(currentUser&&currentUser.memberId){if(activePage()==='trainingList')loadSignupWindows();surfaceNotice()}},30000);
 })();
