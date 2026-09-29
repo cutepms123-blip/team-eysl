@@ -481,7 +481,6 @@
    window.showPage=function(id){
     var r=oldShow.apply(this,arguments);
     if(id==='trainingList')setTimeout(loadSignupWindows,0);
-    if(id==='trainingOpsLog'&&admin())setTimeout(window.openTrainingOpsLog,0);
     return r;
    };window.showPage.__ta200=true;
   }
