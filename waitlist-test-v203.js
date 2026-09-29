@@ -1,11 +1,11 @@
-/* TEAM EYSL v203 — isolated waitlist/refund test mode */
+/* TEAM EYSL v204 — TEST CENTER */
 (function(){
- if(window.__EYSL_WAITLIST_TEST_V203__)return;
- window.__EYSL_WAITLIST_TEST_V203__=true;
+ if(window.__EYSL_TEST_CENTER_V204__)return;
+ window.__EYSL_TEST_CENTER_V204__=true;
 
  const KEY="eysl_waitlist_test_v203";
  const blank=()=>({
-  active:false,scenario:null,capacity:2,fee:20000,
+  active:false,scenario:null,centerCategory:"training",capacity:2,fee:20000,
   participants:[],waitlist:[],refunds:[],notification:null,
   pushEnabled:false,logs:[]
  });
@@ -59,7 +59,8 @@
  function start(type){
   if(!actualMaster())return;
   const push=state.pushEnabled;
-  state=blank();state.active=true;state.scenario=type;state.pushEnabled=push;
+  const cat=(type==="refund_wait"||type==="refund_match")?"finance":"training";
+  state=blank();state.active=true;state.scenario=type;state.pushEnabled=push;state.centerCategory=cat;
   const n=me();
 
   if(type==="promote"||type==="decline"||type==="expiry"){
@@ -182,9 +183,11 @@
 
  function reset(){
   const push=state.pushEnabled;
-  state=blank();state.pushEnabled=push;write();
-  if(typeof toast==="function")toast("테스트 데이터를 초기화했습니다.");
-  try{showPage("home")}catch(_){}
+  const cat=state.centerCategory||"training";
+  state=blank();state.pushEnabled=push;state.centerCategory=cat;write();
+  if(typeof toast==="function")toast("테스트 시나리오를 종료했습니다.");
+  try{showPage("waitlistTest")}catch(_){}
+  render();
  }
  function togglePush(){
   state.pushEnabled=!state.pushEnabled;
@@ -202,6 +205,8 @@
    actions="<div class='wltActions'><button class='btn primary' data-wlt-action='join_refund'>훈련 신청</button></div>";
   }else if(memberView()&&n.type==="refund_due"){
    actions="<div class='wltActions'><button class='btn primary' data-wlt-action='paid'>입금 완료</button></div>";
+  }else if(n.type==="generic_test"){
+   actions="<div class='wltActions'><button class='btn outline' data-tc-action='dismiss_popup'>닫기</button></div>";
   }
   return "<div class='wltNotice'><span class='wltTag'>TEST</span><h3>[TEST] "+esc(n.title)+"</h3><p>"+esc(n.body)+"</p>"+actions+"</div>";
  }
@@ -241,50 +246,120 @@
   }
   return x?"<div class='section'><h2>관리자 테스트 조작</h2></div><div class='wltActions stack'>"+x+"</div>":"";
  }
- function scenarios(){
-  const rows=[
-   ["promote","① 대기 승급 · 수락","A 취소 → 민선 자리 제안 → 참석"],
-   ["decline","② 거절 후 다음 대기자","민선 거절 → C에게 자동 이동"],
-   ["no_wait","③ 대기자 없음","A 취소 → 빈자리 오픈 → 신규 참가"],
-   ["expiry","④ 24시간 응답 만료","민선 제안 만료 → C에게 자동 이동"],
-   ["refund_wait","⑤ 유료 참가자 취소","A 취소 → 환불대기 · 빈자리 유지"],
-   ["refund_match","⑥ 환불 자동매칭","A 환불대기 → 민선 참가 → 직접 입금/확인"]
-  ];
+ function scenarioRows(category){
+  const all={
+   training:[
+    ["promote","① 대기 승급 · 수락","A 취소 → 민선 자리 제안 → 참석"],
+    ["decline","② 거절 후 다음 대기자","민선 거절 → C에게 자동 이동"],
+    ["no_wait","③ 대기자 없음","A 취소 → 빈자리 오픈 → 신규 참가"],
+    ["expiry","④ 24시간 응답 만료","민선 제안 만료 → C에게 자동 이동"]
+   ],
+   finance:[
+    ["refund_wait","① 유료 참가자 취소","A 취소 → 환불대기 · 빈자리 유지"],
+    ["refund_match","② 환불 자동매칭","A 환불대기 → 민선 참가 → 직접 입금/확인"]
+   ]
+  };
+  return all[category]||[];
+ }
+
+ function scenarios(category){
+  const rows=scenarioRows(category);
+  if(!rows.length)return "";
   return "<div class='section'><h2>테스트 시나리오</h2><span class='meta'>실데이터와 완전히 분리</span></div><div class='wltScenarios'>"+
    rows.map(r=>"<button data-wlt-scenario='"+r[0]+"'><b>"+r[1]+"</b><span>"+r[2]+"</span></button>").join("")+
    "</div>";
  }
 
+ function centerCategories(){
+  const cats=[
+   ["training","🏊","훈련 · 대기","신청·취소 · 정원 · 대기 승급 · 만료"],
+   ["finance","₩","참가비 · 환불","입금 · 환불대기 · 대체 참가자 매칭"],
+   ["attendance","✓","출석","출석 · 지각 · 불참 · 명단 예외처리"],
+   ["race","🏁","대회","개인전 · 단체전 · 신청 · 마감"],
+   ["notice","🔔","공지 · 알림","팝업 · 푸시 · 공지 상호작용"],
+   ["member","👥","회원","가입 · 승인 · 내보내기 · 재가입"],
+   ["profile","👑","권한 · 프로필","총관리자용 ↔ 일반모임원용 화면"]
+  ];
+  return "<div class='tcGrid'>"+cats.map(x=>
+   "<button class='tcCard "+(state.centerCategory===x[0]?"active":"")+"' data-tc-category='"+x[0]+"'>"+
+   "<i>"+x[1]+"</i><div><b>"+x[2]+"</b><span>"+x[3]+"</span></div><em>›</em></button>"
+  ).join("")+"</div>";
+ }
+
+ function categoryBody(){
+  const cat=state.centerCategory||"training";
+  const title={
+   training:"훈련 · 대기",finance:"참가비 · 환불",attendance:"출석",race:"대회",
+   notice:"공지 · 알림",member:"회원",profile:"권한 · 프로필"
+  }[cat]||"TEST CENTER";
+  let html="<div class='tcCategoryHead'><button data-tc-action='all'>← 전체</button><div><b>"+esc(title)+"</b><span>테스트 항목</span></div></div>";
+
+  if(cat==="training"||cat==="finance")return html+scenarios(cat);
+
+  if(cat==="profile"){
+   const mode=(typeof getEyslProfileMode==="function"?getEyslProfileMode():"admin");
+   return html+
+    "<div class='card tcInfo'><b>현재 프로필</b><p>"+(mode==="member"?"일반모임원용":"총관리자용")+"</p></div>"+
+    "<div class='wltActions stack'>"+
+     "<button class='btn primary' data-tc-action='profile_admin'>총관리자용으로 전환</button>"+
+     "<button class='btn outline' data-tc-action='profile_member'>일반모임원용으로 전환</button>"+
+    "</div>";
+  }
+
+  if(cat==="notice"){
+   return html+
+    "<div class='card tcInfo'><b>알림 테스트</b><p>실제 푸시는 상단 스위치를 ON으로 켠 경우에만 민선 본인 기기로 [TEST] 표시와 함께 전송됩니다.</p></div>"+
+    "<div class='wltActions stack'><button class='btn outline' data-tc-action='test_popup'>테스트 팝업 만들기</button></div>"+
+    "<div class='tcSoon'>공지 작성·댓글·마감 알림 시나리오는 이후 기능 테스트와 함께 이곳에 추가됩니다.</div>";
+  }
+
+  const desc={
+   attendance:"출석·지각·불참 및 관리자 명단 추가/제외 테스트를 이 영역에 추가합니다.",
+   race:"개인전·단체전 신청, 취소, 마감 상태 테스트를 이 영역에 추가합니다.",
+   member:"가입신청·승인·거절·내보내기·재가입 테스트를 이 영역에 추가합니다."
+  }[cat]||"";
+  return html+"<div class='tcSoon'><b>테스트 슬롯 준비 완료</b><span>"+esc(desc)+"</span></div>";
+ }
+
+
  function render(){
   const body=document.getElementById("waitlistTestBody");if(!body)return;
   if(!actualMaster()){body.innerHTML="<div class='card meta'>총관리자 계정에서만 사용할 수 있습니다.</div>";return}
-  let html="<div class='wltHero'><div><span class='wltTag'>TEST MODE</span><h2>대기 · 정산 테스트</h2><p>실제 회원·훈련·정산 데이터에는 반영되지 않습니다.</p></div>";
+  let html="<div class='wltHero'><div><span class='wltTag'>TEST CENTER</span><h2>TEAM EYSL 테스트 센터</h2><p>새 기능 테스트는 앞으로 모두 이곳에서 진행합니다. 실제 운영 데이터와 분리됩니다.</p></div>";
   if(!memberView())html+="<button class='wltPush "+(state.pushEnabled?"on":"")+"' data-wlt-action='toggle_push'>실제 푸시 "+(state.pushEnabled?"ON":"OFF")+"</button>";
   html+="</div>";
 
-  if(!state.active){body.innerHTML=html+scenarios();return}
+  if(!state.active){
+   if(!state.centerCategory||state.centerCategory==="all"){
+    body.innerHTML=html+"<div class='section'><h2>테스트 카테고리</h2><span class='meta'>기능별 시나리오</span></div>"+centerCategories();
+   }else{
+    body.innerHTML=html+categoryBody();
+   }
+   return;
+  }
 
-  html+="<div class='wltScenarioHead'><div><b>"+esc(label())+"</b><span>정원 "+state.capacity+"명 · 참가비 "+money(state.fee)+"</span></div><button data-wlt-action='reset'>초기화</button></div>";
+  html+="<div class='wltScenarioHead'><div><b>"+esc(label())+"</b><span>정원 "+state.capacity+"명 · 참가비 "+money(state.fee)+"</span></div><button data-wlt-action='reset'>시나리오 종료</button></div>";
   html+=noticeHtml()+rosterHtml()+refundHtml()+adminControls();
   html+="<div class='section'><h2>테스트 기록</h2></div><div class='card wltLogs'>"+
    (state.logs.length?state.logs.map(x=>"<div><span>"+esc(x.at)+"</span>"+esc(x.message)+"</div>").join(""):"<div class='meta'>아직 기록이 없습니다.</div>")+
-   "</div><button class='btn outline' style='width:100%;margin-top:12px' data-wlt-action='reset'>테스트 종료 · 초기화</button>";
+   "</div><button class='btn outline' style='width:100%;margin-top:12px' data-wlt-action='reset'>시나리오 종료 · 테스트 센터로</button>";
   body.innerHTML=html;
  }
+
 
  function inject(){
   if(!document.getElementById("waitlistTestStyles")){
    const st=document.createElement("style");st.id="waitlistTestStyles";
-   st.textContent=".wltHero{background:#16191e;color:#fff;border-radius:20px;padding:16px;display:flex;justify-content:space-between;gap:12px;align-items:center}.wltHero h2{margin:7px 0 4px;font-size:18px}.wltHero p{margin:0;color:#b9bdc3;font-size:10px}.wltTag{display:inline-flex;background:#ffecb5;color:#7a5200;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:900;letter-spacing:.08em}.wltPush{border:1px solid #555;background:#252a31;color:#fff;border-radius:12px;padding:9px 10px;font-size:9px;white-space:nowrap}.wltPush.on{background:#fff;color:#111}.wltScenarios{display:grid;gap:9px}.wltScenarios button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px;text-align:left}.wltScenarios b{display:block;font-size:12px}.wltScenarios span{display:block;color:#777;font-size:9px;margin-top:5px}.wltScenarioHead{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px}.wltScenarioHead b{display:block;font-size:13px}.wltScenarioHead span{display:block;font-size:9px;color:#777;margin-top:3px}.wltScenarioHead button{border:0;background:transparent;color:#777}.wltNotice{border:2px solid #111;background:#fff;border-radius:18px;padding:15px;margin:12px 0}.wltNotice h3{margin:8px 0 5px;font-size:15px}.wltNotice p{margin:0;color:#666;font-size:11px;line-height:1.55}.wltGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.wltGrid .card{margin:0}.wltGrid h3{margin:0 0 9px;font-size:12px}.wltPerson,.wltRefund{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #eee;padding:8px 0;font-size:9px}.wltPerson:first-of-type,.wltRefund:first-child{border-top:0}.wltPerson b,.wltRefund span{font-size:8px;color:#666}.wltRefund b{font-size:10px}.wltRefund p{margin:3px 0 0;font-size:9px;color:#777}.wltActions{display:flex;gap:8px;margin-top:10px}.wltActions .btn{flex:1}.wltActions.stack{display:grid}.wltLogs>div{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #eee;font-size:9px}.wltLogs>div:last-child{border-bottom:0}.wltLogs span{color:#999;white-space:nowrap}#waitlistTestBanner{display:none;align-items:center;justify-content:space-between;gap:8px;background:#fff3cd;border:1px solid #ffe08a;padding:7px 12px;font-size:9px;position:sticky;top:0;z-index:75}#waitlistTestBanner b{font-size:8px}#waitlistTestBanner button{border:0;background:transparent;font-weight:900;font-size:9px}@media(max-width:370px){.wltGrid{grid-template-columns:1fr}}";
+   st.textContent=".wltHero{background:#16191e;color:#fff;border-radius:20px;padding:16px;display:flex;justify-content:space-between;gap:12px;align-items:center}.wltHero h2{margin:7px 0 4px;font-size:18px}.wltHero p{margin:0;color:#b9bdc3;font-size:10px}.wltTag{display:inline-flex;background:#ffecb5;color:#7a5200;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:900;letter-spacing:.08em}.wltPush{border:1px solid #555;background:#252a31;color:#fff;border-radius:12px;padding:9px 10px;font-size:9px;white-space:nowrap}.wltPush.on{background:#fff;color:#111}.wltScenarios{display:grid;gap:9px}.wltScenarios button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px;text-align:left}.wltScenarios b{display:block;font-size:12px}.wltScenarios span{display:block;color:#777;font-size:9px;margin-top:5px}.wltScenarioHead{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px}.wltScenarioHead b{display:block;font-size:13px}.wltScenarioHead span{display:block;font-size:9px;color:#777;margin-top:3px}.wltScenarioHead button{border:0;background:transparent;color:#777}.wltNotice{border:2px solid #111;background:#fff;border-radius:18px;padding:15px;margin:12px 0}.wltNotice h3{margin:8px 0 5px;font-size:15px}.wltNotice p{margin:0;color:#666;font-size:11px;line-height:1.55}.wltGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.wltGrid .card{margin:0}.wltGrid h3{margin:0 0 9px;font-size:12px}.wltPerson,.wltRefund{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #eee;padding:8px 0;font-size:9px}.wltPerson:first-of-type,.wltRefund:first-child{border-top:0}.wltPerson b,.wltRefund span{font-size:8px;color:#666}.wltRefund b{font-size:10px}.wltRefund p{margin:3px 0 0;font-size:9px;color:#777}.wltActions{display:flex;gap:8px;margin-top:10px}.wltActions .btn{flex:1}.wltActions.stack{display:grid}.wltLogs>div{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #eee;font-size:9px}.wltLogs>div:last-child{border-bottom:0}.wltLogs span{color:#999;white-space:nowrap}#waitlistTestBanner{display:none;align-items:center;justify-content:space-between;gap:8px;background:#fff3cd;border:1px solid #ffe08a;padding:7px 12px;font-size:9px;position:sticky;top:0;z-index:75}#waitlistTestBanner b{font-size:8px}#waitlistTestBanner button{border:0;background:transparent;font-weight:900;font-size:9px}.tcGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tcCard{border:1px solid var(--line);background:#fff;border-radius:17px;padding:14px 12px;display:flex;align-items:center;gap:10px;text-align:left}.tcCard.active{border:2px solid #111}.tcCard i{font-style:normal;font-size:18px;width:28px}.tcCard div{min-width:0;flex:1}.tcCard b{display:block;font-size:11px}.tcCard span{display:block;font-size:8px;color:#777;line-height:1.45;margin-top:4px}.tcCard em{font-style:normal;color:#aaa}.tcCategoryHead{display:flex;align-items:center;gap:10px;margin:14px 0 8px}.tcCategoryHead button{border:0;background:transparent;padding:6px 4px;font-size:18px}.tcCategoryHead b{display:block;font-size:14px}.tcCategoryHead span{display:block;font-size:9px;color:#888;margin-top:2px}.tcSoon{border:1px dashed #cfd3d8;border-radius:16px;padding:18px;text-align:center;color:#777;font-size:10px;line-height:1.6}.tcSoon b{display:block;color:#333;font-size:12px;margin-bottom:5px}.tcInfo{margin-top:8px}.tcInfo b{font-size:11px}.tcInfo p{font-size:9px;color:#777;line-height:1.6;margin:5px 0 0}@media(max-width:370px){.wltGrid,.tcGrid{grid-template-columns:1fr}}";
    document.head.appendChild(st);
   }
   if(!document.getElementById("waitlistTest")){
    const nav=document.querySelector("nav.nav");
-   if(nav)nav.insertAdjacentHTML("beforebegin","<section id='waitlistTest' class='page'><div class='pagehead'><button class='back' data-wlt-action='home'>←</button><h1>대기 · 정산 테스트</h1><span></span></div><div id='waitlistTestBody'></div></section>");
+   if(nav)nav.insertAdjacentHTML("beforebegin","<section id='waitlistTest' class='page'><div class='pagehead'><button class='back' data-wlt-action='home'>←</button><h1>TEST CENTER</h1><span></span></div><div id='waitlistTestBody'></div></section>");
   }
   const adminSub=document.getElementById("adminSub");
   if(adminSub&&!document.getElementById("waitlistTestMenu")){
-   const item=document.createElement("div");item.id="waitlistTestMenu";item.className="ditem";item.textContent="대기 · 정산 테스트";
+   const item=document.createElement("div");item.id="waitlistTestMenu";item.className="ditem";item.textContent="TEST CENTER";
    item.addEventListener("click",()=>{if(typeof closeDrawer==="function")closeDrawer();openTest()});
    adminSub.appendChild(item);
   }
@@ -308,13 +383,34 @@
   }
   if(document.getElementById("waitlistTest")?.classList.contains("active"))render();
  }
- function openTest(){inject();try{showPage("waitlistTest")}catch(_){}render()}
+ function openTest(){
+  inject();
+  if(!state.active&&(!localStorage.getItem(KEY)||state.centerCategory==="training"))state.centerCategory="all";
+  try{showPage("waitlistTest")}catch(_){}
+  render();
+ }
 
  window.openWaitlistTest=openTest;
  window.startWltTest=start;
  window.resetWltTest=reset;
 
  document.addEventListener("click",e=>{
+  const cat=e.target.closest("[data-tc-category]");
+  if(cat){
+   state.centerCategory=cat.dataset.tcCategory||"training";write();render();return;
+  }
+  const tc=e.target.closest("[data-tc-action]");
+  if(tc){
+   const a=tc.dataset.tcAction;
+   if(a==="all"){state.centerCategory="all";write();render();return}
+   if(a==="profile_admin"&&typeof setEyslProfileMode==="function"){setEyslProfileMode("admin");setTimeout(render,0);return}
+   if(a==="profile_member"&&typeof setEyslProfileMode==="function"){setEyslProfileMode("member");setTimeout(render,0);return}
+   if(a==="test_popup"){
+    state.notification={type:"generic_test",title:"TEST CENTER 팝업",body:"이 팝업은 실제 운영 데이터와 무관한 테스트 알림입니다.",createdAt:Date.now()};
+    addLog("TEST CENTER 테스트 팝업 생성");write();void pushSelf("TEST CENTER","테스트 팝업이 생성됐습니다.");render();return;
+   }
+   if(a==="dismiss_popup"){state.notification=null;write();render();return}
+  }
   const sc=e.target.closest("[data-wlt-scenario]");
   if(sc){start(sc.dataset.wltScenario);return}
   const b=e.target.closest("[data-wlt-action]");if(!b)return;
