@@ -5,7 +5,7 @@
 
  const KEY="eysl_waitlist_test_v203";
  const blank=()=>({
-  active:false,scenario:null,centerCategory:"training",capacity:2,fee:20000,
+  active:false,scenario:null,centerCategory:"all",capacity:2,fee:20000,
   participants:[],waitlist:[],refunds:[],notification:null,
   pushEnabled:false,logs:[]
  });
