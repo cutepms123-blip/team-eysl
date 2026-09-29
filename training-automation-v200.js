@@ -91,6 +91,24 @@
   );
 
   var adminSub=document.getElementById('adminSub');
+  if(adminSub&&!document.getElementById('trainingTestCenterMenu')){
+   var testItem=document.createElement('div');
+   testItem.id='trainingTestCenterMenu';
+   testItem.className='ditem';
+   testItem.textContent='TEST CENTER';
+   testItem.onclick=function(){
+    if(typeof closeDrawer==='function')closeDrawer();
+    if(typeof openWaitlistTest==='function'){openWaitlistTest();return}
+    var s=document.createElement('script');
+    s.src='/waitlist-test-v203.js?v=force-'+Date.now();
+    s.onload=function(){if(typeof openWaitlistTest==='function')openWaitlistTest();else if(typeof toast==='function')toast('TEST CENTER를 불러오지 못했습니다.')};
+    s.onerror=function(){if(typeof toast==='function')toast('TEST CENTER를 불러오지 못했습니다.')};
+    document.body.appendChild(s);
+   };
+   var existingOps=document.getElementById('taOpsMenu');
+   if(existingOps&&existingOps.parentNode===adminSub)adminSub.insertBefore(testItem,existingOps);
+   else adminSub.appendChild(testItem);
+  }
   if(adminSub&&!document.getElementById('taOpsMenu')){
    var item=document.createElement('div');item.id='taOpsMenu';item.className='ditem';item.textContent='훈련 운영 기록';
    item.onclick=function(){if(typeof closeDrawer==='function')closeDrawer();openTrainingOpsLog()};
