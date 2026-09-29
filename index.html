@@ -1784,7 +1784,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final202-profile',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final203-waitlist-test',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5628,6 +5628,7 @@ if('serviceWorker' in navigator){
 <script src="/race-ui-v142.js?v=final148"></script>
 <script src="/author-monthly-deadline-v145.js?v=final148"></script>
 <script src="/training-automation-v200.js?v=final201-training"></script>
-<script src="/profile-mode-v202.js?v=final202-profile"></script>
+<script src="/profile-mode-v202.js?v=final203-profile"></script>
+<script src="/waitlist-test-v203.js?v=final203-waitlist-test"></script>
 </body>
 </html>
