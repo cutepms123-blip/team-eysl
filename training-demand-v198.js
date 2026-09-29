@@ -311,8 +311,7 @@
    if(r.error)throw r.error;
    var d=r.data||{};
    try{
-    var voterIds=[];
-    (p.options||[]).forEach(function(opt){(opt.voters||[]).forEach(function(v){if(v&&v.member_id&&v.member_id!==currentUser.memberId&&voterIds.indexOf(v.member_id)<0)voterIds.push(v.member_id)})});
+    var voterIds=(o.voters||[]).map(function(v){return v&&v.member_id}).filter(function(memberId,i,all){return memberId&&memberId!==currentUser.memberId&&all.indexOf(memberId)===i});
     await Promise.all(voterIds.map(function(memberId){
      return sendPush('member','TEAM EYSL 훈련 확정',fmtDay(d.date)+' 훈련이 확정됐어요. 앱에서 실제 참석 신청을 해주세요.',{target_member_id:memberId,tag:'training-confirmed-'+d.activity_id,url_path:'/?open=training&activity='+d.activity_id});
     }));
