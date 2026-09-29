@@ -1784,7 +1784,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final182-avatar-sync',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final200-training-automation',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5627,6 +5627,6 @@ if('serviceWorker' in navigator){
 <script src="/schedule-deadline-race-v142.js?v=final148"></script>
 <script src="/race-ui-v142.js?v=final148"></script>
 <script src="/author-monthly-deadline-v145.js?v=final148"></script>
-<script src="/training-demand-v198.js?v=final199-demand"></script>
+<script src="/training-automation-v200.js?v=final200-training"></script>
 </body>
 </html>
