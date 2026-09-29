@@ -361,7 +361,13 @@
   if(adminSub&&!document.getElementById("waitlistTestMenu")){
    const item=document.createElement("div");item.id="waitlistTestMenu";item.className="ditem";item.textContent="TEST CENTER";
    item.addEventListener("click",()=>{if(typeof closeDrawer==="function")closeDrawer();openTest()});
-   adminSub.appendChild(item);
+   const ops=document.getElementById("taOpsMenu");
+   if(ops&&ops.parentNode===adminSub)adminSub.insertBefore(item,ops);
+   else adminSub.appendChild(item);
+  }else if(adminSub){
+   const item=document.getElementById("waitlistTestMenu");
+   const ops=document.getElementById("taOpsMenu");
+   if(item&&ops&&item.nextSibling!==ops)adminSub.insertBefore(item,ops);
   }
   if(!document.getElementById("waitlistTestBanner")){
    const app=document.querySelector(".app"),header=app&&app.querySelector("header.top");
