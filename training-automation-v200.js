@@ -30,9 +30,23 @@
  }
  function activePage(){var x=document.querySelector('.page.active');return x?x.id:''}
 
+ function syncTrainingAdminUI(){
+  var list=document.getElementById('trainingList');if(!list)return;
+  var head=list.querySelector('.pagehead span');if(!head)return;
+  var existing=document.getElementById('trainingSignupAddBtn');
+  if(admin()){
+   if(!existing){
+    head.innerHTML='<button id="trainingSignupAddBtn" class="circleMiniBtn" type="button" onclick="openTrainingSignupCreate()" aria-label="훈련 신청 등록">＋</button>';
+   }
+  }else if(existing){
+   existing.remove();
+  }
+ }
+
  function inject(){
-  if(document.getElementById('trainingSignupCreate'))return;
   var nav=document.querySelector('nav.nav');if(!nav)return;
+  syncTrainingAdminUI();
+  if(document.getElementById('trainingSignupCreate'))return;
 
   var style=document.createElement('style');
   style.textContent=
@@ -52,8 +66,7 @@
     var wrap=document.createElement('div');wrap.id='trainingSignupWindows';
     cards.parentNode.insertBefore(wrap,cards);
    }
-   var head=list.querySelector('.pagehead span');
-   if(head)head.innerHTML=admin()?'<button class="circleMiniBtn" type="button" onclick="openTrainingSignupCreate()" aria-label="훈련 신청 등록">＋</button>':'';
+   syncTrainingAdminUI();
   }
 
   nav.insertAdjacentHTML('beforebegin',
@@ -476,11 +489,23 @@
  };
 
  function wrapCore(){
+  if(typeof window.applyRole==='function'&&!window.applyRole.__ta200){
+   var oldApplyRole=window.applyRole;
+   window.applyRole=function(){
+    var r=oldApplyRole.apply(this,arguments);
+    setTimeout(function(){
+     syncTrainingAdminUI();
+     if(currentUser&&currentUser.memberId&&admin())loadSignupWindows();
+    },0);
+    return r;
+   };
+   window.applyRole.__ta200=true;
+  }
   if(typeof window.showPage==='function'&&!window.showPage.__ta200){
    var oldShow=window.showPage;
    window.showPage=function(id){
     var r=oldShow.apply(this,arguments);
-    if(id==='trainingList')setTimeout(loadSignupWindows,0);
+    if(id==='trainingList')setTimeout(function(){syncTrainingAdminUI();loadSignupWindows()},0);
     return r;
    };window.showPage.__ta200=true;
   }
@@ -526,7 +551,7 @@
 
  inject();wrapCore();
  window.addEventListener('load',function(){
-  setTimeout(function(){inject();wrapCore();if(currentUser&&currentUser.memberId){loadSignupWindows();surfaceNotice();deepLink()}},550);
+  setTimeout(function(){inject();wrapCore();syncTrainingAdminUI();if(currentUser&&currentUser.memberId){loadSignupWindows();surfaceNotice();deepLink()}},550);
  });
  window.addEventListener('focus',function(){
   if(currentUser&&currentUser.memberId){if(activePage()==='trainingList')loadSignupWindows();surfaceNotice()}
