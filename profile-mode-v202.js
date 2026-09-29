@@ -50,10 +50,10 @@
   overlay.innerHTML=
    '<div class="eyslProfileSheet" onclick="event.stopPropagation()">'+
     '<div class="eyslProfileSheetHead"><h2>프로필 선택</h2><button type="button" onclick="closeEyslProfileSwitcher()">×</button></div>'+
-    '<button id="eyslAdminProfileCard" class="eyslProfileCard" type="button" onclick="setEyslProfileMode(\\'admin\\')">'+
+    '<button id="eyslAdminProfileCard" class="eyslProfileCard" type="button" onclick="setEyslProfileMode(\'admin\')">'+
      '<div class="eyslProfileIcon">👑</div><div><b>총관리자용</b><span>훈련 등록 · 회원 관리 · 출석 관리 · 정산 · 운영 기록</span></div><div class="eyslProfileCheck"></div>'+
     '</button>'+
-    '<button id="eyslMemberProfileCard" class="eyslProfileCard member" type="button" onclick="setEyslProfileMode(\\'member\\')">'+
+    '<button id="eyslMemberProfileCard" class="eyslProfileCard member" type="button" onclick="setEyslProfileMode(\'member\')">'+
      '<div class="eyslProfileIcon">🏊</div><div><b>일반모임원용</b><span>일반 모임원과 같은 화면 · 내 신청/출석/기록은 그대로 사용</span></div><div class="eyslProfileCheck"></div>'+
     '</button>'+
    '</div>';
