@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final205-test-center-menu';
+const VERSION='team-eysl-final206-test-center-static';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final205"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final206"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
