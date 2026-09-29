@@ -298,6 +298,28 @@
   return {bank:bank.trim(),account:account.trim(),holder:holder.trim()};
  }
 
+ window.applyTraining=async function(id){
+  var t=trainings[id];if(!t)return toast('훈련 정보를 찾을 수 없습니다.');
+  if(activityHasStarted(t))return toast('종료된 훈련은 신청할 수 없습니다.');
+  try{
+   var r=await dbClient.rpc('apply_training_v3',{p_activity_id:id,p_details:{}});if(r.error)throw r.error;
+   if(Number(r.data&&r.data.offered_count||0)>0)try{await sendPush('waitlist_offer','','',{activity_id:id})}catch(_){}
+   if(r.data&&r.data.refund_id){
+    try{
+     var fdata=await loadFinance(id);
+     var ref=(fdata&&fdata.refunds||[]).find(function(x){return x.id===r.data.refund_id});
+     if(ref&&ref.cancelled_member_id)await sendPush('member','TEAM EYSL 환불 연결','새 참가자가 빈자리에 연결됐어요. 입금 완료 안내를 기다려주세요.',{target_member_id:ref.cancelled_member_id,tag:'refund-match-'+ref.id,url_path:'/?open=training&activity='+id});
+     await sendPush('operators','TEAM EYSL 운영 알림',currentUser.nickname+'님이 빈자리에 추가 참가했고 기존 환불대기자와 자동 연결됐습니다.',{tag:'refund-match-admin-'+id,url_path:'/?open=training&activity='+id});
+    }catch(_){}
+   }else if(r.data&&r.data.status==='waitlist'&&Number(r.data.wait_order||0)===1){
+    try{await sendPush('operators','TEAM EYSL 운영 알림',t.title+' 정원이 찼습니다. '+currentUser.nickname+'님이 대기 1번으로 등록됐습니다.',{tag:'training-full-'+id,url_path:'/?open=training&activity='+id})}catch(_){}
+   }
+   await reloadApplicationsUI();openTraining(id);
+   if(r.data&&r.data.status==='participant')toast('훈련 신청완료');
+   else toast('대기 신청완료'+(r.data&&r.data.wait_order?' · '+r.data.wait_order+'번':''));
+  }catch(err){console.error(err);toast(String(err.message||'').includes('activity_started')?'종료된 훈련은 신청할 수 없습니다.':'신청 저장에 실패했습니다.')}
+ };
+
  window.cancelTraining=async function(id){
   var t=trainings[id];if(!t)return toast('훈련 정보를 찾을 수 없습니다.');
   if(activityHasStarted(t))return toast('종료된 훈련은 신청 상태를 변경할 수 없습니다.');
