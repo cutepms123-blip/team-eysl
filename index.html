@@ -3661,12 +3661,16 @@ async function renderApplyStatus(){
   let participants=liveParticipants;
   if(done&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
     const liveByName=new Map(liveParticipants.map(p=>[p.name,p]));
-    participants=t.historicalParticipants.map(name=>({
-      ...(liveByName.get(name)||{}),
-      name,type:'participant',historical:true,
-      avatarUrl:liveByName.get(name)?.avatarUrl||'',
-      attendanceStatus:t.historicalAttendance?.[name]||'출석'
-    }));
+    const merged=[...liveParticipants];
+    t.historicalParticipants.forEach(name=>{
+      if(liveByName.has(name))return;
+      merged.push({
+        name,type:'participant',historical:true,
+        avatarUrl:'',
+        attendanceStatus:t.historicalAttendance?.[name]||'출석'
+      });
+    });
+    participants=merged;
   }
   const people=participants.length?participants.map(p=>{
    const status=done?(t.historicalAttendance?.[p.name]||p.details?.attendance_status||p.attendanceStatus||'출석'):'신청완료';
