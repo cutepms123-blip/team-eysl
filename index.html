@@ -1532,6 +1532,7 @@ function mapActivityRow(row){
   participants:Array.isArray(d.participants)?d.participants:[],
   waitlist:Array.isArray(d.waitlist)?d.waitlist:[],offer:d.offer||null,
   historicalParticipants:Array.isArray(d.historical_participants)?d.historical_participants:[],
+  manualUnregisteredParticipants:Array.isArray(d.manual_unregistered_participants)?d.manual_unregistered_participants:[],
   historicalAttendance:(d.historical_attendance&&typeof d.historical_attendance==='object')?d.historical_attendance:{},
   fixedRoster:!!d.fixed_roster
  };
@@ -1693,6 +1694,11 @@ async function loadPersistentContent(){
     t.historicalAttendance=Object.fromEntries(canonical.map(x=>[x.name,x.status]));
   }
 
+  // 앱 계정이 없는 수동 참가자도 실제 참가 인원에 포함한다.
+  if(Array.isArray(t.manualUnregisteredParticipants)&&t.manualUnregisteredParticipants.length){
+    t.participants=[...new Set([...(t.participants||[]),...t.manualUnregisteredParticipants])];
+  }
+
   // 회원가입 여부와 무관하게 원본 참석명단은 항상 화면 참가자에 합친다.
   if(Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
     t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
@@ -1784,7 +1790,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final208-test-center',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final211-manual-participants',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -3433,6 +3439,7 @@ async function reloadTrainingApplicationsOnly(){
   const t=trainings[row.id];if(!t)return;
   const d=row.details||{};
   t.historicalParticipants=Array.isArray(d.historical_participants)?d.historical_participants:[];
+  t.manualUnregisteredParticipants=Array.isArray(d.manual_unregistered_participants)?d.manual_unregistered_participants:[];
   t.historicalAttendance=(d.historical_attendance&&typeof d.historical_attendance==='object')?d.historical_attendance:{};
  });
 
@@ -3455,6 +3462,9 @@ async function reloadTrainingApplicationsOnly(){
  });
  Object.values(trainings).forEach(t=>{
   normalizeWait(t);
+  if(Array.isArray(t.manualUnregisteredParticipants)&&t.manualUnregisteredParticipants.length){
+   t.participants=[...new Set([...(t.participants||[]),...t.manualUnregisteredParticipants])];
+  }
   if(activityHasStarted(t)&&Array.isArray(t.historicalParticipants)&&t.historicalParticipants.length){
    t.participants=[...new Set([...(t.participants||[]),...t.historicalParticipants])];
   }
