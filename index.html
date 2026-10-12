@@ -42,7 +42,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .yearMonth{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.stat strong{font-size:23px;display:block}.stat span{font-size:9px;color:#888}
 .manageSummary{display:grid;grid-template-columns:1fr 1fr;gap:9px}.manageCard{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px}.manageCard h4{font-size:12px;font-weight:950;margin:0 0 8px}.manageCard strong{font-size:23px}.rank span{display:block;font-size:10px;color:#555;margin-top:5px}
 .memberrow{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;display:flex;align-items:center;gap:8px}.memberrow b{font-size:12px}.memberrow p{font-size:10px;color:#888;margin:3px 0 0}
-.attGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.attGrid div{background:#f4f5f7;border-radius:10px;padding:8px 3px;text-align:center}.attGrid b{font-size:13px;display:block}.attGrid span{font-size:8px;color:#777}.attChoice{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 8px;font-size:10px}.attChoice.on{background:#111;color:#fff}
+.attGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}.attGrid div{background:#f4f5f7;border-radius:10px;padding:8px 3px;text-align:center}.attGrid b{font-size:13px;display:block}.attGrid span{font-size:8px;color:#777}.attChoice{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 8px;font-size:10px}.attChoice.on{background:#111;color:#fff}
 .mediaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mediaTile{aspect-ratio:1;border-radius:12px;background:#eceff2;overflow:hidden;position:relative;display:grid;place-items:center}.mediaTile img,.mediaTile video{width:100%;height:100%;object-fit:cover}.play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:28px;text-shadow:0 1px 5px #000}.fileRow{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}.fileRow b{font-size:12px}.fileRow span{font-size:9px;color:#888}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modal img,.modal video{max-width:100%;max-height:82vh;border-radius:14px}.modalClose{position:absolute;right:20px;top:20px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;font-size:20px}
 .drawerOverlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:45;display:none}.drawerOverlay.open{display:block}.drawer{position:fixed;z-index:46;top:0;bottom:0;left:calc(50% - 215px);width:min(340px,86vw);background:#fff;transform:translateX(-105%);transition:.2s;padding:18px 14px;overflow:auto}.drawer.open{transform:translateX(0)}.drawerHead{display:flex;justify-content:space-between;align-items:center;padding:6px 5px 15px}.drawerHead button{border:0;background:#f1f2f4;border-radius:10px;width:34px;height:34px}.dsec{font-size:10px;color:#a0a4aa;margin:18px 8px 7px;font-weight:850}.ditem,.dparent{padding:12px 11px;border-radius:12px;font-size:13px}.ditem.main,.dparent{font-weight:900}.dparent{display:flex;justify-content:space-between}.dsub{display:none;margin-left:24px}.dsub.open{display:block}.dsub .ditem{font-size:12px;color:#555;font-weight:500}
@@ -1734,7 +1734,7 @@ async function loadPersistentContent(){
  });
 
  const savedAttendanceRows=attendanceRes?.error?[]:(attendanceRes?.data||[]);
- const savedAttendanceStatus={present:'출석',late:'지각',absent:'불참'};
+ const savedAttendanceStatus={present:'출석',late:'지각',absent:'불참',coach:'코치'};
  savedAttendanceRows.forEach(row=>{
   const name=row.display_name||members.find(m=>m.id===row.member_id)?.name||'';
   if(!name||!row.activity_id)return;
@@ -1790,7 +1790,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final211-manual-participants',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final212-attendance-coach',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5314,13 +5314,13 @@ function setAttState(v,b){
 }
 function renderAttendanceAdmin(){
  const rows=attEvents().filter(e=>(attendanceType==='all'||e.type===attendanceType)&&(attendanceState==='all'||e.state===attendanceState)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>${e.state==='done'?'명단':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
+ document.getElementById('attAdminList').innerHTML=rows.map(e=>{const c=attCounts(e);return `<div class="statusCard" onclick="openAttEvent('${e.id}')"><div class="statusTop"><div><h3>${e.title}</h3><p>${e.date} · ${e.label}</p></div><span class="tag ${e.state==='done'?'done':''}">${e.state==='done'?'종료':'예정'}</span></div><div class="attGrid"><div><b>${e.people.length}</b><span>${e.state==='done'?'명단':'신청'}</span></div><div><b>${c.present}</b><span>출석</span></div><div><b>${c.late}</b><span>지각</span></div><div><b>${c.absent}</b><span>불참</span></div><div><b>${c.coach}</b><span>코치</span></div></div></div>`}).join('')||'<div class="card meta">조건에 맞는 일정이 없습니다.</div>';
 }
 function attCounts(e){
- const rec=attRecords[e.id]||{};let present=0,late=0,absent=0;
+ const rec=attRecords[e.id]||{};let present=0,late=0,absent=0,coach=0;
  const names=[...new Set([...(e.people||[]),...Object.keys(rec)])];
- names.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++});
- return {present,late,absent};
+ names.forEach(n=>{const s=rec[n]?.status;if(s==='출석')present++;if(s==='지각'){present++;late++}if(s==='불참')absent++;if(s==='코치')coach++});
+ return {present,late,absent,coach};
 }
 async function openAttEvent(id){
  showPage('attendanceAdminDetail');
@@ -5361,9 +5361,9 @@ function renderAttDetail(e){
   const r=rec[n]||{status:'미체크',paid:false};
   const idArg=escAttr(JSON.stringify(e.id));
   const nameArg=escAttr(JSON.stringify(n));
-  return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${escHtml(n)}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick='setAtt(${idArg},${nameArg},"출석")'>출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick='setAtt(${idArg},${nameArg},"지각")'>지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick='setAtt(${idArg},${nameArg},"불참")'>불참</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" aria-pressed="${r.paid?'true':'false'}" onclick='togglePaid(${idArg},${nameArg})'>지각비 납부 완료</button>`:''}</div></div>`;
+  return `<div style="padding:11px 0;border-bottom:1px solid #edf0f2"><b style="font-size:12px">${escHtml(n)}</b><div class="actions"><button class="attChoice ${r.status==='출석'?'on':''}" onclick='setAtt(${idArg},${nameArg},"출석")'>출석</button><button class="attChoice ${r.status==='지각'?'on':''}" onclick='setAtt(${idArg},${nameArg},"지각")'>지각</button><button class="attChoice ${r.status==='불참'?'on':''}" onclick='setAtt(${idArg},${nameArg},"불참")'>불참</button><button class="attChoice ${r.status==='코치'?'on':''}" onclick='setAtt(${idArg},${nameArg},"코치")'>코치</button>${r.status==='지각'?`<button class="attChoice ${r.paid?'on':''}" aria-pressed="${r.paid?'true':'false'}" onclick='togglePaid(${idArg},${nameArg})'>지각비 납부 완료</button>`:''}</div></div>`;
  }).join('');
- body.innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${escHtml(e.title)}</span></div><div class="detailrow"><b>${done?'명단 인원':'신청 인원'}</b><span>${done?(e.people||[]).length:displayPeople.length}명</span></div><div class="detailrow"><b>${done?'출석 집계':'현재 집계'}</b><span>${done?`최종 출석 ${c.present}명 · 지각 ${c.late}명 · 불참 ${c.absent}명`:`출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent}`}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${peopleHtml||'<div class="meta">체크할 인원이 없습니다.</div>'}</div><div class="actions" style="margin-top:14px"><button id="attendanceSaveBtn" class="btn primary" style="width:100%" onclick="saveAttendanceEvent('${e.id}')">출석 저장</button></div>`;
+ body.innerHTML=`<div class="detail"><div class="detailrow"><b>일정</b><span>${escHtml(e.title)}</span></div><div class="detailrow"><b>${done?'명단 인원':'신청 인원'}</b><span>${done?(e.people||[]).length:displayPeople.length}명</span></div><div class="detailrow"><b>${done?'출석 집계':'현재 집계'}</b><span>${done?`최종 출석 ${c.present}명 · 지각 ${c.late}명 · 불참 ${c.absent}명 · 코치 ${c.coach}명`:`출석 ${c.present} · 지각 ${c.late} · 불참 ${c.absent} · 코치 ${c.coach}`}</span></div><div class="detailrow"><b>지각비</b><span>발생 ${lateNames.length}건 · 납부 ${paid}건 · 미납 ${lateNames.length-paid}건</span></div></div><div class="section"><h2>${done?'참석자 현황':'신청자 체크'}</h2></div><div class="card">${peopleHtml||'<div class="meta">체크할 인원이 없습니다.</div>'}</div><div class="actions" style="margin-top:14px"><button id="attendanceSaveBtn" class="btn primary" style="width:100%" onclick="saveAttendanceEvent('${e.id}')">출석 저장</button></div>`;
 }
 function setAtt(id,name,status){
  if(!attRecords[id])attRecords[id]={};
@@ -5376,7 +5376,7 @@ function togglePaid(id,name){
  attRecords[id][name].paid=!attRecords[id][name].paid;
  renderAttDetail(attEvents().find(x=>x.id===id));
 }
-function attendanceDbStatus(status){return ({'출석':'present','지각':'late','불참':'absent'})[status]||null}
+function attendanceDbStatus(status){return ({'출석':'present','지각':'late','불참':'absent','코치':'coach'})[status]||null}
 async function saveAttendanceEvent(id){
  if(!isAdminUser())return toast('관리자만 출석을 저장할 수 있습니다.');
  const e=attEvents().find(x=>x.id===id);
@@ -5626,7 +5626,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final207-test-center-hardfix',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final212-attendance-coach',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
