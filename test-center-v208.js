@@ -1,4 +1,4 @@
-/* TEAM EYSL v208 — canonical TEST CENTER */
+/* TEAM EYSL v212 — TEST CENTER with attendance coach */
 (function(){
  if(window.__EYSL_TEST_CENTER_V208__)return;
  window.__EYSL_TEST_CENTER_V208__=true;
@@ -274,7 +274,7 @@
   const cats=[
    ["training","🏊","훈련 · 대기","신청·취소 · 정원 · 대기 승급 · 만료"],
    ["finance","₩","참가비 · 환불","입금 · 환불대기 · 대체 참가자 매칭"],
-   ["attendance","✓","출석","출석 · 지각 · 불참 · 명단 예외처리"],
+   ["attendance","✓","출석","출석 · 지각 · 불참 · 코치 · 명단 예외처리"],
    ["race","🏁","대회","개인전 · 단체전 · 신청 · 마감"],
    ["notice","🔔","공지 · 알림","팝업 · 푸시 · 공지 상호작용"],
    ["member","👥","회원","가입 · 승인 · 내보내기 · 재가입"],
@@ -295,6 +295,23 @@
   let html="<div class='tcCategoryHead'><button data-tc-action='all'>← 전체</button><div><b>"+esc(title)+"</b><span>테스트 항목</span></div></div>";
 
   if(cat==="training"||cat==="finance")return html+scenarios(cat);
+
+  if(cat==="attendance"){
+   const demo=state.attendanceDemo||{민선:"코치","테스트회원 A":"출석","테스트회원 B":"지각","테스트회원 C":"불참"};
+   state.attendanceDemo=demo;
+   const vals=Object.values(demo);
+   const count=s=>vals.filter(v=>v===s).length;
+   const rows=Object.entries(demo).map(([name,status])=>
+    "<div class='card' style='margin-bottom:8px'><b style='font-size:11px'>"+esc(name)+"</b>"+
+    "<div class='wltActions' style='margin-top:8px'>"+
+    ["출석","지각","불참","코치"].map(s=>"<button class='btn "+(status===s?"primary":"outline")+"' data-tc-att-name='"+esc(name)+"' data-tc-att-status='"+s+"'>"+s+"</button>").join("")+
+    "</div></div>"
+   ).join("");
+   return html+
+    "<div class='card tcInfo'><b>출석 상태 테스트</b><p>실제 출석 데이터에는 저장되지 않는 TEST CENTER 전용 시나리오입니다.</p></div>"+
+    "<div class='card' style='margin:8px 0'><b style='font-size:11px'>현재 집계</b><p style='font-size:10px;color:#666;margin:6px 0 0'>출석 "+count("출석")+" · 지각 "+count("지각")+" · 불참 "+count("불참")+" · 코치 "+count("코치")+"</p></div>"+
+    rows;
+  }
 
   if(cat==="profile"){
    const mode=(typeof getEyslProfileMode==="function"?getEyslProfileMode():"admin");
@@ -393,6 +410,12 @@
   const cat=e.target.closest("[data-tc-category]");
   if(cat){
    state.centerCategory=cat.dataset.tcCategory||"training";write();render();return;
+  }
+  const att=e.target.closest("[data-tc-att-name]");
+  if(att){
+   state.attendanceDemo=state.attendanceDemo||{};
+   state.attendanceDemo[att.dataset.tcAttName]=att.dataset.tcAttStatus||"출석";
+   write();render();return;
   }
   const tc=e.target.closest("[data-tc-action]");
   if(tc){
