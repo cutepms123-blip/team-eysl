@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final223-rank-tabs-and-pb';
+const VERSION='team-eysl-final224-event-cleanup-pink';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
