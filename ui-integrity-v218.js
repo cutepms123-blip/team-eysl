@@ -346,6 +346,49 @@
  .app #records .recordRow>strong{
   flex:0 0 auto;font-variant-numeric:tabular-nums;
  }
+
+ /* Light authentication and utility panels cannot inherit the charcoal app's white ink. */
+ .auth{background:#F4F5F7!important;color:#171A20!important}
+ .auth .authbox{
+  background:#FFFFFF!important;color:#171A20!important;
+  border:1px solid #D6DAE0!important;
+ }
+ .auth .authbox h1,.auth .authbox h2,.auth .authbox label,
+ .auth .authbox b,.auth .authbox strong{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;
+ }
+ .auth .authbox p,.auth .authbox small,.auth .authHint{
+  color:#59616C!important;-webkit-text-fill-color:#59616C!important;
+ }
+ .auth .authbox input,.auth .authbox select,.auth .authbox textarea{
+  background:#FFFFFF!important;color:#171A20!important;
+  -webkit-text-fill-color:#171A20!important;
+  border-color:#B9BFC8!important;color-scheme:light!important;
+ }
+ .auth .authRole button,.auth .authModeTabs button{
+  background:#F5F6F8!important;color:#20242A!important;
+  -webkit-text-fill-color:#20242A!important;border-color:#C9CED5!important;
+ }
+ .auth .authRole button.active,.auth .authModeTabs button.active{
+  background:#24262B!important;color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;border-color:#24262B!important;
+ }
+ .auth .authMsg:not(.error):not(.success){
+  background:#F0F2F5!important;color:#333943!important;
+  -webkit-text-fill-color:#333943!important;
+ }
+ .app .pushSetupCard,.app .waitOfferBox,.app .filechips .previewChip{
+  background:#FAFBFC!important;color:#171A20!important;
+  border-color:#D8DCE2!important;
+ }
+ .app .pushSetupCard b,.app .waitOfferBox h3,
+ .app .filechips .previewChip b{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;
+ }
+ .app .pushSetupCard p,.app .waitOfferBox p,
+ .app .filechips .previewChip small{
+  color:#59616C!important;-webkit-text-fill-color:#59616C!important;
+ }
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
