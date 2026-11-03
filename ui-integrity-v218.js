@@ -59,13 +59,24 @@
  }
  #records .screenshotPb,#records .pbCard.screenshotPb{
   background:#FAFBFC!important;background-image:none!important;border:1px solid #D6D9DD!important;
-  box-shadow:none!important;color:#15171A!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.26),0 2px 0 rgba(255,255,255,.17),inset 0 2px 1px rgba(255,255,255,.75)!important;color:#15171A!important;
  }
  #records .screenshotPb:before,#records .screenshotPb:after,
  #records .eysl-pb-card:after{content:none!important;display:none!important}
  #records .screenshotPb span{color:#656B73!important;-webkit-text-fill-color:#656B73!important}
  #records .screenshotPb b{color:#15171A!important;-webkit-text-fill-color:#15171A!important}
  #eventRankingDetail .pagehead h1,.app #eventRankingDetail .pagehead h1{color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important}
+ /* Meet-only gender scope tabs: red-orange selected, neutral inactive, visible at the top of event ranking */
+ #eventRankingDetail .strokeRankingTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 17px!important}
+ #eventRankingDetail .strokeRankingTabs button{
+  border:1px solid #52565C!important;border-radius:999px!important;background:#222429!important;color:#ECEEF2!important;
+  font-weight:800!important;font-size:13px!important;padding:11px 9px!important;
+ }
+ #eventRankingDetail .strokeRankingTabs button.active{
+  background:#291D1D!important;border-color:#F24B35!important;color:#FF8B76!important;
+ }
+ #eventRankingDetail .strokeRankingPanel .eventRankMini h3{color:#F5F5F5!important}
+ #raceCards button:disabled,#raceDetailBody button:disabled{opacity:1!important;cursor:not-allowed;background:#2B2D31!important;color:#B9BBC2!important;border-color:#5A5D63!important}
  /* Restore original white event tiles but remove every lavender edge/icon fill. */
  #teamEvents .eventHubBtn,#teamEvents .eventHub .eventHubBtn{
   background:#FAFBFC!important;color:#16181B!important;border:1px solid #D8DADF!important;
