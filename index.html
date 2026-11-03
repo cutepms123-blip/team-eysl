@@ -1241,7 +1241,7 @@ if(window.pdfjsLib){
   box-shadow:0 6px 18px rgba(0,0,0,.18)
 }
 </style>
-<link rel="stylesheet" href="/eysl-theme-v215.css?v=dark-orange-v215"/>
+<link rel="stylesheet" href="/eysl-theme-v215.css?v=red-vermilion-v216"/>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1792,7 +1792,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final215-dark-orange',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final216-red-vermilion',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5640,7 +5640,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final215-dark-orange',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final216-red-vermilion',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
