@@ -58,3 +58,8 @@ a,.good{color:#ff945d}
 table{color:var(--ink)}
 th,td{border-color:#414348}
 input[type="checkbox"],input[type="radio"]{accent-color:#ff641e}
+
+/* Same date / venue rhythm on both dashboard schedule collections */
+#homeMine .eysl-when,#homeUpcoming .eysl-when{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px!important}
+#homeMine .eysl-date,#homeUpcoming .eysl-date{display:inline-flex;align-items:center;border-radius:100px;background:#ff641e;color:#fff;font-weight:800;font-size:10px;padding:3px 7px;white-space:nowrap}
+#homeMine .eysl-place,#homeUpcoming .eysl-place{color:#c5c7cc;font-size:11px;overflow-wrap:anywhere}
