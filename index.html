@@ -1343,11 +1343,6 @@ if(window.pdfjsLib){
 <section id="mypage" class="page">
 <h1 class="title">마이페이지</h1>
 <div class="profile"><div class="profileMain"><div id="myProfileAvatarWrap" class="profileFallback">EY</div><div class="profileInfo"><h2 id="myName">-</h2><p id="myJoinText">TEAM EYSL</p><div class="profileActions"><button class="btn outline" onclick="document.getElementById('profilePhotoInput').click()">프로필 사진 변경</button><button id="profileDeleteBtn" class="btn amber" onclick="deleteMyProfilePhoto()">사진 삭제</button><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="uploadMyProfilePhoto(this)"></div></div></div></div>
-<div class="section compactProfileSection"><h2>기록 연동</h2></div>
-<div class="card compactRealNameCard">
- <div class="compactRealNameRow"><input id="myRealName" maxlength="30" autocomplete="name" placeholder="본인 실명"><button class="btn primary compactSaveBtn" onclick="saveMyRealName()">저장</button></div>
- <div id="realNameSaved" class="compactSavedText"></div>
-</div>
 <div class="section"><h2>내 메뉴</h2></div>
 <div class="menuGrid">
  <div class="menuCard" onclick="showPage('records')"><b>나의 기록</b><span>개인전 · 단체전 · 핀대회</span></div>
@@ -5538,7 +5533,7 @@ async function openFunEventPage(type){
 
   if(type==='pbcollector'){
    const rows=data.pb_collector||[];
-   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} PB 수집왕 · 50M 개인종목</h3>${funRankRows(rows,r=>`${r.count}회 갱신`)}</div><div class="card meta">일반 개인 50M 자유형·배영·평영·접영에서 기존 PB보다 빨라진 횟수를 합산해요. 같은 날 여러 기록은 가장 빠른 기록 1개만 반영해요.</div></div>`;
+   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} PB 수집왕 · 50M 개인종목</h3>${funRankRows(rows,r=>`${r.count}회 갱신`)}</div></div>`;
    return;
   }
 
@@ -5546,14 +5541,14 @@ async function openFunEventPage(type){
    const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v3');
    if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
    const rows=rankTidy(rankActive(meetRanks.competition||[]));
-   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div><div class="card meta">일반·핀 대회를 모두 포함하고, 같은 대회에서 여러 종목을 뛰어도 대회 참가 1회로 계산해요.</div></div>`;
+   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div></div>`;
    return;
   }
 
   if(type==='medal'){
    const medals=data.medals||[],cumulative=data.medals_all_time||[];
    const mv=r=>`총 ${Number(r.total||0)}개 · 🥇 ${Number(r.gold||0)}  🥈 ${Number(r.silver||0)}  🥉 ${Number(r.bronze||0)}`;
-   box.innerHTML=`<div class="rankScope"><div class="rankScopeTabs"><button type="button" class="active" onclick="setRankCategory('year',this)">${data.year} 메달왕</button><button type="button" onclick="setRankCategory('total',this)">누적 메달왕</button></div><div class="rankScopePanel" data-scope="year"><div class="eventRankMini"><h3>${data.year} 메달왕</h3>${funRankRows(medals,mv)}</div></div><div class="rankScopePanel" data-scope="total" hidden><div class="eventRankMini"><h3>누적 메달왕</h3>${funRankRows(cumulative,mv)}</div></div></div><div class="card meta">탈퇴자의 기록은 보관하고 랭킹 표시에서만 제외합니다.</div>`;
+   box.innerHTML=`<div class="rankScope"><div class="rankScopeTabs"><button type="button" class="active" onclick="setRankCategory('year',this)">${data.year} 메달왕</button><button type="button" onclick="setRankCategory('total',this)">누적 메달왕</button></div><div class="rankScopePanel" data-scope="year"><div class="eventRankMini"><h3>${data.year} 메달왕</h3>${funRankRows(medals,mv)}</div></div><div class="rankScopePanel" data-scope="total" hidden><div class="eventRankMini"><h3>누적 메달왕</h3>${funRankRows(cumulative,mv)}</div></div></div>`;
    return;
   }
 
@@ -5572,11 +5567,11 @@ async function openFunEventPage(type){
     const top=picked.slice(0,5),rest=picked.slice(5);
     return `<div class="eventRankMini"><h3>${stroke} 50M TOP5</h3>${top.length?top.map(renderItem).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(renderItem).join('')}</div>${rankToggleButton(picked,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`;
    }).join('');
-   box.innerHTML=`<div class="strokeRankingTabs">${groups.map(([key,label],i)=>`<button type="button" class="${i===0?'active':''}" data-gender="${key}" onclick="setStrokeRankingGender('${key}',this)">${label}</button>`).join('')}</div>${groups.map(([key,label],i)=>`<div class="strokeRankingPanel" data-gender="${key}" style="${i===0?'':'display:none'}"><div class="eventRankGroup">${section(key)}</div></div>`).join('')}<div class="card meta">일반 수영대회 개인 50M 기록만 반영해요. 남자·여자·종합을 전환할 수 있어요. 핀수영대회 기록은 제외합니다.</div>`;
+   box.innerHTML=`<div class="strokeRankingTabs">${groups.map(([key,label],i)=>`<button type="button" class="${i===0?'active':''}" data-gender="${key}" onclick="setStrokeRankingGender('${key}',this)">${label}</button>`).join('')}</div>${groups.map(([key,label],i)=>`<div class="strokeRankingPanel" data-gender="${key}" style="${i===0?'':'display:none'}"><div class="eventRankGroup">${section(key)}</div></div>`).join('')}`;
    return;
   }
 
-  const rows=data.first_attendance||[];
+  const rows=rankActive(data.first_attendance||[]);
   const cards=rows.map(r=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="firstBadge">✓</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.first_date} · 2026 첫 출석 완료</span></div>`).join('');
   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>2026 첫 출석</h3>${cards||'<div class="eventRankEmpty">2026 첫 출석 데이터가 없습니다.</div>'}</div><div class="card meta">2026년 실제 훈련 일정 중 첫 출석일을 보여줘요. 출석과 지각 모두 실제 참석으로 인정합니다.</div></div>`;
  }catch(e){
