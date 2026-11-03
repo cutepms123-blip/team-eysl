@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final229-member-order';
+const VERSION='team-eysl-final230-pb-messages';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
