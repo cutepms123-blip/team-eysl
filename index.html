@@ -1359,7 +1359,7 @@ if(window.pdfjsLib){
 </div>
 <div class="section"><h2>나의 출석 배지</h2><span id="myBadgeYear" class="meta">연간 누적</span></div>
 <div id="myAttendanceBadges" class="achievementBadgeGrid"><div class="card meta">배지 불러오는 중...</div></div>
-<div class="section"><h2>PB 모먼트</h2><span class="meta">내가 깬 기록들 🎉</span></div>
+<div class="section"><h2>PB 모먼트</h2><span class="meta">최근 3개월 🎉</span></div>
 <div id="myPbMoments" class="pbMomentList"><div class="card meta">PB 기록 불러오는 중...</div></div>
 <div class="section"><h2>내 활동 요약</h2></div>
 <div class="summary" id="mypageActivitySummary" onclick="showPage('activity')"><div class="meta">ACTIVITY</div><h3>아직 등록된 활동이 없어요.</h3><div class="metrics"><div class="metric"><b>0회</b><span>훈련 참여</span></div><div class="metric"><b>0개</b><span>PB 갱신</span></div></div></div>
@@ -2294,13 +2294,18 @@ async function renderMyAchievements(){
   const {data,error}=await dbClient.rpc('get_my_achievement_v1',{p_member_id:currentUser.memberId,p_year:year});
   if(error)throw error;
   const y=data?.year||year,count=Number(data?.attendance_count||0),moments=Array.isArray(data?.pb_moments)?data.pb_moments:[];
+  const pbCutoffDate=new Date();pbCutoffDate.setHours(0,0,0,0);pbCutoffDate.setMonth(pbCutoffDate.getMonth()-3);
+  const pbCutoff=[pbCutoffDate.getFullYear(),String(pbCutoffDate.getMonth()+1).padStart(2,'0'),String(pbCutoffDate.getDate()).padStart(2,'0')].join('-');
+  const recentMoments=moments.filter(m=>String(m.event_date||'').slice(0,10)>=pbCutoff);
   const yearEl=document.getElementById('myBadgeYear');if(yearEl)yearEl.textContent=`${y}년 누적 ${count}회`;
   const next=attendanceBadgeDefs.find(x=>count<x.count);
-  const progress=next?`다음 배지 ${next.count}회까지 ${next.count-count}회 남음`:'25회 배지까지 모두 달성!';
-  badgeBox.innerHTML=`<div class="badgeProgressCard" style="grid-column:1/-1"><b>${y}년 출석 ${count}회</b><span>${progress}</span></div>`+
+  const progress=next?`다음 배지 <strong>${next.count}회</strong>`:'출석 배지 <strong>모두 달성!</strong>';
+  const remaining=next?`<strong>${next.count-count}회</strong> 남음`:'달성 완료';
+  const progressValue=Math.min(100,Math.round(count/(next?.count||25)*100));
+  badgeBox.innerHTML=`<div class="badgeProgressCard" style="grid-column:1/-1"><div class="badgeProgressCopy"><b>${progress}</b><span>${remaining}</span></div><div class="badgeProgressTrack" role="progressbar" aria-label="다음 출석 배지 진행률" aria-valuenow="${progressValue}" aria-valuemin="0" aria-valuemax="100"><div class="badgeProgressFill" style="width:${progressValue}%"></div></div></div>`+
    attendanceBadgeDefs.map(b=>{const on=count>=b.count;return `<div class="attBadge ${on?'':'locked'}"><div class="badgeIcon">${on?'✓':'🔒'}</div><b>${b.title}</b><p>${on?escHtml(b.message):'달성하면 공개!'}</p></div>`}).join('');
-  if(!moments.length){pbBox.innerHTML='<div class="card meta">올해 새로 달성한 PB가 아직 없어요. 첫 PB 모먼트를 만들어봐요! 🏊</div>';return;}
-  pbBox.innerHTML=moments.map(m=>`<div class="pbMomentCard"><div class="pbMomentHead"><b>🎉 NEW PB · ${escHtml(m.stroke)}</b><span>${escHtml(m.event_date||'')}</span></div><div class="pbMomentRecord">${Number(m.old_pb).toFixed(2)} → ${Number(m.new_pb).toFixed(2)}</div><div class="pbMomentDelta">▼ ${Number(m.improvement).toFixed(2)}초 단축</div><p class="pbMomentMsg">${escHtml(stablePbMessage(m))}</p><div class="pbMomentEvent">${escHtml(m.event_name||'')}</div></div>`).join('');
+  if(!recentMoments.length){pbBox.innerHTML='<div class="card meta">최근 3개월간 새 PB 모먼트가 없어요. 이전 기록은 나의 기록에서 확인할 수 있어요! 🏊</div>';return;}
+  pbBox.innerHTML=recentMoments.map(m=>`<div class="pbMomentCard"><div class="pbMomentHead"><b>🎉 NEW PB · ${escHtml(m.stroke)}</b><span>${escHtml(m.event_date||'')}</span></div><div class="pbMomentRecord">${Number(m.old_pb).toFixed(2)} → ${Number(m.new_pb).toFixed(2)}</div><div class="pbMomentDelta">▼ ${Number(m.improvement).toFixed(2)}초 단축</div><p class="pbMomentMsg">${escHtml(stablePbMessage(m))}</p><div class="pbMomentEvent">${escHtml(m.event_name||'')}</div></div>`).join('');
  }catch(e){
   console.error('my achievements:',e);
   badgeBox.innerHTML='<div class="card meta" style="grid-column:1/-1">출석 배지를 불러오지 못했습니다.</div>';
