@@ -2,7 +2,7 @@
 (()=>{
  if(window.__EYSL_RUNTIME_V189__)return;window.__EYSL_RUNTIME_V189__=true;
  const css=document.createElement('style');css.textContent=`#teamEvents .eventHubBtn{position:relative;padding-left:76px!important;background:#fff!important;border-left:3px solid #9B8ACB!important}#teamEvents .eventHubBtn .eyslV162Icon{position:absolute;left:20px;width:40px;height:40px;border-radius:13px;background:#F0E9FF;display:flex;align-items:center;justify-content:center;font-size:20px}.raceParticipationPerson,.relayTeamCard{padding:12px 0;border-bottom:1px solid #edf0f2}.raceParticipationPerson:last-child,.relayTeamCard:last-child{border-bottom:0}.raceParticipationPerson b,.relayTeamCard b{font-size:12px}.raceParticipationPerson p,.relayTeamCard p{font-size:10px;color:#777;margin:5px 0 0;line-height:1.55}`;document.head.appendChild(css);
- const icons=['🏊','⏰','⚡','🎉','🏆','🏅','🏁'];
+ const icons=['👑','⏰','⚡','🎉','🏆','🏅','🏊'];
  function decorateEvents(){document.querySelectorAll('#teamEvents .eventHubBtn').forEach((b,i)=>{const stale=b.querySelectorAll(':scope > .eysl-event-icon');if(stale.length)stale.forEach(x=>x.remove());let s=b.querySelector(':scope > .eyslV162Icon');if(!s){s=document.createElement('i');s.className='eyslV162Icon';b.prepend(s)}const next=icons[i]||'🏁';if(s.textContent!==next)s.textContent=next})}
  const oldOpenGeneric=window.openGenericApplyStatus;if(typeof oldOpenGeneric==='function')window.openGenericApplyStatus=async function(kind,id){
   if(kind!=='race')return oldOpenGeneric.apply(this,arguments);let item;try{item=races.find(x=>x.id===id)||race}catch(_){return oldOpenGeneric.apply(this,arguments)}if(!item||!activityHasStarted(item))return oldOpenGeneric.apply(this,arguments);
