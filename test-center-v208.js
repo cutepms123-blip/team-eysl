@@ -1,4 +1,4 @@
-/* TEAM EYSL v212 — TEST CENTER with attendance coach */
+/* TEAM EYSL v214 — attendance coach flag */
 (function(){
  if(window.__EYSL_TEST_CENTER_V208__)return;
  window.__EYSL_TEST_CENTER_V208__=true;
@@ -297,19 +297,26 @@
   if(cat==="training"||cat==="finance")return html+scenarios(cat);
 
   if(cat==="attendance"){
-   const demo=state.attendanceDemo||{민선:"코치","테스트회원 A":"출석","테스트회원 B":"지각","테스트회원 C":"불참"};
+   const demo=state.attendanceDemo||{
+    "민선":{status:"출석",coach:true},
+    "테스트회원 A":{status:"출석",coach:false},
+    "테스트회원 B":{status:"지각",coach:true},
+    "테스트회원 C":{status:"불참",coach:false}
+   };
    state.attendanceDemo=demo;
    const vals=Object.values(demo);
-   const count=s=>vals.filter(v=>v===s).length;
-   const rows=Object.entries(demo).map(([name,status])=>
+   const count=s=>vals.filter(v=>v.status===s).length;
+   const coachCount=vals.filter(v=>v.coach===true).length;
+   const rows=Object.entries(demo).map(([name,row])=>
     "<div class='card' style='margin-bottom:8px'><b style='font-size:11px'>"+esc(name)+"</b>"+
     "<div class='wltActions' style='margin-top:8px'>"+
-    ["출석","지각","불참","코치"].map(s=>"<button class='btn "+(status===s?"primary":"outline")+"' data-tc-att-name='"+esc(name)+"' data-tc-att-status='"+s+"'>"+s+"</button>").join("")+
+    ["출석","지각","불참"].map(s=>"<button class='btn "+(row.status===s?"primary":"outline")+"' data-tc-att-name='"+esc(name)+"' data-tc-att-status='"+s+"'>"+s+"</button>").join("")+
+    "<button class='btn "+(row.coach?"primary":"outline")+"' data-tc-coach-name='"+esc(name)+"'>코치</button>"+
     "</div></div>"
    ).join("");
    return html+
-    "<div class='card tcInfo'><b>출석 상태 테스트</b><p>실제 출석 데이터에는 저장되지 않는 TEST CENTER 전용 시나리오입니다.</p></div>"+
-    "<div class='card' style='margin:8px 0'><b style='font-size:11px'>현재 집계</b><p style='font-size:10px;color:#666;margin:6px 0 0'>출석 "+count("출석")+" · 지각 "+count("지각")+" · 불참 "+count("불참")+" · 코치 "+count("코치")+"</p></div>"+
+    "<div class='card tcInfo'><b>출석 상태 테스트</b><p>출석/지각/불참 중 1개 + 코치는 별도 토글입니다. 지각+코치처럼 중복 선택할 수 있습니다.</p></div>"+
+    "<div class='card' style='margin:8px 0'><b style='font-size:11px'>현재 집계</b><p style='font-size:10px;color:#666;margin:6px 0 0'>출석 "+count("출석")+" · 지각 "+count("지각")+" · 불참 "+count("불참")+" · 코치 "+coachCount+"</p></div>"+
     rows;
   }
 
@@ -414,7 +421,17 @@
   const att=e.target.closest("[data-tc-att-name]");
   if(att){
    state.attendanceDemo=state.attendanceDemo||{};
-   state.attendanceDemo[att.dataset.tcAttName]=att.dataset.tcAttStatus||"출석";
+   const name=att.dataset.tcAttName;
+   const prev=state.attendanceDemo[name]||{status:"출석",coach:false};
+   state.attendanceDemo[name]={...prev,status:att.dataset.tcAttStatus||"출석"};
+   write();render();return;
+  }
+  const coach=e.target.closest("[data-tc-coach-name]");
+  if(coach){
+   state.attendanceDemo=state.attendanceDemo||{};
+   const name=coach.dataset.tcCoachName;
+   const prev=state.attendanceDemo[name]||{status:"출석",coach:false};
+   state.attendanceDemo[name]={...prev,coach:!prev.coach};
    write();render();return;
   }
   const tc=e.target.closest("[data-tc-action]");
