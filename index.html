@@ -2705,13 +2705,13 @@ function renderHome(){
  if(n){noticeEl.innerHTML=`<small>${unread?'UNREAD NOTICE · '+unread+'건':'LATEST NOTICE'}</small><h1>${n.title}</h1><p>${String(n.body||'').split('\n')[0]}</p>`;noticeEl.onclick=()=>openNotice(n.id)}
  else{noticeEl.innerHTML='<small>LATEST NOTICE</small><h1>등록된 공지가 없습니다.</h1><p>새 공지가 등록되면 여기에 표시됩니다.</p>';noticeEl.onclick=null}
  const mine=Object.values(trainings).filter(t=>!activityHasStarted(t)&&((t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName))).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start)))[0];
- mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.date} · ${mine.place||'-'}</p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'':'my-applied'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
+ mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p class="eysl-when"><span class="eysl-date">${mine.date}</span><span class="eysl-place">${mine.place||'-'}</span></p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'':'my-applied'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
  const raw=[
   ...Object.values(trainings).map(t=>({type:'training',id:t.id,title:t.title,date:t.date,place:t.place,start:t.start,item:t})),
   ...races.map(r=>({type:'race',id:r.id,title:r.title,date:r.date,place:r.place,start:r.start||'',item:r})),
   ...events.map(e=>({type:'event',id:e.id,title:e.title,date:e.date,place:e.place,start:e.start,item:e}))
  ].filter(x=>!activityHasStarted(x.item)).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start))).slice(0,3);
- upcomingEl.innerHTML=raw.length?raw.map(x=>{const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;const icon=x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉';return `<div class="row" onclick="${action}"><div class="icon">${icon}</div><div class="grow"><b>${x.title}</b><p>${x.date} · ${x.place||'-'}</p></div><span class="tag">신청 가능</span></div>`}).join(''):'<div class="card">다가오는 일정이 없어요.</div>';
+ upcomingEl.innerHTML=raw.length?raw.map(x=>{const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;const icon=x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉';return `<div class="row" onclick="${action}"><div class="icon">${icon}</div><div class="grow"><b>${x.title}</b><p class="eysl-when"><span class="eysl-date">${x.date}</span><span class="eysl-place">${x.place||'-'}</span></p></div><span class="tag">신청 가능</span></div>`}).join(''):'<div class="card">다가오는 일정이 없어요.</div>';
 }
 
 
