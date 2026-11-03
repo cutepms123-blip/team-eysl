@@ -86,7 +86,7 @@
  #teamEvents .eventHubBtn .eyslV162Icon{background:#111317!important;color:#fff!important;border:none!important}
  /* Calendar dots by event type: training vermilion, race rose pink, other events yellow */
  .calendar .dots .dot,.app .calendar .dots .dot{background:#F24B35!important}
- .calendar .dots .dot.race,.app .calendar .dots .dot.race{background:#D36C88!important}
+ .calendar .dots .dot.race,.app .calendar .dots .dot.race{background:#E36BA5!important}
  .calendar .dots .dot.event,.app .calendar .dots .dot.event{background:#F4D34E!important}
  /* Ranking titles always dark on white event cards */
  #eventRankingDetail .eventRankMini h3,
