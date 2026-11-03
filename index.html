@@ -2289,20 +2289,60 @@ const attendanceBadgeDefs=[
  {count:20,title:'20회',message:'오 좀 치네?'},
  {count:25,title:'25회',message:'아이슬 포세이돈'}
 ];
-const pbCongrats=[
- '또 한 번 빨라졌다 🔥',
- '오늘의 내가 어제의 나를 이김.',
- 'PB 업데이트 완료. 다음 벽은 어디?',
- '기록은 거짓말 안 한다 😎',
- '또 벽 하나 깼다!',
- '수영장에 기록 하나 두고 갑니다 🏊',
- '조금씩, 그런데 확실하게 빨라지는 중!',
- '이 기록, 꽤 마음에 드는데? 😏'
+const pbMomentMessages=[
+ // 귀엽고 재치 있는 톤
+ [
+  '어라? 나 좀 빠른데? 😎',
+  '물살이 오늘 좀 당황했겠는데?',
+  '이러다 선수 되는 거 아냐? ㅋㅋ',
+  '기록 단축 맛집이 여기였네.',
+  '오늘의 나, 제법 멋져.',
+  '누가 이렇게 빨라지래? 나야 나.',
+  '어쩐지 오늘 물이 잘 밀리더라 🏊',
+  '오늘도 기록이 일을 냈네!',
+  '신기록이랑 눈 마주쳤다 👀',
+  '실력이 슬금슬금 올라오는 중!'
+ ],
+ // 짧고 센스 있는 톤
+ [
+  '어제의 기록은 이제 옛날이야.',
+  '한계? 방금 지나왔는데.',
+  '또 하나의 벽을 넘었다.',
+  '조용히, 하지만 확실하게.',
+  '오늘도 PB 갱신 완료.',
+  '시간은 줄이고 자신감은 올리고.',
+  '새로운 기준을 만들었다.',
+  '오늘의 한계는 여기까지였나 봐.',
+  '1초가 아쉬웠던 날들이 모여 만든 기록.',
+  '이번 기록, 오래 기억할 만해.'
+ ],
+ // 수영인 공감 톤
+ [
+  '벽 찍고 보니 신기록!',
+  '그동안의 훈련이 기록으로 돌아왔다.',
+  '턴 한 번, 스트로크 한 번의 차이.',
+  '오늘 물이 좀 잘 맞았나 봐 🏊',
+  '끝까지 밀어낸 스트로크의 결과!',
+  '마지막 터치까지 집중한 보람!',
+  '숨 고르고, 다시 한 번 PB!',
+  '스타트부터 터치까지 제대로 해냈다.',
+  '물속에서 쌓은 시간이 기록으로 남았다.',
+  '오늘의 레이스, 기록으로 증명 완료.'
+ ]
 ];
-function stablePbMessage(m){
- const key=`${m.stroke||''}${m.event_date||''}${m.new_pb||''}`;
- let n=0;for(let i=0;i<key.length;i++)n=(n+key.charCodeAt(i)*(i+1))%100000;
- return pbCongrats[n%pbCongrats.length];
+function pbMomentMessageFor(m,index,used){
+ const key=`${m.stroke||''}|${m.event_date||''}|${m.new_pb||''}|${m.event_name||''}`;
+ let hash=0;
+ for(let i=0;i<key.length;i++)hash=(hash*31+key.charCodeAt(i))>>>0;
+ const group=pbMomentMessages[index%pbMomentMessages.length];
+ const offset=hash%group.length;
+ for(let i=0;i<group.length;i++){
+  const line=group[(offset+i)%group.length];
+  if(!used.has(line)){used.add(line);return line;}
+ }
+ const fallback=group[offset];
+ used.add(fallback);
+ return fallback;
 }
 async function renderMyAchievements(){
  const badgeBox=document.getElementById('myAttendanceBadges');
@@ -2326,7 +2366,8 @@ async function renderMyAchievements(){
   badgeBox.innerHTML=`<div class="badgeProgressCard" style="grid-column:1/-1"><div class="badgeProgressCopy"><b>${progress}</b><span>${remaining}</span></div><div class="badgeProgressTrack" role="progressbar" aria-label="다음 출석 배지 진행률" aria-valuenow="${progressValue}" aria-valuemin="0" aria-valuemax="100"><div class="badgeProgressFill" style="width:${progressValue}%"></div></div></div>`+
    attendanceBadgeDefs.map(b=>{const on=count>=b.count;return `<div class="attBadge ${on?'':'locked'}"><div class="badgeIcon">${on?'✓':'🔒'}</div><b>${b.title}</b><p>${on?escHtml(b.message):'달성하면 공개!'}</p></div>`}).join('');
   if(!recentMoments.length){pbBox.innerHTML='<div class="card meta">최근 3개월간 새 PB 모먼트가 없어요. 이전 기록은 나의 기록에서 확인할 수 있어요! 🏊</div>';return;}
-  pbBox.innerHTML=recentMoments.map(m=>`<div class="pbMomentCard"><div class="pbMomentHead"><b>🎉 NEW PB · ${escHtml(m.stroke)}</b><span>${escHtml(m.event_date||'')}</span></div><div class="pbMomentRecord">${Number(m.old_pb).toFixed(2)} → ${Number(m.new_pb).toFixed(2)}</div><div class="pbMomentDelta">▼ ${Number(m.improvement).toFixed(2)}초 단축</div><p class="pbMomentMsg">${escHtml(stablePbMessage(m))}</p><div class="pbMomentEvent">${escHtml(m.event_name||'')}</div></div>`).join('');
+  const usedPbMessages=new Set();
+   pbBox.innerHTML=recentMoments.map((m,i)=>`<div class="pbMomentCard"><div class="pbMomentHead"><b>🎉 NEW PB · ${escHtml(m.stroke)}</b><span>${escHtml(m.event_date||'')}</span></div><div class="pbMomentRecord">${Number(m.old_pb).toFixed(2)} → ${Number(m.new_pb).toFixed(2)}</div><div class="pbMomentDelta">▼ ${Number(m.improvement).toFixed(2)}초 단축</div><p class="pbMomentMsg">${escHtml(pbMomentMessageFor(m,i,usedPbMessages))}</p><div class="pbMomentEvent">${escHtml(m.event_name||'')}</div></div>`).join('');
  }catch(e){
   console.error('my achievements:',e);
   badgeBox.innerHTML='<div class="card meta" style="grid-column:1/-1">출석 배지를 불러오지 못했습니다.</div>';
