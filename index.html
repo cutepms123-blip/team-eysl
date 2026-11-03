@@ -1813,7 +1813,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final228-admin-contrast',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final229-member-order',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5751,7 +5751,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final228-admin-contrast',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final229-member-order',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
