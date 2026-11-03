@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final227-contrast-audit';
+const VERSION='team-eysl-final228-admin-contrast';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
