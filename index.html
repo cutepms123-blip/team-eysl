@@ -1065,6 +1065,24 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 #records .historyCard:has(.eyslRecordMedal)>span:not(.eyslRecordMedal){margin-top:21px!important}
 #records .cleanRecordRow:has(.eyslRecordMedal)>strong{padding-top:20px!important}
 
+
+/* Top-level pool-length selector, applied to all record categories and history */
+#records .recordPoolSection{margin:12px 0 14px!important}
+#records .recordPoolTabs{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:7px!important;padding:5px!important;border-radius:15px!important;
+ border:1px solid #41454B!important;background:#1C1F23!important;
+}
+#records .recordPoolTabs button{
+ width:100%!important;min-width:0!important;min-height:44px!important;
+ background:transparent!important;color:#D0D3D8!important;
+ border:1px solid transparent!important;border-radius:11px!important;
+ font-weight:800!important;font-size:14px!important;box-shadow:none!important;
+}
+#records .recordPoolTabs button.active{
+ background:#F24B35!important;color:#FFFFFF!important;
+ border-color:#F24B35!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1373,7 +1391,7 @@ if(window.pdfjsLib){
 </section>
 
 <section id="activity" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>월간 활동 요약</h1><span></span></div><div class="monthSwitch"><button onclick="changeSummaryMonth(-1)">‹</button><b id="summaryMonth"></b><button onclick="changeSummaryMonth(1)">›</button></div><div id="activityBody"></div></section>
-<section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">일반</button><button onclick="setRecordMajor('fin',this)">핀</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
+<section id="records" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>나의 기록</h1><span></span></div><div class="recordPoolSection"><div class="recordPoolTabs" id="recordPoolTabs" role="group" aria-label="수로 선택"><button type="button" data-pool="25" onclick="setRecordPoolFilter('25',this)">단수로</button><button type="button" data-pool="50" onclick="setRecordPoolFilter('50',this)">장수로</button><button type="button" data-pool="all" class="active" onclick="setRecordPoolFilter('all',this)">종합</button></div></div><div class="recordTabs" id="recordMajor"><button class="active" onclick="setRecordMajor('meet',this)">일반</button><button onclick="setRecordMajor('fin',this)">핀</button><button onclick="setRecordMajor('other',this)">기타</button></div><div class="recordTabs subfilters" id="recordMinor"></div><div id="recordBody"></div></section>
 <section id="recordUploadManager" class="page">
   <div class="pagehead">
     <button class="back" onclick="showPage('mypage')">←</button>
@@ -3854,9 +3872,30 @@ function renderActivity(){const now=new Date(),year=now.getFullYear(),mm=String(
 let recordCurrentType='personal';
 let recordDetailFilter='';
 let recordDistanceFilter=0;
+let recordPoolFilter='all';
 let recordViewRows=[];
 let recordMedals=[];
 
+function recordPoolMeters(r){
+ const raw=Number(r?.metadata?.pool_length_m||0);
+ if(raw===25||raw===50)return raw;
+ if(effectiveRecordCategory(r)==='other')return 25;
+ return 0;
+}
+function recordMatchesPool(r){
+ return recordPoolFilter==='all'||recordPoolMeters(r)===Number(recordPoolFilter);
+}
+function setRecordPoolFilter(value,btn){
+ if(!['25','50','all'].includes(String(value)))return;
+ recordPoolFilter=String(value);
+ const tabs=document.getElementById('recordPoolTabs');
+ if(tabs)tabs.querySelectorAll('button').forEach(b=>{
+  const on=b.dataset.pool===recordPoolFilter;
+  b.classList.toggle('active',on);
+  b.setAttribute('aria-pressed',on?'true':'false');
+ });
+ renderRecordFilteredContent();
+}
 function recordDetailOptions(major,type){
  if(type==='personal'){
    if(major==='fin')return ['자유형','접영','기타'];
@@ -3959,7 +3998,7 @@ function recordMedalBadge(r){
 }
 function renderRecordFilteredContent(){
  const box=document.getElementById('recordBody');if(!box)return;
- const rows=recordViewRows.filter(validStoredRecord);
+ const rows=recordViewRows.filter(validStoredRecord).filter(recordMatchesPool);
  const detailTabs=renderRecordDetailTabs();
  const distanceTabs=renderRecordDistanceTabs();
 
