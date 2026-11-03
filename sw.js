@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final218-ui-integrity';
+const VERSION='team-eysl-final223-rank-tabs-and-pb';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
