@@ -164,3 +164,37 @@ button{color:var(--eysl-text)}
 .app .memberActivityButtons button b{color:#F5F5F5!important}
 .app .memberActivityButtons button span{color:#B9BCC3!important}
 .app .tag.uploadCat.fin,.app .tag.uploadCat.meet,.app .tag.uploadCat.other{background:#312021!important;color:#FF8B76!important}
+
+/* V217 - approved minimal refinement: keep existing layouts, replace only unwanted accents */
+/* Event list: white cards, no lavender edge; clean black emoji blocks */
+html body #teamEvents .eventHub .eventHubBtn,
+html body #teamEvents .eventHubBtn{
+ background:#FAFBFC!important;color:#16181B!important;
+ border:1px solid #D8DADF!important;border-left:1px solid #D8DADF!important;
+ box-shadow:none!important;
+}
+html body #teamEvents .eventHubBtn span{color:#16181B!important}
+html body #teamEvents .eventHubBtn b{color:#7D838A!important}
+html body #teamEvents .eventHubBtn .eyslV162Icon{
+ background:#111317!important;color:#F5F5F5!important;
+ border:0!important;border-radius:12px!important;box-shadow:none!important;
+ font-style:normal!important;
+}
+/* MY PB cards: solid light surface only; no swoosh, stripe, watermark or pattern */
+html body #records .screenshotPb,
+html body #records .pbCard.screenshotPb{
+ background:#FAFBFC!important;
+ background-image:none!important;
+ color:#15171A!important;border:1px solid #D6D9DD!important;
+ border-radius:16px!important;box-shadow:none!important;
+}
+html body #records .screenshotPb::before,
+html body #records .screenshotPb::after{
+ content:none!important;display:none!important;
+ background:none!important;
+}
+html body #records .screenshotPb span{color:#656B73!important}
+html body #records .screenshotPb b{color:#15171A!important}
+/* History retains the existing cards/layout: text color ONLY for performance changes */
+html body #records .historyCard>span.improve{color:#218453!important;background:none!important;border:0!important;box-shadow:none!important}
+html body #records .historyCard>span.slower{color:#F24B35!important;background:none!important;border:0!important;box-shadow:none!important}
