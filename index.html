@@ -2717,7 +2717,7 @@ function renderHome(){
   ...races.map(r=>({type:'race',id:r.id,title:r.title,date:r.date,place:r.place,start:r.start||'',item:r})),
   ...events.map(e=>({type:'event',id:e.id,title:e.title,date:e.date,place:e.place,start:e.start,item:e}))
  ].filter(x=>!activityHasStarted(x.item)).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start))).slice(0,3);
- upcomingEl.innerHTML=raw.length?raw.map(x=>{const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;const icon=x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉';return `<div class="row" onclick="${action}"><div class="icon">${icon}</div><div class="grow"><b>${x.title}</b><p class="eysl-when"><span class="eysl-date">${x.date}</span><span class="eysl-place">${x.place||'-'}</span></p></div><span class="tag">신청 가능</span></div>`}).join(''):'<div class="card">다가오는 일정이 없어요.</div>';
+ upcomingEl.innerHTML=raw.length?raw.map(x=>{const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;const icon=x.type==='training'?'🏊':x.type==='race'?'🏆':'🎉';return `<div class="row" onclick="${action}"><div class="icon">${icon}</div><div class="grow"><b>${x.title}</b><p class="eysl-when"><span class="eysl-date">${x.date}</span><span class="eysl-place">${x.place||'-'}</span></p></div><span class="tag">${x.type==='race'&&x.item.registrationClosed?'신청 마감':'신청 가능'}</span></div>`}).join(''):'<div class="card">다가오는 일정이 없어요.</div>';
 }
 
 
@@ -4885,7 +4885,7 @@ function renderOtherList(){
  box.innerHTML=rows.map(e=>{
    const done=activityHasStarted(e);
    const applied=(e.participants||[]).includes(currentUser.nickname);
-   const status=done?'종료':(item?.registrationClosed?'신청 마감':applied?'신청완료':'신청 가능');
+   const status=done?'종료':applied?'신청완료':'신청 가능';
    const cls=done?'done':applied?'ok':'';
    const when=[e.date,e.start?`${e.start}${e.end?`–${e.end}`:''}`:''].filter(Boolean).join(' · ');
    return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(e.title)}</h3><p>${escHtml(when)}<br>${escHtml(e.place||'장소 미등록')}</p></div><span class="tag ${cls}">${status}</span></div><div class="actions"><button class="btn outline" onclick="openEventDetail('${e.id}')">상세 내용</button>${done?'':applied?`<button class="btn amber" onclick="cancelEventApplication('${e.id}')">신청 취소</button>`:`<button class="btn primary" onclick="applyEventApplication('${e.id}')">신청하기</button>`}<button class="btn outline" onclick="openGenericApplyStatus('event','${e.id}')">신청현황</button></div></div>`;
