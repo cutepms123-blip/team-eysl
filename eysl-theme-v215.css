@@ -1,7 +1,7 @@
 /* TEAM EYSL dark charcoal + vermilion theme v215. Original team logo and assets unchanged. */
 :root{
  --bg:#0c0d0f;--card:#1b1d20;--ink:#f8f8f8;--muted:#adb0b6;--line:#393b40;
- --green:#ff762e;--amber:#ff762e;--accent:#ff641e;
+ --green:#F24B35;--amber:#F24B35;--accent:#F24B35;
  color-scheme:dark;
 }
 html,body{background:#070809!important;color:var(--ink)!important}
@@ -9,8 +9,8 @@ html,body{background:#070809!important;color:var(--ink)!important}
 .top{background:rgba(12,13,15,.97)!important;border-bottom:1px solid #25262b}
 .brand b,.brand span,.section h2,.title,.pagehead h1{color:#fafafa!important}
 .hamb{background:#202226!important;color:#fff!important;border-color:#43454b!important}
-.avatar{background:#ff641e!important;color:#111!important}
-.role{background:#2c211b!important;color:#ff995d!important}
+.avatar{background:#F24B35!important;color:#111!important}
+.role{background:#2c211b!important;color:#FF8B76!important}
 .card,.row,.statusCard,.notice,.panel,.article,.calendar,.detail,.comments .comment,
 .dmRow,.menuCard,.pb,.hist,.stat,.manageCard,.memberrow,.fileRow,.metric,.bigChoice,
 .formrow input,.formrow select,.formrow textarea,.commentForm input,.chatInput input,
@@ -22,44 +22,145 @@ html,body{background:#070809!important;color:var(--ink)!important}
 .row p,.memberrow p,.dmRow p,.statusTop p,.notice p,.meta,.detailrow b,
 .menuCard span,.pb .stroke,.pb .meet,.hist span,.stat span,.metric span,.rank span,
 .link,.week span,.section .link{color:#afb1b7!important}
-.icon,.dmAv,.waititem,.attGrid div,.mediaTile,.chip{background:#292b2e!important;color:#ff752e!important}
+.icon,.dmAv,.waititem,.attGrid div,.mediaTile,.chip{background:#292b2e!important;color:#F24B35!important}
 .tag,.tag.wait,.tag.ok,.tag.my-applied,.tag.done,.role{
- background:#342116!important;color:#ff9a64!important;border:1px solid #784326!important;
+ background:#34201F!important;color:#FF8B76!important;border:1px solid #844339!important;
 }
 .tag.done{background:#2d2e31!important;color:#b9bbc0!important;border-color:#45474a!important}
 .primary,.btn.primary,.fab,.bigChoice.on,.attChoice.on,.chatTabs button.active,
 .filters button.active,.recordTabs button.active,.calendar .day.selected,.nav button.active{
- background:#ff641e!important;color:#111!important;border-color:#ff641e!important;
+ background:#F24B35!important;color:#111!important;border-color:#F24B35!important;
 }
 .outline,.ghost,.amber,.attChoice,.calhead button{background:#292b2f!important;color:#f5f5f5!important;border-color:#414348!important}
-.btn.amber,.amber{background:#3c261b!important;color:#ff9b63!important;border-color:#744329!important}
+.btn.amber,.amber{background:#3B2220!important;color:#FF8B76!important;border-color:#844339!important}
 .hero,.profile,.summary{background:linear-gradient(135deg,#202125,#111214)!important;color:#fff!important;border:1px solid #42444a!important}
 .summary .metric{background:#26272b!important}
 .nav{background:rgba(15,16,19,.98)!important;border-color:#404247!important}
-.nav button{color:#a5a7ad!important}.nav button.active{background:transparent!important;color:#ff742b!important;border:0!important}
-.nav button.active i{color:#ff742b!important}
+.nav button{color:#a5a7ad!important}.nav button.active{background:transparent!important;color:#F24B35!important;border:0!important}
+.nav button.active i{color:#F24B35!important}
 .chatInput{background:#0c0d0f!important}
 .bubble{background:#25272b!important;color:#fff!important;border-color:#48494d!important}
-.me .bubble{background:#a83d12!important;color:#fff!important}
+.me .bubble{background:#983526!important;color:#fff!important}
 .detailrow{border-color:#393b40!important}
-.dot,.dot.race,.dot.event{background:#ff641e!important}
-.offer,.offerBox{background:#34291e!important;border-color:#7a4a25!important;color:#fff!important}
-input,textarea,select{color-scheme:dark;accent-color:#ff641e}
+.dot,.dot.race,.dot.event{background:#F24B35!important}
+.offer,.offerBox{background:#342322!important;border-color:#844339!important;color:#fff!important}
+input,textarea,select{color-scheme:dark;accent-color:#F24B35}
 input::placeholder,textarea::placeholder{color:#93959c!important}
-button{accent-color:#ff641e}
-a,.good{color:#ff945d}
+button{accent-color:#F24B35}
+a,.good{color:#FF8B76}
 #homeMine .row,#homeUpcoming .row{border-radius:18px!important;background:#1b1d20!important;border:1px solid #46484d!important}
-#homeMine .row:hover,#homeUpcoming .row:hover{border-color:#ff641e!important}
+#homeMine .row:hover,#homeUpcoming .row:hover{border-color:#F24B35!important}
 #homeMine .row p,#homeUpcoming .row p{color:#c3c4c9!important}
-#homeMine .row p::first-letter,#homeUpcoming .row p::first-letter{color:#ff762e}
+#homeMine .row p::first-letter,#homeUpcoming .row p::first-letter{color:#F24B35}
 #homeMine .icon,#homeUpcoming .icon{background:#101114!important}
 #homeMine .tag,#homeUpcoming .tag{border-radius:100px!important}
 /* Preserve legibility on white inline-styled widgets (form controls, tables) */
 table{color:var(--ink)}
 th,td{border-color:#414348}
-input[type="checkbox"],input[type="radio"]{accent-color:#ff641e}
+input[type="checkbox"],input[type="radio"]{accent-color:#F24B35}
 
 /* Same date / venue rhythm on both dashboard schedule collections */
 #homeMine .eysl-when,#homeUpcoming .eysl-when{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px!important}
-#homeMine .eysl-date,#homeUpcoming .eysl-date{display:inline-flex;align-items:center;border-radius:100px;background:#ff641e;color:#fff;font-weight:800;font-size:10px;padding:3px 7px;white-space:nowrap}
+#homeMine .eysl-date,#homeUpcoming .eysl-date{display:inline-flex;align-items:center;border-radius:100px;background:#F24B35;color:#fff;font-weight:800;font-size:10px;padding:3px 7px;white-space:nowrap}
 #homeMine .eysl-place,#homeUpcoming .eysl-place{color:#c5c7cc;font-size:11px;overflow-wrap:anywhere}
+
+/* V216: red-toned vermilion design system; original EYSL logo intentionally untouched */
+:root{--eysl-red:#F24B35;--eysl-red-light:#FF8B76;--eysl-surface:#1B1D20;--eysl-text:#F5F5F5;--eysl-secondary:#BDC0C7;--eysl-quiet:#70747C;--eysl-loss:#4A4F57;--eysl-border:#484A50;--green:#F24B35;--amber:#F24B35;--accent:#F24B35}
+html{color-scheme:dark}
+button{color:var(--eysl-text)}
+/* Neutral buttons: no white pill / purple fills on dark surfaces */
+.app .btn.outline,.app .btn.ghost,.app .outline,.app .ghost,
+.app .attChoice,.app .bigChoice,.app .rankMoreBtn,
+.app .chatTabs button,.app .filters button,.app .recordTabs button,
+.app .calhead button,.app .monthSwitch button,
+.app .profileActions .btn.outline,.app .profileActions button,
+.app .memberActivityButtons button,.app .attachBtn,
+.app #myStatusList .btn:not(.primary),.app .commentForm button:not(.primary){
+ background:#222429!important;color:#F5F5F5!important;border:1px solid #555961!important;
+ box-shadow:none!important;
+}
+.app .btn.outline:active,.app .btn.ghost:active,.app .recordTabs button:active,
+.app .filters button:active{background:#34363C!important}
+/* Selected / current filter: low-fill, red-stroked and legible. */
+.app .recordTabs button.active,.app .filters button.active,.app .chatTabs button.active,
+.app .attChoice.on,.app .bigChoice.on{
+ background:#241C1D!important;color:#FF7C66!important;border:1px solid #F24B35!important;
+}
+/* High priority and destructive actions share vermilion; action type is made clear by text/confirmation. */
+.app .btn.primary,.app button.primary,.app .compactSaveBtn,.app .fab,
+.app .profileActions #profileDeleteBtn,.app .btn.amber,#profileDeleteBtn,
+.app #raceSubmit,.app .chatInput .primary{
+ background:#F24B35!important;border:1px solid #F24B35!important;color:#111317!important;
+ box-shadow:none!important;
+}
+.app .btn.primary:active,.app .fab:active,.app #profileDeleteBtn:active{background:#D83C2A!important}
+.app .tag,.app .statusPill,.app .role{background:#282A2F!important;border:1px solid #56595F!important;color:#D4D6DB!important}
+.app .tag.my-applied,.app .tag.applied,.app .tag.wait,.app .role{
+ background:#302020!important;border:1px solid #974A40!important;color:#FF8B76!important;
+}
+.app .tag.ok{background:#25282B!important;color:#D2D4D9!important;border:1px solid #65676B!important}
+.app .tag.done,.app .statusPill.done{background:#282A2E!important;color:#ADB0B7!important;border:1px solid #4B4E53!important}
+.app .nav button.active,.app .nav button.active i{color:#F24B35!important;background:transparent!important;border:0!important}
+.app .calendar .day.selected{background:#F24B35!important;color:#111317!important}
+.app #homeMine .eysl-date,.app #homeUpcoming .eysl-date{background:#F24B35!important;color:#fff!important}
+/* Event hub remains in the charcoal family (including its original lavender icon backgrounds). */
+.app #eventHub .eventHubBtn,.app .eventHub .eventHubBtn,
+.app #eventHub .eventHubBtn span{
+ background:#1D2024!important;color:#F5F5F5!important;border-color:#474A50!important;
+}
+.app #eventHub .eventHubBtn{border-left:3px solid #F24B35!important}
+.app #eventHub .eventHubBtn b{color:#BAC0C6!important}
+.app .eventHubBtn .icon,.app .eventHubBtn [class*="icon"],.app .eventHubBtn [class*="Icon"]{
+ background:#30201F!important;color:#FF8B76!important;
+}
+/* Sidebar: fix invisible white-on-white text in legacy drawer. */
+.app .drawer{background:#17191D!important;color:#F5F5F5!important;border-right:1px solid #44474D!important}
+.app .drawer .drawerHead,.app .drawer .ditem,.app .drawer .dparent,
+.app .drawer .dsub .ditem,.app .drawer .drawerHead b{
+ color:#F5F5F5!important;
+}
+.app .drawer .dsec{color:#AEB2BA!important}
+.app .drawer .ditem:hover,.app .drawer .dparent:hover{background:#282B30!important}
+.app .drawer .drawerHead button{background:#303238!important;color:#F5F5F5!important}
+.app .drawer .dsub .ditem{color:#CBD0D7!important}
+/* Attendance stats: dark card + white numbers, no white-on-white */
+.app .attMini{background:#212329!important;border-color:#44464D!important;color:#F5F5F5!important}
+.app .attMini strong{color:#F5F5F5!important}
+.app .attMini span{color:#BEC2C9!important}
+.app .attSix{gap:8px}
+.app #attendance .formrow label{color:#E2E4E8!important}
+/* White content cards deliberately keep dark ink, orange-red accents and neutral regression numbers. */
+.app .pbMomentCard,.app .historyCard{background:#F8F9FA!important;border-color:#C9CCD0!important;color:#15171B!important}
+.app .pbMomentHead b,.app .historyCard b,.app .pbMomentRecord{color:#17191D!important}
+.app .pbMomentHead span,.app .pbMomentMsg,.app .pbMomentEvent,
+.app .historyCard p,.app .historyCard>span{color:#616770!important}
+.app .pbMomentDelta,.app .historyCard>span.improve{color:#D9432C!important}
+.app .historyCard>span.slower{color:#4A4F57!important}
+.app .pbMomentCard .meta,.app .historyCard .meta{color:#616770!important}
+.app .pbMomentHead b{font-weight:900!important}
+/* Badge heading is already showing the year/count. Keep only one compact progress element. */
+.app #mypage .section #myBadgeYear{color:#FF8B76!important}
+.app .badgeProgressCard{
+ grid-column:1/-1;display:block!important;padding:10px 12px!important;margin:0 0 3px!important;
+ background:#202226!important;border:1px solid #45484E!important;border-radius:14px!important;color:#F4F5F5!important;
+}
+.app .badgeProgressCopy{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:7px}
+.app .badgeProgressCopy b{font-size:12px;color:#E6E8EA!important;font-weight:700}
+.app .badgeProgressCopy span{font-size:12px;color:#C8CACE!important;white-space:nowrap}
+.app .badgeProgressCopy strong{color:#FF8B76!important;font-weight:900}
+.app .badgeProgressTrack{height:6px;border-radius:999px;background:#42454C;overflow:hidden}
+.app .badgeProgressFill{height:100%;background:#F24B35;border-radius:999px;transition:width .2s ease}
+.app .attBadge{background:#F9FAFB!important;border-color:#D3D6DB!important;color:#15171B!important}
+.app .attBadge b{color:#15171B!important}
+.app .attBadge p{color:#4B5159!important}
+.app .attBadge .badgeIcon{background:#17191D!important;color:#fff!important}
+.app .attBadge.locked{opacity:1!important;filter:none!important;background:#383B40!important;border-color:#44464A!important}
+.app .attBadge.locked b{color:#C9CBCF!important}
+.app .attBadge.locked p{color:#A9ACB2!important}
+.app .attBadge.locked .badgeIcon{background:#55585F!important;color:#D5D7D9!important}
+/* Restore readable secondary labels inside dark surfaces */
+.app .summary .metric,.app .statusCard,.app .rankMoreBtn{color:#F5F5F5!important}
+.app .rankMoreBtn{background:#23252A!important}
+.app .memberActivityButtons button b{color:#F5F5F5!important}
+.app .memberActivityButtons button span{color:#B9BCC3!important}
+.app .tag.uploadCat.fin,.app .tag.uploadCat.meet,.app .tag.uploadCat.other{background:#312021!important;color:#FF8B76!important}
