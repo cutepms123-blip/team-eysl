@@ -98,16 +98,33 @@
  #eventRankingDetail .medalRankingTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 17px}
  #eventRankingDetail .medalRankingTabs button{background:#222429!important;color:#ECEEF2!important;border:1px solid #52565C!important;border-radius:999px!important;font-weight:800!important;padding:10px 8px!important}
  #eventRankingDetail .medalRankingTabs button.active{background:#291D1D!important;border-color:#F24B35!important;color:#FF8B76!important}
- /* True visible PB depth: cast shadow and crisp lower edge, no decoration or swooshes */
+ /* MY PB: flat premium highlight, no 3D bevel or decorative pattern. */
  #records .recordSummaryGrid .pbCard.screenshotPb,
  #records .recordSummaryGrid .screenshotPb{
-  background:linear-gradient(160deg,#fff 0%,#F2F3F6 100%)!important;
-  border:1px solid #D8D9E0!important;border-bottom:4px solid #B5B8C1!important;
-  box-shadow:0 12px 19px rgba(0,0,0,.47),0 4px 6px rgba(0,0,0,.24),inset 0 2px 1px rgba(255,255,255,.9)!important;
-  transform:translateY(-2px);overflow:hidden;
+  background:#F9FAFB!important;background-image:none!important;
+  border:1px solid #E0E2E5!important;border-top:2px solid #F24B35!important;
+  border-bottom:1px solid #E0E2E5!important;
+  border-radius:16px!important;box-shadow:none!important;transform:none!important;
+  overflow:hidden!important;
  }
- #records .recordSummaryGrid .screenshotPb:before,
- #records .recordSummaryGrid .screenshotPb:after{content:none!important;display:none!important}
+ #records .recordSummaryGrid .screenshotPb::before,
+ #records .recordSummaryGrid .screenshotPb::after{content:none!important;display:none!important}
+ /* Tabbed ranking headings and filters. */
+ #eventRankingDetail .rankScopeTabs{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 16px;
+ }
+ #eventRankingDetail .rankScopeTabs button{
+  border:1px solid #56595F!important;background:#24262B!important;color:#F5F5F5!important;
+  border-radius:12px!important;font-weight:800!important;font-size:13px!important;
+  padding:12px 8px!important;line-height:1.25!important;min-height:44px!important;
+ }
+ #eventRankingDetail .rankScopeTabs button.active{
+  border-color:#F24B35!important;color:#FF8B76!important;background:#2E211F!important;
+ }
+ #eventRankingDetail .rankScopePanel[hidden]{display:none!important}
+ #eventRankingDetail .rankScopePanel .eventRankMini h3{
+  color:#15171A!important;-webkit-text-fill-color:#15171A!important;
+ }
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
