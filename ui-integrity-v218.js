@@ -125,6 +125,42 @@
  #eventRankingDetail .rankScopePanel .eventRankMini h3{
   color:#15171A!important;-webkit-text-fill-color:#15171A!important;
  }
+ /* Final contrast consistency: dark outer panels, white ranking cards, neutral readable badges. */
+ #eventRankingDetail .eventRankGroup>h2,
+ #eventRankingDetail .rankScopePanel .eventRankGroup>h2{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+  opacity:1!important;font-weight:850!important;
+ }
+ #eventRankingDetail .eventRankMini,
+ #eventRankingDetail .eventDetailStack .eventRankMini{
+  background:#FFFFFF!important;color:#1B1D20!important;
+  -webkit-text-fill-color:initial;
+ }
+ #eventRankingDetail .eventRankMini h3{
+  color:#1B1D20!important;-webkit-text-fill-color:#1B1D20!important;
+ }
+ #eventRankingDetail .eventRankMini .rankLeft b,
+ #eventRankingDetail .eventRankMini .rankValue{
+  color:#252932!important;-webkit-text-fill-color:#252932!important;opacity:1!important;
+ }
+ #eventRankingDetail .eventRankMini .rankNo{
+  background:#F3F4F6!important;color:#30343B!important;
+  -webkit-text-fill-color:#30343B!important;
+  border:1px solid #D4D8DF!important;opacity:1!important;
+ }
+ #eventRankingDetail .eventRankMini .eventRankEmpty,
+ #eventRankingDetail .eventRankMini .meta{
+  color:#59616B!important;-webkit-text-fill-color:#59616B!important;
+  opacity:1!important;
+ }
+ #eventRankingDetail .rankScopeTabs button,
+ #eventRankingDetail .strokeRankingTabs button{
+  -webkit-text-fill-color:#F5F5F5!important;opacity:1!important;
+ }
+ #eventRankingDetail .rankScopeTabs button.active,
+ #eventRankingDetail .strokeRankingTabs button.active{
+  -webkit-text-fill-color:#FF8B76!important;
+ }
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
