@@ -1795,7 +1795,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final224-event-cleanup-pink',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final225-record-medals',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -5709,7 +5709,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final224-event-cleanup-pink',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final225-record-medals',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
@@ -5727,6 +5727,6 @@ if('serviceWorker' in navigator){
 <script src="/training-automation-v200.js?v=final208-training"></script>
 <script src="/profile-mode-v202.js?v=final204-profile"></script>
 <script src="/test-center-v208.js?v=final208-test-center"></script>
-<script src="/ui-integrity-v218.js?v=final224-event-cleanup-pink"></script>
+<script src="/ui-integrity-v218.js?v=final225-record-medals"></script>
 </body>
 </html>
