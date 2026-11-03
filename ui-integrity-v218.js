@@ -84,6 +84,30 @@
  }
  #teamEvents .eventHubBtn span{color:#16181B!important;-webkit-text-fill-color:#16181B!important}
  #teamEvents .eventHubBtn .eyslV162Icon{background:#111317!important;color:#fff!important;border:none!important}
+ /* Calendar dots by event type: training vermilion, race rose pink, other events yellow */
+ .calendar .dots .dot,.app .calendar .dots .dot{background:#F24B35!important}
+ .calendar .dots .dot.race,.app .calendar .dots .dot.race{background:#D36C88!important}
+ .calendar .dots .dot.event,.app .calendar .dots .dot.event{background:#F4D34E!important}
+ /* Ranking titles always dark on white event cards */
+ #eventRankingDetail .eventRankMini h3,
+ #eventRankingDetail .strokeRankingPanel .eventRankMini h3,
+ #eventRankingDetail .medalRankingPanel .eventRankMini h3{
+  color:#1B1D20!important;-webkit-text-fill-color:#1B1D20!important;
+  opacity:1!important;font-weight:900!important;
+ }
+ #eventRankingDetail .medalRankingTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 17px}
+ #eventRankingDetail .medalRankingTabs button{background:#222429!important;color:#ECEEF2!important;border:1px solid #52565C!important;border-radius:999px!important;font-weight:800!important;padding:10px 8px!important}
+ #eventRankingDetail .medalRankingTabs button.active{background:#291D1D!important;border-color:#F24B35!important;color:#FF8B76!important}
+ /* True visible PB depth: cast shadow and crisp lower edge, no decoration or swooshes */
+ #records .recordSummaryGrid .pbCard.screenshotPb,
+ #records .recordSummaryGrid .screenshotPb{
+  background:linear-gradient(160deg,#fff 0%,#F2F3F6 100%)!important;
+  border:1px solid #D8D9E0!important;border-bottom:4px solid #B5B8C1!important;
+  box-shadow:0 12px 19px rgba(0,0,0,.47),0 4px 6px rgba(0,0,0,.24),inset 0 2px 1px rgba(255,255,255,.9)!important;
+  transform:translateY(-2px);overflow:hidden;
+ }
+ #records .recordSummaryGrid .screenshotPb:before,
+ #records .recordSummaryGrid .screenshotPb:after{content:none!important;display:none!important}
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
