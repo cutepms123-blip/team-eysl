@@ -1531,6 +1531,7 @@ function mapActivityRow(row){
   id:row.id,title:row.title,date:row.activity_date,start:fmtDbTime(row.start_time),end:fmtDbTime(row.end_time),
   place:row.place||'',createdBy:row.created_by||null,
   participants:Array.isArray(d.participants)?d.participants:[],
+  registrationClosed:!!d.registration_closed,
   waitlist:Array.isArray(d.waitlist)?d.waitlist:[],offer:d.offer||null,
   historicalParticipants:Array.isArray(d.historical_participants)?d.historical_participants:[],
   manualUnregisteredParticipants:Array.isArray(d.manual_unregistered_participants)?d.manual_unregistered_participants:[],
@@ -1667,7 +1668,7 @@ async function loadPersistentContent(){
  const byRosterId=id=>rosterNameMap.get(id)||null;
  Object.values(trainings).forEach(t=>{t.participants=[];t.waitlist=[]});
  events.forEach(e=>{e.participants=[]});
- races.forEach(r=>{r.participants=[];r.application=null});
+ races.forEach(r=>{r.participants=Array.isArray(r.participants)?[...r.participants]:[];r.application=null});
  raceApplication=race?.application||null;
  apps.forEach(a=>{
   const name=byMemberId(a.member_id)||byRosterId(a.roster_id);if(!name)return;
@@ -1678,7 +1679,7 @@ async function loadPersistentContent(){
    return;
   }
   const rr=races.find(x=>x.id===a.activity_id);
-  if(rr){rr.participants.push(name);if(a.member_id===currentUser.memberId)rr.application=a.details||{};if(race.id===rr.id&&a.member_id===currentUser.memberId)raceApplication=a.details||{};return}
+  if(rr){if(!rr.participants.includes(name))rr.participants.push(name);if(a.member_id===currentUser.memberId)rr.application=a.details||{};if(race.id===rr.id&&a.member_id===currentUser.memberId)raceApplication=a.details||{};return}
   const e=events.find(x=>x.id===a.activity_id);if(e)e.participants.push(name);
  });
  const historicalTrainingRows=historicalTrainingRes?.error?[]:(historicalTrainingRes?.data||[]);
@@ -3377,7 +3378,7 @@ function selectDay(ds,el){
   type:'대회',title:r.title,
   time:r.endDate&&r.endDate!==r.date?`${r.date} ~ ${r.endDate}`:(r.start?`${r.start} 시작`:'-'),
   place:r.place||'-',
-  status:activityHasStarted(r)?'종료':r.application?'신청완료':'신청 가능',
+  status:activityHasStarted(r)?'종료':r.registrationClosed?'신청 마감':r.application?'신청완료':'신청 가능',
   action:`setActiveRace('${r.id}');showPage('raceList')`
  }));
  events.filter(e=>e.date===ds).forEach(e=>list.push({
@@ -3729,9 +3730,10 @@ function renderRaceList(){
  if(!rows.length){box.innerHTML='<div class="card meta">등록된 대회가 없습니다.</div>';return}
  box.innerHTML=rows.map(r=>{
   const done=activityHasStarted(r),app=!!r.application;
-  const status=done?'종료':app?'신청완료':'신청 가능';
-  const tagCls=done?'done':app?'ok':'';
-  return `<div class="statusCard"><div class="statusTop"><div><h3>${r.title}</h3><p>${r.date}${r.endDate&&r.endDate!==r.date?'–'+r.endDate:''} · ${r.place||'-'}<br>${status}</p></div><span class="tag ${tagCls}">${status}</span></div><div class="actions"><button class="btn outline" onclick="setActiveRace('${r.id}');openRaceDetail()">상세 내용</button>${done?'':`<button class="btn primary" onclick="setActiveRace('${r.id}');openRaceApply()">${app?'신청 수정':'신청하기'}</button>`}<button class="btn outline" onclick="setActiveRace('${r.id}');openGenericApplyStatus('race','${r.id}')">신청현황</button></div></div>`
+  const closed=!!r.registrationClosed;
+  const status=done?'종료':closed?'신청 마감':app?'신청완료':'신청 가능';
+  const tagCls=done?'done':closed?'done':app?'ok':'';
+  return `<div class="statusCard"><div class="statusTop"><div><h3>${r.title}</h3><p>${r.date}${r.endDate&&r.endDate!==r.date?'–'+r.endDate:''} · ${r.place||'-'}<br>${status}</p></div><span class="tag ${tagCls}">${status}</span></div><div class="actions"><button class="btn outline" onclick="setActiveRace('${r.id}');openRaceDetail()">상세 내용</button>${done?'':closed?'<button class="btn outline" disabled>신청 마감</button>':`<button class="btn primary" onclick="setActiveRace('${r.id}');openRaceApply()">${app?'신청 수정':'신청하기'}</button>`}<button class="btn outline" onclick="setActiveRace('${r.id}');openGenericApplyStatus('race','${r.id}')">신청현황</button></div></div>`
  }).join('');
 }
 function openRaceDetail(){
@@ -3739,6 +3741,7 @@ function openRaceDetail(){
  showPage('raceDetail');
  const body=document.getElementById('raceDetailBody');if(!body)return;
  const done=activityHasStarted(race);
+ const closed=!!race.registrationClosed;
  const app=!!race.application;
  const relays=Array.isArray(race.relays)&&race.relays.length?race.relays.map(x=>`<span class="tag">${escHtml(x)}</span>`).join(''):'<span class="meta">등록된 단체전 정보가 없습니다.</span>';
  const detailText=String(race.detail||'').trim();
@@ -3746,16 +3749,19 @@ function openRaceDetail(){
   <div class="detailrow"><b>대회명</b><span>${escHtml(race.title||'-')}</span></div>
   <div class="detailrow"><b>일정</b><span>${escHtml(race.date||'-')}${race.endDate&&race.endDate!==race.date?` ~ ${escHtml(race.endDate)}`:''}</span></div>
   <div class="detailrow"><b>장소</b><span>${escHtml(race.place||'-')}</span></div>
-  <div class="detailrow"><b>상태</b><span>${done?'종료':app?'신청완료':'신청 가능'}</span></div>
+  <div class="detailrow"><b>상태</b><span>${done?'종료':closed?'신청 마감':app?'신청완료':'신청 가능'}</span></div>
  </div>
  <div class="section"><h2>대회 상세 정보</h2></div>
  <div class="card"><p style="white-space:pre-wrap;line-height:1.7">${detailText?escHtml(detailText):'등록된 상세 정보가 없습니다.'}</p></div>
- <div class="section"><h2>단체전 옵션</h2></div>
+ <div class="section"><h2>참가 인원 · ${(race.participants||[]).length}명</h2></div>
+ <div class="card">${(race.participants||[]).length?race.participants.map(name=>`<span class="tag" style="display:inline-block;margin:3px">${escHtml(String(name).split('/')[0])}</span>`).join(''):'등록된 참가자가 없습니다.'}</div>
+ <div class="section"><h2>단체전</h2></div>
  <div class="card"><div class="filters" style="margin:0">${relays}</div></div>
- <div class="actions">${done?'':`<button class="btn primary" onclick="openRaceApply()">${app?'신청 수정':'신청하기'}</button>`}<button class="btn outline" onclick="openGenericApplyStatus('race','${race.id}')">신청현황</button></div>
+ <div class="actions">${done?'':closed?'<button class="btn outline" disabled>신청 마감</button>':`<button class="btn primary" onclick="openRaceApply()">${app?'신청 수정':'신청하기'}</button>`}<button class="btn outline" onclick="openGenericApplyStatus('race','${race.id}')">신청현황</button></div>
  ${adminActivityActions(race.id)}`;
 }
 function openRaceApply(){
+ if(race?.registrationClosed){toast('신청이 마감된 대회입니다.');return;}
  showPage('raceApply');
  document.getElementById('relayChoices').innerHTML=race.relays.map(r=>`<button type="button" class="bigChoice ${raceApplication?.relays.includes(r)?'on':''}" onclick="toggleRelay(this)">${r}</button>`).join('');
  document.getElementById('noRelay').classList.toggle('on',!!raceApplication?.noRelay);
@@ -3768,6 +3774,7 @@ function openRaceApply(){
 function toggleRelay(b){document.getElementById('noRelay').classList.remove('on');b.classList.toggle('on')}
 function selectNoRelay(){document.querySelectorAll('#relayChoices .bigChoice').forEach(b=>b.classList.remove('on'));document.getElementById('noRelay').classList.add('on')}
 async function submitRace(){
+ if(race?.registrationClosed){toast('신청이 마감된 대회입니다.');return;}
  const applicantName=(document.getElementById('raceApplicantName')?.value||'').trim();
  const birthDate=(document.getElementById('raceApplicantBirth')?.value||'').trim();
  const phone=(document.getElementById('raceApplicantPhone')?.value||'').trim();
@@ -4878,7 +4885,7 @@ function renderOtherList(){
  box.innerHTML=rows.map(e=>{
    const done=activityHasStarted(e);
    const applied=(e.participants||[]).includes(currentUser.nickname);
-   const status=done?'종료':applied?'신청완료':'신청 가능';
+   const status=done?'종료':(item?.registrationClosed?'신청 마감':applied?'신청완료':'신청 가능');
    const cls=done?'done':applied?'ok':'';
    const when=[e.date,e.start?`${e.start}${e.end?`–${e.end}`:''}`:''].filter(Boolean).join(' · ');
    return `<div class="statusCard"><div class="statusTop"><div><h3>${escHtml(e.title)}</h3><p>${escHtml(when)}<br>${escHtml(e.place||'장소 미등록')}</p></div><span class="tag ${cls}">${status}</span></div><div class="actions"><button class="btn outline" onclick="openEventDetail('${e.id}')">상세 내용</button>${done?'':applied?`<button class="btn amber" onclick="cancelEventApplication('${e.id}')">신청 취소</button>`:`<button class="btn primary" onclick="applyEventApplication('${e.id}')">신청하기</button>`}<button class="btn outline" onclick="openGenericApplyStatus('event','${e.id}')">신청현황</button></div></div>`;
@@ -5495,6 +5502,10 @@ async function loadFunEventRaw(){
  if(error||!data)throw(error||new Error('event ranking data error'));
  return data;
 }
+function setStrokeRankingGender(gender,btn){
+ document.querySelectorAll('.strokeRankingTabs button').forEach(b=>b.classList.toggle('active',b===btn));
+ document.querySelectorAll('.strokeRankingPanel').forEach(p=>{p.style.display=p.dataset.gender===gender?'':'none'});
+}
 async function openFunEventPage(type){
  showPage('eventRankingDetail');
  const titles={pbcollector:'PB 수집왕',competition:'대회왕',medal:'메달왕',stroke:'영법별 랭킹',firstattendance:'첫 출석'};
@@ -5511,7 +5522,9 @@ async function openFunEventPage(type){
   }
 
   if(type==='competition'){
-   const rows=data.competition||[];
+   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v1');
+   if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
+   const rows=meetRanks.competition||[];
    box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div><div class="card meta">일반·핀 대회를 모두 포함하고, 같은 대회에서 여러 종목을 뛰어도 대회 참가 1회로 계산해요.</div></div>`;
    return;
   }
@@ -5524,17 +5537,21 @@ async function openFunEventPage(type){
   }
 
   if(type==='stroke'){
-   const rows=data.stroke_rankings||[];
+   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v1');
+   if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
+   const rows=meetRanks.stroke_rankings||[];
    const strokes=['자유형','배영','평영','접영'];
-   const render=(gender)=>`<div class="eventRankGroup"><h2>${gender==='여'?'여자':'남자'}</h2>${strokes.map(stroke=>{
-     const picked=rows.filter(x=>x.gender===gender&&x.stroke===stroke);
-     const id=`rank-full-${++rankToggleSeq}`;
-     const row=(r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank||i+1)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${Number(r.pb_seconds).toFixed(2)}초 · ${Number(r.score).toFixed(1)}점</span></div>`;
-     const top=picked.slice(0,5),rest=picked.slice(5);
-     const body=top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map((r,i)=>row(r,i+5)).join('')}</div>${rankToggleButton(picked,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
-     return `<div class="eventRankMini"><h3>${stroke} 50M TOP5</h3>${body}</div>`;
-   }).join('')}</div>`;
-   box.innerHTML=`<div class="eventDetailStack">${render('여')}${render('남')}<div class="card meta">남녀를 따로 계산해요. 각 성별·영법의 팀내 최고 50M PB를 100점으로 두고 상대점수를 표시해요. 종합점수는 사용하지 않습니다.</div></div>`;
+   const groups=[['남','남자'],['여','여자'],['all','종합']];
+   const section=(scope)=>strokes.map(stroke=>{
+    const picked=rows.filter(x=>x.stroke===stroke&&(scope==='all'||x.gender===scope))
+     .sort((a,b)=>Number(a.pb_seconds)-Number(b.pb_seconds)||String(a.nickname).localeCompare(String(b.nickname)));
+    const id=`rank-full-${++rankToggleSeq}`;
+    const rankOf=x=>scope==='all'?Number(x.combined_rank):Number(x.gender_rank);
+    const renderItem=x=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(rankOf(x))}</span><b>${escHtml(x.nickname)}</b></div><span class="rankValue">${Number(x.pb_seconds).toFixed(2)}초</span></div>`;
+    const top=picked.slice(0,5),rest=picked.slice(5);
+    return `<div class="eventRankMini"><h3>${stroke} 50M TOP5</h3>${top.length?top.map(renderItem).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(renderItem).join('')}</div>${rankToggleButton(picked,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>'}</div>`;
+   }).join('');
+   box.innerHTML=`<div class="strokeRankingTabs">${groups.map(([key,label],i)=>`<button type="button" class="${i===0?'active':''}" data-gender="${key}" onclick="setStrokeRankingGender('${key}',this)">${label}</button>`).join('')}</div>${groups.map(([key,label],i)=>`<div class="strokeRankingPanel" data-gender="${key}" style="${i===0?'':'display:none'}"><div class="eventRankGroup">${section(key)}</div></div>`).join('')}<div class="card meta">일반 수영대회 개인 50M 기록만 반영해요. 남자·여자·종합을 전환할 수 있어요. 핀수영대회 기록은 제외합니다.</div>`;
    return;
   }
 
