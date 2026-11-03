@@ -1058,6 +1058,13 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
 .firstBadge{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#F0E9FF;color:#7250B5;font-size:12px;font-weight:900;flex:0 0 auto}
 
 .allroundTotal{font-size:14px;font-weight:900;color:#111;padding:2px 0 10px}
+
+/* A simple medal emoji on the top-right of verified competition records */
+#records .historyCard:has(.eyslRecordMedal),#records .cleanRecordRow:has(.eyslRecordMedal){position:relative!important}
+#records .eyslRecordMedal{position:absolute;top:7px;right:9px;z-index:2;display:inline-flex;align-items:center;justify-content:center;font-size:19px;line-height:1;width:26px;height:26px;background:transparent!important;pointer-events:none}
+#records .historyCard:has(.eyslRecordMedal)>span:not(.eyslRecordMedal){margin-top:21px!important}
+#records .cleanRecordRow:has(.eyslRecordMedal)>strong{padding-top:20px!important}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -3848,6 +3855,7 @@ let recordCurrentType='personal';
 let recordDetailFilter='';
 let recordDistanceFilter=0;
 let recordViewRows=[];
+let recordMedals=[];
 
 function recordDetailOptions(major,type){
  if(type==='personal'){
@@ -3924,6 +3932,31 @@ function validStoredRecord(r){
  const dist=recordDistance(r),relay=r?.subcategory==='relay';
  return plausibleSwimTime(r?.result,dist,relay);
 }
+function recordMedalEmoji(r){
+ const event=String(r?.event_name||'').trim(),day=String(r?.event_date||'').slice(0,10);
+ const distance=recordDistance(r),category=effectiveRecordCategory(r);
+ const relay=r?.subcategory==='relay',stroke=String(r?.stroke||'').trim().replace(/\s+/g,' ');
+ const medals=(recordMedals||[]).filter(m=>{
+  if(String(m.event_name||'').trim()!==event||String(m.event_date||'').slice(0,10)!==day)return false;
+  if(Boolean(m.is_team)!==relay)return false;
+  if(category==='fin'&&m.event_type!=='fin')return false;
+  if(category==='meet'&&m.event_type==='fin')return false;
+  const detail=String(m.event_detail||'').trim().replace(/\s+/g,' ');
+  const match=detail.match(/^(.*?)\s+(\d+)\s*[mM]?$/);
+  if(!match||Number(match[2])!==distance)return false;
+  const kind=match[1].trim();
+  return kind===stroke||(stroke==='기타'&&kind==='자유형 발차기');
+ });
+ const order={gold:0,silver:1,bronze:2};
+ medals.sort((a,b)=>(order[a.medal]??99)-(order[b.medal]??99));
+ const medal=medals[0]?.medal;
+ return medal==='gold'?'🥇':medal==='silver'?'🥈':medal==='bronze'?'🥉':'';
+}
+function recordMedalBadge(r){
+ const emoji=recordMedalEmoji(r);if(!emoji)return '';
+ const label=emoji==='🥇'?'금메달':emoji==='🥈'?'은메달':'동메달';
+ return '<span class="eyslRecordMedal" role="img" aria-label="'+label+'" title="'+label+'">'+emoji+'</span>';
+}
 function renderRecordFilteredContent(){
  const box=document.getElementById('recordBody');if(!box)return;
  const rows=recordViewRows.filter(validStoredRecord);
@@ -3946,7 +3979,7 @@ function renderRecordFilteredContent(){
      const older=previousSameDistance(filtered,i);
      const delta=older?historyDeltaLabel(r,older):'첫 기록';
      const faster=delta.startsWith('▼'),slower=delta.startsWith('▲');
-     return `<div class="historyCard"><div><b>${escHtml(recordEventTitle(r))} · ${escHtml(formatSwimResult(r.result))}초</b><p><strong class="historyMeet">${escHtml(r.event_name||'대회명 미등록')}</strong>${recordDisplayDate(r)?` · ${escHtml(recordDisplayDate(r))}`:''}</p></div><span class="${faster?'improve':slower?'slower':''}">${escHtml(delta)}</span></div>`;
+     return `<div class="historyCard">${recordMedalBadge(r)}<div><b>${escHtml(recordEventTitle(r))} · ${escHtml(formatSwimResult(r.result))}초</b><p><strong class="historyMeet">${escHtml(r.event_name||'대회명 미등록')}</strong>${recordDisplayDate(r)?` · ${escHtml(recordDisplayDate(r))}`:''}</p></div><span class="${faster?'improve':slower?'slower':''}">${escHtml(delta)}</span></div>`;
    }).join(''):'<div class="card meta">해당 조건의 기록이 없습니다.</div>';
 
    const pbBlock=recordMajor==='meet'?`<div class="section recordScreenHead"><h2>MY PB · 50M</h2></div><div class="recordSummaryGrid screenshotPbGrid">${pb}</div>`:'';
@@ -3958,7 +3991,7 @@ function renderRecordFilteredContent(){
    .filter(r=>relayKind(r)===recordDetailFilter)
    .filter(r=>!recordDistanceFilter||recordDistance(r)===recordDistanceFilter)
    .sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
- const list=filtered.length?filtered.map(r=>`<div class="recordRow cleanRecordRow"><div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,recordDisplayDate(r)].filter(Boolean).map(escHtml).join(' · ')}</p>${Array.isArray(r.teammates)&&r.teammates.length?`<small>${escHtml(r.teammates.join(' · '))}</small>`:''}</div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join(''):'<div class="card meta">해당 단체전 기록이 없습니다.</div>';
+ const list=filtered.length?filtered.map(r=>`<div class="recordRow cleanRecordRow">${recordMedalBadge(r)}<div><b>${escHtml(recordEventTitle(r))}</b><p>${[r.event_name,recordDisplayDate(r)].filter(Boolean).map(escHtml).join(' · ')}</p>${Array.isArray(r.teammates)&&r.teammates.length?`<small>${escHtml(r.teammates.join(' · '))}</small>`:''}</div><strong>${escHtml(formatSwimResult(r.result))}</strong></div>`).join(''):'<div class="card meta">해당 단체전 기록이 없습니다.</div>';
  box.innerHTML=`${detailTabs}${distanceTabs}<div class="recordList recordPageList relayFilteredList">${list}</div>`;
 }
 function setRecordMajor(v,b){
@@ -4016,6 +4049,9 @@ async function showRecord(type,btn){
 
  if(error){console.error(error);box.innerHTML='<div class="card meta">앱 기록 DB를 불러오지 못했습니다.</div>';return}
 
+ const medalResponse=await dbClient.rpc('get_my_record_medals_v1');
+ if(medalResponse.error){console.warn('Medal badges unavailable:',medalResponse.error);recordMedals=[];}
+ else recordMedals=Array.isArray(medalResponse.data)?medalResponse.data:[];
  const all=(data||[])
    .filter(r=>(recordSeconds(r.result)??0)>0)
    .filter(r=>effectiveRecordCategory(r)===recordMajor);
