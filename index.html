@@ -5095,11 +5095,24 @@ async function refreshMemberDirectoryFromDb(){
   return true;
  }catch(err){console.error('member directory v4:',err);return false}
 }
+const EYSL_MEMBER_PINNED_ORDER=['민선','창두','도의','태훈','태진','창호','민석','준혁'];
+function eyslMemberFirstName(v){return String(v||'').trim().split('/')[0].trim();}
+function eyslMemberDisplaySort(a,b){
+ const aName=eyslMemberFirstName(a),bName=eyslMemberFirstName(b);
+ const ai=EYSL_MEMBER_PINNED_ORDER.indexOf(aName),bi=EYSL_MEMBER_PINNED_ORDER.indexOf(bName);
+ if(ai!==-1||bi!==-1){
+  if(ai===-1)return 1;
+  if(bi===-1)return -1;
+  if(ai!==bi)return ai-bi;
+ }
+ return aName.localeCompare(bName,'ko',{numeric:true,sensitivity:'base'})||
+  String(a||'').localeCompare(String(b||''),'ko',{numeric:true,sensitivity:'base'});
+}
 function renderMembersFromCurrentData(){
  const list=document.getElementById('memberList'),blockedList=document.getElementById('blockedList'),countEl=document.getElementById('memberCount');
  if(!list)return;
- const active=members.filter(m=>m.status==='approved'&&!m.blocked);
- const blocked=members.filter(m=>m.status==='blocked'||m.blocked);
+ const active=members.filter(m=>m.status==='approved'&&!m.blocked).sort((a,b)=>eyslMemberDisplaySort(a.name,b.name));
+ const blocked=members.filter(m=>m.status==='blocked'||m.blocked).sort((a,b)=>eyslMemberDisplaySort(a.name,b.name));
  if(countEl)countEl.textContent=String(active.length);
  const makeAvatar=m=>m.avatarUrl?`<img class="memberAvatar" src="${escAttr(m.avatarUrl)}" alt="${escAttr(m.name)}">`:`<div class="memberFallback">${escHtml(String(m.name||'?').slice(0,1))}</div>`;
  list.innerHTML=active.length?active.map(m=>{
@@ -5136,17 +5149,7 @@ async function renderMemberDirectory(){
    nickname:m.name,short_name:(m.name||'?').slice(0,1),team_role:m.teamRole||memberRoleLabel(m.role),
    lesson_level:m.lessonLevel||'-',attendance_count:m.att||0,late_count:m.late||0,_member:m,_appOnly:true
  }));
- const memberDirectoryRoleRank=r=>{
-   const role=r?._member?.role||'';
-   if(role==='master_admin')return 0;
-   if(role==='admin'||role==='sub_admin')return 1;
-   return 2;
- };
- const rows=[...rosterRows,...appOnly].sort((a,b)=>{
-   const ar=memberDirectoryRoleRank(a),br=memberDirectoryRoleRank(b);
-   if(ar!==br)return ar-br;
-   return String(a.nickname||'').localeCompare(String(b.nickname||''),'ko',{numeric:true,sensitivity:'base'});
- });
+ const rows=[...rosterRows,...appOnly].sort((a,b)=>eyslMemberDisplaySort(a.nickname,b.nickname));
 
  box.innerHTML=rows.map(r=>{
   const linked=!!r._member;
