@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final215-dark-orange';
+const VERSION='team-eysl-final216-red-vermilion';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
