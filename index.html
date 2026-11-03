@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#f5f6f8"/>
+<meta name="theme-color" content="#0c0d0f"/>
 <title>TEAM EYSL Operating Auth v1.2</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--ink:#111317;--muted:#858b94;--line:#e1e5ea;--green:#16865f;--amber:#a86706}
@@ -1241,6 +1241,7 @@ if(window.pdfjsLib){
   box-shadow:0 6px 18px rgba(0,0,0,.18)
 }
 </style>
+<link rel="stylesheet" href="/eysl-theme-v215.css?v=dark-orange-v215"/>
 </head>
 <body>
 <div id="auth" class="auth">
@@ -1791,7 +1792,7 @@ async function ensureActivePushServiceWorker(){
  if(!('serviceWorker' in navigator))throw new Error('서비스워커를 지원하지 않는 기기입니다.');
  let reg=await navigator.serviceWorker.getRegistration('/');
  if(!reg){
-   reg=await navigator.serviceWorker.register('/sw.js?v=final214-coach-flag',{scope:'/'});
+   reg=await navigator.serviceWorker.register('/sw.js?v=final215-dark-orange',{scope:'/'});
  }
  if(reg.waiting){try{reg.waiting.postMessage({type:'SKIP_WAITING'})}catch(_){}}
  if(!reg.active){
@@ -2704,7 +2705,7 @@ function renderHome(){
  if(n){noticeEl.innerHTML=`<small>${unread?'UNREAD NOTICE · '+unread+'건':'LATEST NOTICE'}</small><h1>${n.title}</h1><p>${String(n.body||'').split('\n')[0]}</p>`;noticeEl.onclick=()=>openNotice(n.id)}
  else{noticeEl.innerHTML='<small>LATEST NOTICE</small><h1>등록된 공지가 없습니다.</h1><p>새 공지가 등록되면 여기에 표시됩니다.</p>';noticeEl.onclick=null}
  const mine=Object.values(trainings).filter(t=>!activityHasStarted(t)&&((t.participants||[]).includes(userName)||(t.waitlist||[]).some(w=>w.name===userName))).sort((a,b)=>String(a.date+a.start).localeCompare(String(b.date+b.start)))[0];
- mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.start||'-'}${mine.end?`–${mine.end}`:''} · ${mine.place||'-'}</p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'':'my-applied'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
+ mineEl.innerHTML=mine?`<div class="row" onclick="openTraining('${mine.id}')"><div class="icon">🏊</div><div class="grow"><b>${mine.title}</b><p>${mine.date} · ${mine.place||'-'}</p></div><span class="tag ${(mine.waitlist||[]).some(w=>w.name===userName)?'':'my-applied'}">${(mine.waitlist||[]).some(w=>w.name===userName)?'대기완료':'신청완료'}</span></div>`:`<div class="card">현재 신청한 다음 일정이 없어요.</div>`;
  const raw=[
   ...Object.values(trainings).map(t=>({type:'training',id:t.id,title:t.title,date:t.date,place:t.place,start:t.start,item:t})),
   ...races.map(r=>({type:'race',id:r.id,title:r.title,date:r.date,place:r.place,start:r.start||'',item:r})),
@@ -5634,7 +5635,7 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final214-coach-flag',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js?v=final215-dark-orange',{scope:'/',updateViaCache:'none'}).catch(()=>{}));
 }
 </script>
 <script src="/notice-poll-v115.js?v=final115-notice-poll"></script>
