@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final212-attendance-coach';
+const VERSION='team-eysl-final214-coach-flag';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
@@ -45,7 +45,7 @@ async function navigationResponse(req){
         new RegExp(`<script[^>]+src=["'][^"']*/${escaped}[^"']*["'][^>]*><\\/script>`,'g'),
         ''
       );
-      html=html.replace('</body>',`<script src="/${file}?v=final212"></script></body>`);
+      html=html.replace('</body>',`<script src="/${file}?v=final214"></script></body>`);
     }
 
     const headers=new Headers(res.headers);
