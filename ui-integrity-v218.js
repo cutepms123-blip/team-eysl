@@ -161,6 +161,81 @@
  #eventRankingDetail .strokeRankingTabs button.active{
   -webkit-text-fill-color:#FF8B76!important;
  }
+ /* Admin drawer: protect navigation labels even when legacy white-drawer styles remain. */
+ #drawer #adminMenu,#drawer #adminSub{color:#F5F5F5!important}
+ #drawer #adminMenu .dparent,#drawer #adminSub .ditem,
+ #drawer #adminMenu .dparent span{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+  opacity:1!important;
+ }
+ #drawer #adminMenu .dsec{color:#C1C6CE!important;-webkit-text-fill-color:#C1C6CE!important}
+ #drawer #adminSub .ditem{border-radius:10px!important}
+ #drawer #adminSub .ditem:active,#drawer #adminSub .ditem:hover{background:#303238!important}
+ /* Approval cards were white with inherited white text from the dark theme. */
+ #memberApproval .approvalRow,
+ #memberApproval .approvalEmpty{
+  background:#FAFBFC!important;color:#171A20!important;
+  border:1px solid #D9DCE1!important;
+ }
+ #memberApproval .approvalRow h3,
+ #memberApproval .approvalRow strong,
+ #memberApproval .approvalRow b{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;
+ }
+ #memberApproval .approvalRow p,
+ #memberApproval .approvalEmpty{
+  color:#555D68!important;-webkit-text-fill-color:#555D68!important;
+ }
+ #memberApproval .approvalRow .btn.outline{
+  background:#292C31!important;color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
+ /* Member management: dark list cards have pale text; navigation arrows were #111. */
+ #memberAdmin .memberrow,#memberAdmin .manageCard{
+  background:#1B1D20!important;color:#F5F5F5!important;
+  border:1px solid #484B51!important;
+ }
+ #memberAdmin .memberrow b,#memberAdmin .manageCard h4,
+ #memberAdmin .manageCard strong{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
+ #memberAdmin .memberrow p,#memberAdmin .manageCard .rank span{
+  color:#BDC2CA!important;-webkit-text-fill-color:#BDC2CA!important;
+ }
+ #memberAdmin .plainArrow,#memberDetail .plainArrow{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
+ #memberAdmin .memberFallback{background:#34373D!important;color:#F5F5F5!important}
+ /* Detail/attendance pages: readable values, controls, action arrows, and separators. */
+ #memberDetail .memberInfoDetail .detailrow span,
+ #memberDetail .memberInfoDetail .detailrow b,
+ #attendanceAdminDetail .detailrow span,
+ #attendanceAdminDetail .card b{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
+ #memberDetail .memberInfoDetail .detailrow b,
+ #attendanceAdminDetail .detailrow b{color:#BEC4CD!important;-webkit-text-fill-color:#BEC4CD!important}
+ #memberDetail .plainDetailBtn,
+ #memberDetail .memberActivityButtons button b{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
+ #memberDetail .memberActivityButtons button span{
+  color:#BDC2CA!important;-webkit-text-fill-color:#BDC2CA!important;
+ }
+ #attendanceAdminDetail .card>div[style*="border-bottom"]{
+  border-color:#474A50!important;
+ }
+ #attendanceAdminDetail .attChoice{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+  background:#26282D!important;border-color:#56595F!important;
+ }
+ #attendanceAdminDetail .attChoice.on{
+  color:#FF8B76!important;-webkit-text-fill-color:#FF8B76!important;
+  background:#2F2020!important;border-color:#F24B35!important;
+ }
+ #adminSchedule .formrow label,#adminScheduleDetail .detailrow span,
+ #attendanceAdmin .statusCard h3{
+  color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
+ }
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
