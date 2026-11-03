@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final224-event-cleanup-pink';
+const VERSION='team-eysl-final225-record-medal-emojis';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
