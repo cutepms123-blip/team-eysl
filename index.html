@@ -3300,7 +3300,7 @@ function getScheduleItems(monthPrefix=''){
 function renderScheduleList(monthPrefix=''){
  const box=document.getElementById('scheduleList');if(!box)return;
  const prefix=monthPrefix||document.getElementById('calTitle')?.dataset.monthPrefix||'';
- const rows=getScheduleItems(prefix);
+ const rows=getScheduleItems(prefix).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.start||'').localeCompare(String(a.start||'')));
  box.dataset.renderedMonth=prefix;
  box.innerHTML=rows.length?rows.map(x=>{
   const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;
@@ -5477,18 +5477,33 @@ function toggleFullRanking(id,btn){
 function rankToggleButton(rows,id){
  return (rows||[]).length>5?`<button type="button" class="rankMoreBtn" onclick="toggleFullRanking('${id}',this)">전체 랭킹 보기</button>`:'';
 }
+function rankActive(rows){
+ const live=new Set();
+ (members||[]).filter(m=>m.status==='approved').forEach(m=>{
+  [m.name,m.realName,m.shortName].forEach(n=>{const x=String(n||'').trim();if(x){live.add(x);live.add(x.split('/')[0]);}});
+ });
+ return (Array.isArray(rows)?rows:[]).filter(r=>{const n=String(r.nickname||'').trim();return live.has(n)||live.has(n.split('/')[0]);});
+}
+function rankTidy(rows){
+ const ranks=new Map();return rows.map(r=>{const k=String(r.rank??'');if(!ranks.has(k))ranks.set(k,ranks.size+1);return {...r,rank:ranks.get(k)};});
+}
+function setRankCategory(group,button){
+ const parent=button.closest('.rankScope');if(!parent)return;
+ parent.querySelectorAll(':scope > .rankScopeTabs button').forEach(b=>b.classList.toggle('active',b===button));
+ parent.querySelectorAll(':scope > .rankScopePanel').forEach(p=>p.hidden=p.dataset.scope!==group);
+}
 function eventRankRows(rows,unit='회'){
- const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const all=rankTidy(rankActive(rows)),top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
  const row=r=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.count}${unit}</span></div>`;
  return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(row).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 function improvementRows(rows){
- const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const all=rankTidy(rankActive(rows)),top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
  const row=r=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${r.distance?`${r.distance}M · `:''}▼ ${Number(r.seconds).toFixed(2)}초</span></div>`;
  return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map(row).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
 function funRankRows(rows,valueFn){
- const all=rows||[],top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
+ const all=rankTidy(rankActive(rows)),top=all.slice(0,5),rest=all.slice(5),id=`rank-full-${++rankToggleSeq}`;
  const row=(r,i)=>`<div class="rankLine compactRankLine"><div class="rankLeft"><span class="rankNo">${rankDisplay(r.rank||i+1)}</span><b>${escHtml(r.nickname)}</b></div><span class="rankValue">${valueFn(r)}</span></div>`;
  return top.length?top.map(row).join('')+(rest.length?`<div id="${id}" class="fullRankingRows" style="display:none">${rest.map((r,i)=>row(r,i+5)).join('')}</div>${rankToggleButton(all,id)}`:''):'<div class="eventRankEmpty">집계 데이터가 없습니다.</div>';
 }
@@ -5528,24 +5543,24 @@ async function openFunEventPage(type){
   }
 
   if(type==='competition'){
-   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v1');
+   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v3');
    if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
-   const rows=meetRanks.competition||[];
+   const rows=rankTidy(rankActive(meetRanks.competition||[]));
    box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div><div class="card meta">일반·핀 대회를 모두 포함하고, 같은 대회에서 여러 종목을 뛰어도 대회 참가 1회로 계산해요.</div></div>`;
    return;
   }
 
   if(type==='medal'){
-   const rows=data.medals||[],allRows=data.medals_all_time||[];
-   const medalValue=r=>`총 ${Number(r.total||0)}개 · 🥇 ${Number(r.gold||0)}  🥈 ${Number(r.silver||0)}  🥉 ${Number(r.bronze||0)}`;
-   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 메달왕</h3>${funRankRows(rows,medalValue)}</div><div class="eventRankMini"><h3>역대 메달 누적</h3>${funRankRows(allRows,medalValue)}</div><div class="card meta">개인전과 단체전 메달을 모두 포함해요. 단체전은 해당 출전 선수에게 각각 1개로 집계하고, 동률은 총 메달 수 → 금 → 은 → 동 순으로 정해요. 확인되지 않은 2026 수원 연맹회장배 은메달 1건은 현재 집계에서 제외했어요.</div></div>`;
+   const medals=data.medals||[],cumulative=data.medals_all_time||[];
+   const mv=r=>`총 ${Number(r.total||0)}개 · 🥇 ${Number(r.gold||0)}  🥈 ${Number(r.silver||0)}  🥉 ${Number(r.bronze||0)}`;
+   box.innerHTML=`<div class="rankScope"><div class="rankScopeTabs"><button type="button" class="active" onclick="setRankCategory('year',this)">${data.year} 메달왕</button><button type="button" onclick="setRankCategory('total',this)">누적 메달왕</button></div><div class="rankScopePanel" data-scope="year"><div class="eventRankMini"><h3>${data.year} 메달왕</h3>${funRankRows(medals,mv)}</div></div><div class="rankScopePanel" data-scope="total" hidden><div class="eventRankMini"><h3>누적 메달왕</h3>${funRankRows(cumulative,mv)}</div></div></div><div class="card meta">탈퇴자의 기록은 보관하고 랭킹 표시에서만 제외합니다.</div>`;
    return;
   }
 
   if(type==='stroke'){
-   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v1');
+   const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v3');
    if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
-   const rows=meetRanks.stroke_rankings||[];
+   const rows=rankActive(meetRanks.stroke_rankings||[]);
    const strokes=['자유형','배영','평영','접영'];
    const groups=[['남','남자'],['여','여자'],['all','종합']];
    const section=(scope)=>strokes.map(stroke=>{
@@ -5588,7 +5603,7 @@ async function openEventRankingPage(type){
   const yoy=Array.isArray(imp)?[]:(imp.yoy_pb||[]);
   const strokes=['자유형','배영','평영','접영'];
   const section=(heading,rows)=>`<div class="eventRankGroup"><h2>${heading}</h2>${strokes.map(stroke=>`<div class="eventRankMini"><h3>${stroke}</h3>${improvementRows(rows.filter(x=>x.stroke===stroke))}</div>`).join('')}</div>`;
-  box.innerHTML=section(`${data.year}년 올해 안에서 가장 많이 단축`,within)+section(`${data.year-1}년 PB 대비 ${data.year}년 PB 단축`,yoy);
+  box.innerHTML=`<div class="rankScope"><div class="rankScopeTabs"><button type="button" class="active" onclick="setRankCategory('year',this)">${data.year}년 단축</button><button type="button" onclick="setRankCategory('yoy',this)">작년 PB 대비</button></div><div class="rankScopePanel" data-scope="year">${section(`${data.year}년 올해 안에서 가장 많이 단축`,within)}</div><div class="rankScopePanel" data-scope="yoy" hidden>${section(`${data.year-1}년 PB 대비 ${data.year}년 PB 단축`,yoy)}</div></div>`;
  }catch(e){console.error(e);box.innerHTML='<div class="card meta">랭킹을 불러오지 못했습니다.</div>'}
 }
 async function renderTeamEventRankings(){return;}
