@@ -1,7 +1,8 @@
-const VERSION='team-eysl-final214-coach-flag';
+const VERSION='team-eysl-final215-dark-orange';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
+  '/eysl-theme-v215.css',
   '/manifest.webmanifest','/icon-192.png','/icon-512.png','/apple-touch-icon.png',
   '/timestamp-v94.js','/join-date-v96.js','/activity-comments-v98.js','/application-order-v99.js',
   '/manual-roster-v100.js','/ui-order-v112.js','/remove-aggregation-v113.js',
