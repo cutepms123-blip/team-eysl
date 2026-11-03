@@ -236,6 +236,116 @@
  #attendanceAdmin .statusCard h3{
   color:#F5F5F5!important;-webkit-text-fill-color:#F5F5F5!important;
  }
+
+ /* 2026-11-04: explicit foreground/background pairing for every known light-surface component.
+    Legacy .app inherits a light font color, which previously made white record cards invisible. */
+ .app #records .recordRow,
+ .app #memberRecordDetail .recordRow,
+ .app #recordUploadManager .recordRow,
+ .app .recordQuickCard,
+ .app .recordUploadManagerRow,
+ .app .recordLinkUploadBtn,
+ .app .uploadCategoryCard,
+ .app .memberSimpleRow,
+ .app .roleMemberRow,
+ .app .folder,
+ .app .folderFileRow,
+ .app .resourceRow,
+ .app .boardListRow,
+ .app .recordEmpty,
+ .app .recordLoading,
+ .app .recordImportWorking,
+ .app .recordImportResult,
+ .app .pushDiagnosticPanel{
+  background:#FAFBFC!important;color:#171A20!important;
+  border-color:#D8DCE2!important;
+ }
+ .app #records .recordRow b,
+ .app #records .recordRow strong,
+ .app #memberRecordDetail .recordRow b,
+ .app #memberRecordDetail .recordRow strong,
+ .app #recordUploadManager .recordRow b,
+ .app #recordUploadManager .recordRow strong,
+ .app .recordQuickCard b,
+ .app .recordQuickCard strong,
+ .app .recordUploadManagerRow b,
+ .app .recordLinkUploadBtn b,
+ .app .recordLinkUploadBtn strong,
+ .app .uploadCategoryCard b,
+ .app .uploadCategoryCard strong,
+ .app .memberSimpleRow b,
+ .app .roleMemberRow b,
+ .app .folder b,
+ .app .folderFileRow b,
+ .app .resourceRow b,
+ .app .boardListRow b,
+ .app .pushDiagnosticPanel b{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;opacity:1!important;
+ }
+ .app #records .recordRow p,
+ .app #records .recordRow small,
+ .app #memberRecordDetail .recordRow p,
+ .app .recordQuickCard span,
+ .app .recordUploadManagerRow p,
+ .app .recordLinkUploadBtn small,
+ .app .uploadCategoryCard small,
+ .app .memberSimpleRow p,
+ .app .roleMemberRow p,
+ .app .folder p,
+ .app .folderFileRow p,
+ .app .resourceRow span,
+ .app .boardListRow p,
+ .app .recordImportWorking span,
+ .app .pushDiagnosticPanel p{
+  color:#59616C!important;-webkit-text-fill-color:#59616C!important;opacity:1!important;
+ }
+ /* Record history/PB and achievement cards also use light surfaces. */
+ .app #records .historyCard,
+ .app #records .pbCard.screenshotPb,
+ .app .pbMomentCard,
+ .app .badgeProgressCard,
+ .app .attBadge:not(.locked){
+  background:#FAFBFC!important;color:#171A20!important;border-color:#D8DCE2!important;
+ }
+ .app #records .historyCard b,
+ .app #records .historyCard .historyMeet,
+ .app #records .pbCard.screenshotPb b,
+ .app .pbMomentCard .pbMomentHead b,
+ .app .pbMomentRecord,
+ .app .badgeProgressCard b,
+ .app .attBadge:not(.locked) b{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;
+ }
+ .app #records .historyCard p,
+ .app #records .historyCard>span:not(.eyslRecordMedal):not(.improve):not(.slower),
+ .app .pbMomentCard .pbMomentHead span,
+ .app .pbMomentMsg,
+ .app .pbMomentEvent,
+ .app .badgeProgressCard span,
+ .app .attBadge:not(.locked) p{
+  color:#59616C!important;-webkit-text-fill-color:#59616C!important;
+ }
+ .app #records .historyCard .eyslRecordMedal{
+  -webkit-text-fill-color:initial!important;
+ }
+ .app #records .historyCard>span.improve{
+  color:#218453!important;-webkit-text-fill-color:#218453!important;
+ }
+ .app #records .historyCard>span.slower{
+  color:#BF4432!important;-webkit-text-fill-color:#BF4432!important;
+ }
+ .app .pbMomentDelta{color:#B83E2F!important;-webkit-text-fill-color:#B83E2F!important}
+ /* White-card counter widgets, distinct from the dark app's default metrics. */
+ .app .eventRankCard{
+  background:#FAFBFC!important;color:#171A20!important;border-color:#D8DCE2!important;
+ }
+ .app .eventRankCard b,.app .eventRankCard strong{
+  color:#171A20!important;-webkit-text-fill-color:#171A20!important;
+ }
+ .app #records .recordRow>div{min-width:0}
+ .app #records .recordRow>strong{
+  flex:0 0 auto;font-variant-numeric:tabular-nums;
+ }
  /* Keep performance feedback intuitive without changing the record cards. */
  #records .historyCard>span.improve{color:#218453!important;-webkit-text-fill-color:#218453!important}
  #records .historyCard>span.slower{color:#F24B35!important;-webkit-text-fill-color:#F24B35!important}
