@@ -1,0 +1,60 @@
+/* TEAM EYSL dark charcoal + vermilion theme v215. Original team logo and assets unchanged. */
+:root{
+ --bg:#0c0d0f;--card:#1b1d20;--ink:#f8f8f8;--muted:#adb0b6;--line:#393b40;
+ --green:#ff762e;--amber:#ff762e;--accent:#ff641e;
+ color-scheme:dark;
+}
+html,body{background:#070809!important;color:var(--ink)!important}
+.app{background:var(--bg)!important;color:var(--ink)!important}
+.top{background:rgba(12,13,15,.97)!important;border-bottom:1px solid #25262b}
+.brand b,.brand span,.section h2,.title,.pagehead h1{color:#fafafa!important}
+.hamb{background:#202226!important;color:#fff!important;border-color:#43454b!important}
+.avatar{background:#ff641e!important;color:#111!important}
+.role{background:#2c211b!important;color:#ff995d!important}
+.card,.row,.statusCard,.notice,.panel,.article,.calendar,.detail,.comments .comment,
+.dmRow,.menuCard,.pb,.hist,.stat,.manageCard,.memberrow,.fileRow,.metric,.bigChoice,
+.formrow input,.formrow select,.formrow textarea,.commentForm input,.chatInput input,
+.chatTabs button,.filters button,.recordTabs button,.monthSwitch button,.uploadBox{
+ background:#1b1d20!important;color:#f5f5f5!important;border-color:#3c3e43!important;
+}
+.row b,.memberrow b,.dmRow b,.detailrow span,.menuCard b,.pb .time,.statusTop h3,
+.hist b,.manageCard h4,.stat strong,.metric b,.calendar .day{color:#fafafa}
+.row p,.memberrow p,.dmRow p,.statusTop p,.notice p,.meta,.detailrow b,
+.menuCard span,.pb .stroke,.pb .meet,.hist span,.stat span,.metric span,.rank span,
+.link,.week span,.section .link{color:#afb1b7!important}
+.icon,.dmAv,.waititem,.attGrid div,.mediaTile,.chip{background:#292b2e!important;color:#ff752e!important}
+.tag,.tag.wait,.tag.ok,.tag.my-applied,.tag.done,.role{
+ background:#342116!important;color:#ff9a64!important;border:1px solid #784326!important;
+}
+.tag.done{background:#2d2e31!important;color:#b9bbc0!important;border-color:#45474a!important}
+.primary,.btn.primary,.fab,.bigChoice.on,.attChoice.on,.chatTabs button.active,
+.filters button.active,.recordTabs button.active,.calendar .day.selected,.nav button.active{
+ background:#ff641e!important;color:#111!important;border-color:#ff641e!important;
+}
+.outline,.ghost,.amber,.attChoice,.calhead button{background:#292b2f!important;color:#f5f5f5!important;border-color:#414348!important}
+.btn.amber,.amber{background:#3c261b!important;color:#ff9b63!important;border-color:#744329!important}
+.hero,.profile,.summary{background:linear-gradient(135deg,#202125,#111214)!important;color:#fff!important;border:1px solid #42444a!important}
+.summary .metric{background:#26272b!important}
+.nav{background:rgba(15,16,19,.98)!important;border-color:#404247!important}
+.nav button{color:#a5a7ad!important}.nav button.active{background:transparent!important;color:#ff742b!important;border:0!important}
+.nav button.active i{color:#ff742b!important}
+.chatInput{background:#0c0d0f!important}
+.bubble{background:#25272b!important;color:#fff!important;border-color:#48494d!important}
+.me .bubble{background:#a83d12!important;color:#fff!important}
+.detailrow{border-color:#393b40!important}
+.dot,.dot.race,.dot.event{background:#ff641e!important}
+.offer,.offerBox{background:#34291e!important;border-color:#7a4a25!important;color:#fff!important}
+input,textarea,select{color-scheme:dark;accent-color:#ff641e}
+input::placeholder,textarea::placeholder{color:#93959c!important}
+button{accent-color:#ff641e}
+a,.good{color:#ff945d}
+#homeMine .row,#homeUpcoming .row{border-radius:18px!important;background:#1b1d20!important;border:1px solid #46484d!important}
+#homeMine .row:hover,#homeUpcoming .row:hover{border-color:#ff641e!important}
+#homeMine .row p,#homeUpcoming .row p{color:#c3c4c9!important}
+#homeMine .row p::first-letter,#homeUpcoming .row p::first-letter{color:#ff762e}
+#homeMine .icon,#homeUpcoming .icon{background:#101114!important}
+#homeMine .tag,#homeUpcoming .tag{border-radius:100px!important}
+/* Preserve legibility on white inline-styled widgets (form controls, tables) */
+table{color:var(--ink)}
+th,td{border-color:#414348}
+input[type="checkbox"],input[type="radio"]{accent-color:#ff641e}
