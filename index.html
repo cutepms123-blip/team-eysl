@@ -3346,6 +3346,15 @@ async function sendDm(){
 }
 
 function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar()}
+function scheduleNewestFirst(a,b){
+ const aDate=String(a.date||'');
+ const bDate=String(b.date||'');
+ const dateOrder=bDate.localeCompare(aDate);
+ if(dateOrder)return dateOrder;
+ const timeOrder=String(b.start||'').localeCompare(String(a.start||''));
+ if(timeOrder)return timeOrder;
+ return String(a.title||'').localeCompare(String(b.title||''),'ko');
+}
 function getScheduleItems(monthPrefix=''){
  const prefix=monthPrefix||document.getElementById('calTitle')?.dataset.monthPrefix||`${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}`;
  const rows=[
@@ -3356,12 +3365,12 @@ function getScheduleItems(monthPrefix=''){
  return rows
   .filter(x=>String(x.date||'').slice(0,7)===prefix)
   .filter(x=>scheduleFilter==='all'||x.type===scheduleFilter)
-  .sort((a,b)=>String(b.date+b.start).localeCompare(String(a.date+a.start)));
+  .sort(scheduleNewestFirst);
 }
 function renderScheduleList(monthPrefix=''){
  const box=document.getElementById('scheduleList');if(!box)return;
  const prefix=monthPrefix||document.getElementById('calTitle')?.dataset.monthPrefix||'';
- const rows=getScheduleItems(prefix).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.start||'').localeCompare(String(a.start||'')));
+ const rows=getScheduleItems(prefix).sort(scheduleNewestFirst);
  box.dataset.renderedMonth=prefix;
  box.innerHTML=rows.length?rows.map(x=>{
   const action=x.type==='training'?`openTraining('${x.id}')`:x.type==='race'?`showPage('raceList')`:`openEventDetail('${x.id}')`;
@@ -3431,24 +3440,24 @@ function selectDay(ds,el){
  el.classList.add('selected');
  const list=[];
  Object.values(trainings).filter(t=>t.date===ds).forEach(t=>list.push({
-  type:'훈련',title:t.title,time:`${t.start}–${t.end}`,place:t.place,
+  type:'훈련',title:t.title,date:t.date,start:t.start||'',time:`${t.start}–${t.end}`,place:t.place,
   status:t.participants.includes(currentUser.nickname)?'신청완료':t.waitlist.some(w=>w.name===currentUser.nickname)?'대기완료':'신청 가능',
   action:`openTraining('${t.id}')`
  }));
  races.filter(r=>dateInActivityRange(ds,r)).forEach(r=>list.push({
-  type:'대회',title:r.title,
+  type:'대회',title:r.title,date:ds,start:r.start||'',
   time:r.endDate&&r.endDate!==r.date?`${r.date} ~ ${r.endDate}`:(r.start?`${r.start} 시작`:'-'),
   place:r.place||'-',
   status:activityHasStarted(r)?'종료':r.registrationClosed?'신청 마감':r.application?'신청완료':'신청 가능',
   action:`setActiveRace('${r.id}');showPage('raceList')`
  }));
  events.filter(e=>e.date===ds).forEach(e=>list.push({
-  type:'기타',title:e.title,time:`${e.start}–${e.end}`,place:e.place,
+  type:'기타',title:e.title,date:e.date,start:e.start||'',time:`${e.start}–${e.end}`,place:e.place,
   status:e.participants.includes(currentUser.nickname)?'신청완료':'신청 가능',
   action:`openEventDetail('${e.id}')`
  }));
  document.getElementById('dayInfo').innerHTML=list.length
-  ?list.map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join('')
+  ?list.sort(scheduleNewestFirst).map(x=>`<div class="statusCard" style="margin-top:10px" onclick="${x.action}"><div class="statusTop"><div><h3>${x.title}</h3><p>${x.time} · ${x.place}<br>${x.status}</p></div><span class="tag">${x.type}</span></div></div>`).join('')
   :`<div class="card meta" style="margin-top:10px">${ds} 등록 일정 없음${isAdminUser()?'<div class="actions"><button class="btn outline" onclick="showPage(&quot;adminSchedule&quot;)">＋ 일정 등록</button></div>':''}</div>`;
 }
 
