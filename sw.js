@@ -1,4 +1,4 @@
-const VERSION='team-eysl-final232-full-text-contrast';
+const VERSION='team-eysl-final233-calendar-newest';
 const CACHE=`team-eysl-${VERSION}`;
 
 const PRECACHE=[
