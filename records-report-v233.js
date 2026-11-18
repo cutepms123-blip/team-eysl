@@ -25,12 +25,22 @@ function refreshSummary(){
  const improved=rows().filter(r=>{const older=rows().filter(x=>x!==r&&date(x)<date(r)&&recordPoolMeters(x)===recordPoolMeters(r)&&effectiveRecordCategory(x)===effectiveRecordCategory(r)&&kinds(x)===kinds(r)&&recordDistance(x)===recordDistance(r));return older.length&&secs(r)<Math.min(...older.map(secs))}).filter(r=>date(r).startsWith(String(y)));
  el.innerHTML='<h3>▥ '+y+'년 기록 집계</h3><div class="eyslKpis"><div>🏆 <small>참가 대회</small><b>'+meets.size+'회</b></div><div>⌁ <small>보유 PB</small><b>'+keys.size+'개</b></div><div>🏅 <small>PB 갱신</small><b>'+improved.length+'회</b></div></div>';
 }
+function swimSvg(kind){
+ const poses={
+ '자유형':'<path d="M4 20l8-5 8 1 7-5 8 2M13 15l-2-7 9 2M24 15l6 7 9 1"/>',
+ '배영':'<path d="M4 19l10 1 9-6 12 3M14 20l-2-9-6-4M24 15l7-8 8-2"/>',
+ '평영':'<path d="M4 20l11-4 9 3 11-4M16 16l-4-7-7 1M24 19l5 7 9-1"/>',
+ '접영':'<path d="M3 19l12-5 10 5 12-5M15 14l-8-8M25 19l8-11"/>'
+ };
+ return '<svg viewBox="0 0 44 32" width="34" height="26" fill="none" stroke="#ff705b" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="21" cy="7" r="3" fill="#ff705b" stroke="none"/>'+(poses[kind]||poses['자유형'])+'<path d="M3 28q5-3 10 0t10 0t10 0t9 0" stroke-width="1.5"/></svg>';
+}
 function refreshPb(){
  const el=$('eyslStrokePB');if(!el)return;
  const p=pool;
- el.innerHTML='<h3>▥ 종목별 PB ('+(p==='all'?'수로별':p+'m')+')</h3><div class="eyslPbGrid">'+strokes.slice(0,4).map(k=>{
- const v=best(relevant(p,k,50));
- return '<div><span class="eyslSwimIcon">♒</span><small>'+k+'</small><b>'+fmt(v?secs(v):NaN)+'</b>'+(p==='all'&&v?'<em>'+recordPoolMeters(v)+'m 풀</em>':'')+'</div>';
+ el.innerHTML='<h3>▥ 종목별 PB</h3><div class="eyslPbGrid">'+strokes.slice(0,4).map(k=>{
+ const category=typeof recordMajor==='string'?recordMajor:'meet';
+ const v=best(relevant(p,k,50).filter(r=>effectiveRecordCategory(r)===category));
+ return '<div><span class="eyslSwimIcon" aria-hidden="true">'+swimSvg(k)+'</span><small>'+k+'</small><b>'+fmt(v?secs(v):NaN)+'</b>'+(p==='all'&&v?'<em>'+recordPoolMeters(v)+'m 풀</em>':'')+'</div>';
  }).join('')+'</div>';
 }
 function syncPool(){
@@ -77,7 +87,9 @@ function mount(){
  const poolSection=section.querySelector('.recordPoolSection');
  $('eyslRecordTopPool').appendChild(poolSection);
  $('eyslRecordPB').innerHTML='<div id="eyslStrokePB"></div>';
- existing.append(section.querySelector('#recordMajor'),section.querySelector('#recordMinor'),section.querySelector('#recordBody'));
+ $('eyslRecordTopPool').append(section.querySelector('#recordMajor'),section.querySelector('#recordMinor'));
+ existing.append(section.querySelector('#recordBody'));
+ section.querySelector('#recordMajor').addEventListener('click',()=>setTimeout(refreshPb,0));
  section.addEventListener('click',e=>{
   const tab=e.target.closest('[data-eysl-record-tab]');if(tab){activate(tab.dataset.eyslRecordTab);return}
   const s=e.target.closest('[data-report-stroke]');if(s){stroke=s.dataset.reportStroke;distance=stroke==='개인혼영'?100:50;report();return}
@@ -111,9 +123,10 @@ const css=document.createElement('style');css.textContent=`
 #records .eyslKpis small,#records .eyslPbGrid small,#records .eyslReportKpis small{display:block;color:#c6cbd1;font-size:11px}
 #records .eyslKpis b,#records .eyslPbGrid b,#records .eyslReportKpis b{display:block;color:#fff;font-size:17px}
 #records .eyslPbGrid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
-#records .eyslSwimIcon{display:block;color:#ff705b;font-size:18px}
+#records .eyslSwimIcon{display:flex;align-items:center;justify-content:center;color:#ff705b;height:28px}
 #records .eyslPbGrid em{font-size:10px;color:#aeb8c4;font-style:normal}
-#records #recordPoolTabs{display:flex;gap:8px;margin:12px 0}
+#records .recordPoolSection{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+#records #recordPoolTabs{display:flex;gap:8px;margin:12px 0;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
 #records #recordPoolTabs button{flex:1;background:#14161a!important;border:1px solid #545963!important;color:#9da5b0!important;border-radius:22px!important;min-height:36px}
 #records #recordPoolTabs button.active{background:#14161a!important;border:2px solid #ff705b!important;color:#ff705b!important}
 #records #recordMajor button.active,#records #recordMinor button.active,#records #recordDetailTabs button.active,#records #recordDistanceTabs button.active{color:#ff705b!important}
