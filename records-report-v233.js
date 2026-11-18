@@ -21,7 +21,7 @@ function refreshSummary(){
  const y=new Date().getFullYear();
  const yearRows=rows().filter(r=>date(r).startsWith(String(y)));
  const meets=new Set(yearRows.filter(r=>effectiveRecordCategory(r)!=='other').map(r=>date(r)+'|'+r.event_name));
- const keys=new Set(rows().map(r=>[recordPoolMeters(r),effectiveRecordCategory(r),kinds(r),recordDistance(r)].join('|')));
+ const keys=new Set(rows().filter(r=>Number.isFinite(secs(r))&&recordPoolMeters(r)>0).map(r=>[recordPoolMeters(r),effectiveRecordCategory(r),kinds(r),recordDistance(r)].join('|')));
  const improved=rows().filter(r=>{const older=rows().filter(x=>x!==r&&date(x)<date(r)&&recordPoolMeters(x)===recordPoolMeters(r)&&effectiveRecordCategory(x)===effectiveRecordCategory(r)&&kinds(x)===kinds(r)&&recordDistance(x)===recordDistance(r));return older.length&&secs(r)<Math.min(...older.map(secs))}).filter(r=>date(r).startsWith(String(y)));
  el.innerHTML='<h3>▥ '+y+'년 기록 집계</h3><div class="eyslKpis"><div>🏆 <small>참가 대회</small><b>'+meets.size+'회</b></div><div>⌁ <small>보유 PB</small><b>'+keys.size+'개</b></div><div>🏅 <small>PB 갱신</small><b>'+improved.length+'회</b></div></div>';
 }
@@ -29,8 +29,7 @@ function refreshPb(){
  const el=$('eyslStrokePB');if(!el)return;
  const p=pool;
  el.innerHTML='<h3>▥ 종목별 PB ('+(p==='all'?'수로별':p+'m')+')</h3><div class="eyslPbGrid">'+strokes.slice(0,4).map(k=>{
- const opts=[25,50,100].map(d=>best(relevant(p,k,d))).filter(Boolean);
- const v=best(opts);
+ const v=best(relevant(p,k,50));
  return '<div><span class="eyslSwimIcon">♒</span><small>'+k+'</small><b>'+fmt(v?secs(v):NaN)+'</b>'+(p==='all'&&v?'<em>'+recordPoolMeters(v)+'m 풀</em>':'')+'</div>';
  }).join('')+'</div>';
 }
@@ -137,6 +136,13 @@ const css=document.createElement('style');css.textContent=`
 #records .eyslGoalInputs input{display:block;max-width:100%;width:100%;font-size:16px;background:#11151a;color:white;border:1px solid #646b75;border-radius:8px;padding:8px}
 #records .eyslGoalInputs button{background:#ff705b;color:#fff;border:0;border-radius:8px;padding:10px}
 #records .eyslEmpty{color:#b7c1cc;font-size:12px}
+#records #recordBody .historyCard{background:#f8f9fb!important;color:#14171c!important;border:1px solid #d7dbe0!important;border-radius:13px!important;min-height:65px!important;padding:12px!important;margin:8px 0!important;display:flex;align-items:center;gap:8px}
+#records #recordBody .historyCard b,#records #recordBody .historyCard .historyMeet{color:#14171c!important;font-weight:800!important}
+#records #recordBody .historyCard p{color:#555d67!important;font-size:11px!important;margin:4px 0 0!important}
+#records #recordBody .historyCard .improve{color:#22844b!important}
+#records #recordBody .historyCard .slower{color:#e4543e!important}
+#records #recordBody .historyCard>span:last-child{font-size:12px!important;white-space:nowrap}
+#records #recordBody .historyCard>div{flex:1;min-width:0}
 `;document.head.appendChild(css);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
