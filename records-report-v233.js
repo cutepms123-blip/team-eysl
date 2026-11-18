@@ -21,9 +21,14 @@ function refreshSummary(){
  const y=new Date().getFullYear();
  const yearRows=rows().filter(r=>date(r).startsWith(String(y)));
  const meets=new Set(yearRows.filter(r=>effectiveRecordCategory(r)!=='other').map(r=>date(r)+'|'+r.event_name));
- const keys=new Set(rows().filter(r=>Number.isFinite(secs(r))&&recordPoolMeters(r)>0).map(r=>[recordPoolMeters(r),effectiveRecordCategory(r),kinds(r),recordDistance(r)].join('|')));
+ const counts=new Map();
+ yearRows.forEach(r=>{const kind=kinds(r);if(!['자유형','배영','평영','접영','개인혼영'].includes(kind)||!Number.isFinite(secs(r)))return;counts.set(kind,(counts.get(kind)||0)+1)});
+ const maxCount=Math.max(0,...counts.values());
+ const leaders=maxCount?['자유형','배영','평영','접영','개인혼영'].filter(k=>counts.get(k)===maxCount):[];
+ const leaderLabel=leaders.length?leaders.join(' · '):'—';
+ const leaderSize=leaders.length>=4?'tiny':leaders.length===3?'small':leaders.length===2?'medium':'normal';
  const improved=rows().filter(r=>{const older=rows().filter(x=>x!==r&&date(x)<date(r)&&recordPoolMeters(x)===recordPoolMeters(r)&&effectiveRecordCategory(x)===effectiveRecordCategory(r)&&kinds(x)===kinds(r)&&recordDistance(x)===recordDistance(r));return older.length&&secs(r)<Math.min(...older.map(secs))}).filter(r=>date(r).startsWith(String(y)));
- el.innerHTML='<h3>▥ '+y+'년 기록 집계</h3><div class="eyslKpis"><div>🏆 <small>참가 대회</small><b>'+meets.size+'회</b></div><div>⌁ <small>보유 PB</small><b>'+keys.size+'개</b></div><div>🏅 <small>PB 갱신</small><b>'+improved.length+'회</b></div></div>';
+ el.innerHTML='<h3>▥ '+y+'년 기록 집계</h3><div class="eyslKpis"><div>🏆 <small>참가 대회</small><b>'+meets.size+'회</b></div><div class="eyslPrimaryStroke">'+(leaders.length?swimSvg(leaders[0]):'<span class="eyslNoStroke">—</span>')+'<small>주력 영법</small><b class="eyslLeaderText '+leaderSize+'">'+leaderLabel+'</b></div><div>🏅 <small>PB 갱신</small><b>'+improved.length+'회</b></div></div>';
 }
 function swimSvg(kind){
  const poses={
@@ -166,6 +171,12 @@ const css=document.createElement('style');css.textContent=`
 #records .eyslKpis>div,#records .eyslPbGrid>div,#records .eyslReportKpis>div{background:#202329;border:1px solid #41454e;border-radius:12px;padding:10px 5px;text-align:center;color:#f6f6f6;min-width:0}
 #records .eyslKpis small,#records .eyslPbGrid small,#records .eyslReportKpis small{display:block;color:#c6cbd1;font-size:11px}
 #records .eyslKpis b,#records .eyslPbGrid b,#records .eyslReportKpis b{display:block;color:#fff;font-size:17px}
+#records .eyslKpis .eyslPrimaryStroke{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;min-height:90px}
+#records .eyslKpis .eyslPrimaryStroke svg{width:29px;height:23px;flex-shrink:0}
+#records .eyslKpis .eyslLeaderText{font-size:17px;line-height:1.3;overflow-wrap:anywhere;white-space:normal}
+#records .eyslKpis .eyslLeaderText.medium{font-size:14px}
+#records .eyslKpis .eyslLeaderText.small{font-size:12px}
+#records .eyslKpis .eyslLeaderText.tiny{font-size:10px}
 #records .eyslPbGrid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
 #records .eyslSwimIcon{display:flex;align-items:center;justify-content:center;color:#ff705b;height:28px}
 #records .eyslPbGrid em{font-size:10px;color:#aeb8c4;font-style:normal}
