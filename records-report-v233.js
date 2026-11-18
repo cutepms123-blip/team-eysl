@@ -158,9 +158,9 @@ const css=document.createElement('style');css.textContent=`
 #eyslHomeBrandBanner .eyslBannerTitle{font-size:29px;letter-spacing:-1px;font-weight:900;font-style:italic;color:#fff;line-height:1.2}
 #eyslHomeBrandBanner .eyslBannerTitle span{color:#ff705b}
 #eyslHomeBrandBanner .eyslBannerSubtitle{font-size:9px;letter-spacing:2px;color:#b8bdc6;margin-top:5px}
-#records .eyslTopTabs{display:flex;gap:0;margin:12px 0 18px;background:#1b1e23;border:1px solid #474b52;border-radius:22px;overflow:hidden}
-#records .eyslTopTabs button{flex:1;background:transparent;color:#f4f5f7;border:0;padding:12px 3px;font-weight:700}
-#records .eyslTopTabs button.active{background:#ff715c;color:#fff;border-radius:22px}
+#records .eyslTopTabs{display:flex;gap:8px;margin:12px 0 18px;background:transparent;border:0;border-radius:0;overflow:visible}
+#records .eyslTopTabs button{flex:1;background:#14161a!important;color:#9da5b0!important;border:1px solid #545963!important;border-radius:22px!important;padding:12px 3px;font-weight:700}
+#records .eyslTopTabs button.active{background:#14161a!important;color:#ff705b!important;border:2px solid #ff705b!important;border-radius:22px!important}
 #records #eyslRecordSummary h3,#records #eyslStrokePB h3,#records #eyslRecordReport h3{font-size:15px;color:#f4f5f7;margin:15px 0 10px}
 #records .eyslKpis,#records .eyslPbGrid,#records .eyslReportKpis{display:grid;gap:7px;grid-template-columns:repeat(3,minmax(0,1fr))}
 #records .eyslKpis>div,#records .eyslPbGrid>div,#records .eyslReportKpis>div{background:#202329;border:1px solid #41454e;border-radius:12px;padding:10px 5px;text-align:center;color:#f6f6f6;min-width:0}
