@@ -42,6 +42,7 @@
    '.eyslProfileCard.active{border:2px solid #111}.eyslProfileIcon{width:44px;height:44px;border-radius:14px;background:#111;color:#fff;display:grid;place-items:center;font-size:20px;flex:0 0 auto}'+
    '.eyslProfileCard.member .eyslProfileIcon{background:#eef0f3;color:#111}.eyslProfileCard b{display:block;font-size:14px}.eyslProfileCard span{display:block;font-size:10px;color:#777;margin-top:4px;line-height:1.45}.eyslProfileCheck{margin-left:auto;font-size:18px;font-weight:900}'+
    '#eyslProfileModeButton{white-space:nowrap}.eyslMemberModeNote{font-size:9px!important;color:#9aa0a6!important;margin-top:4px!important}';
+  style.textContent+=".eyslProfileSheet{background:#11161e!important;color:#fff!important}.eyslProfileSheetHead h2,.eyslProfileSheetHead button{color:#fff!important}.eyslProfileCard{background:#1b222c!important;border:1px solid #45505f!important;color:#fff!important}.eyslProfileCard.active{border:2px solid #e8edf3!important;background:#26303c!important}.eyslProfileCard b{color:#fff!important}.eyslProfileCard span{color:#c4ceda!important}.eyslProfileCheck{color:#fff!important}.eyslProfileIcon,.eyslProfileCard.member .eyslProfileIcon{background:#344253!important;color:#fff!important}";
   document.head.appendChild(style);
 
   const overlay=document.createElement('div');
