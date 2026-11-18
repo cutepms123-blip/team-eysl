@@ -463,7 +463,9 @@
  }
  function openTest(){
   inject();
-  if(!state.active&&(!localStorage.getItem(KEY)||state.centerCategory==="training"))state.centerCategory="all";
+  // Always enter through the category overview; preserve scenario data separately.
+  state.centerCategory="all";
+  state.active=false;
   try{showPage("waitlistTest")}catch(_){}
   render();
  }
