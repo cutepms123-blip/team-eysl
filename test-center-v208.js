@@ -330,7 +330,7 @@
     "<button type='button' class='btn primary' data-growth-save='"+i+"' style='margin-top:8px'>테스트 피드백 저장</button></div>":"")+"</div>";
   }).join("");
   return "<div class='card' style='padding:15px;margin-top:12px'><span class='wltTag'>TEST ONLY · 가상 기록</span><h3 style='margin:12px 0'>🎯 나의 목표 기록</h3>"+
-   "<div style='display:flex;flex-wrap:wrap;gap:5px'>"+strokes.map(v=>"<button type='button' data-growth-stroke='"+v+"' style='border:1px solid #ccd5d8;border-radius:20px;padding:7px;background:"+(v===st?"#e9503e;color:#fff":"#282e36;color:#e6edf3")+"'>"+v+"</button>").join("")+"</div>"+
+   "<div style='display:flex;flex-wrap:wrap;gap:5px'>"+strokes.map(v=>"<button type='button' data-growth-stroke='"+v+"' style='border:1px solid #ccd5d8;border-radius:20px;padding:7px;background:"+(v===st?"#f0523e;color:#fff;border-color:#f0523e;box-shadow:0 0 0 2px #ffb19d;font-weight:800":"#282e36;color:#aeb8c4;border-color:#596471;font-weight:400")+"'>"+v+"</button>").join("")+"</div>"+
    "<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:14px 0'>"+
    [["시작 기록",first],["현재 PB",now],["목표 기록",goal]].map(x=>"<div style='background:#f1f5f7;padding:10px 5px;border-radius:10px;text-align:center'><small>"+x[0]+"</small><b style='display:block;font-size:14px'>"+fmtTime(x[1])+"</b></div>").join("")+"</div>"+
    "<b>목표 달성률 "+progress.toFixed(1)+"%</b><div style='height:9px;background:#e4e9ed;border-radius:9px;margin:8px 0'><div style='height:9px;width:"+progress+"%;background:#e9503e;border-radius:9px'></div></div>"+
@@ -339,7 +339,7 @@
    "<small style='display:block;color:#667085'>그래프는 변화가 잘 보이도록 Y축을 조절했어요. 모든 기록은 가상 예시입니다.</small>"+
    "<div style='display:flex;gap:7px;align-items:center;margin-top:16px'><label style='font-size:12px'>새 목표(초) <input id='growthGoalInput' type='number' step='0.01' min='0.01' value='"+goal+"' style='width:90px;font-size:16px;padding:8px;border:1px solid #ccd5d8;border-radius:8px'/></label><button class='btn primary' data-growth-goal='save'>변경·이력 저장</button></div>"+
    "<div style='font-size:11px;color:#667085;margin-top:10px'>목표 수정 이력 "+growthState.history.filter(x=>x.stroke===st).length+"건 · 테스트 브라우저에만 저장</div></div>"+
-   "<div class='section'><h2>📋 훈련 내용 · 테스트</h2></div><div style='font-size:11px;color:#667085'>날짜별 훈련 주제 → 계획표 미리보기 → 코치 피드백</div>"+rows;
+   "<div class='section'><h2>📋 훈련 내용 · 테스트</h2></div>"+rows;
  }
 
  function categoryBody(){
