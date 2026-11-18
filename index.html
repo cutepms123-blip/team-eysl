@@ -5669,7 +5669,10 @@ async function openFunEventPage(type){
    const {data:meetRanks,error:meetRankError}=await dbClient.rpc('get_team_meet_event_rankings_v3');
    if(meetRankError||meetRanks?.error)throw(meetRankError||new Error(meetRanks.error));
    const rows=rankTidy(rankActive(meetRanks.competition||[]));
-   box.innerHTML=`<div class="eventDetailStack"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div></div>`;
+   const {data:allTimeRanks,error:allTimeError}=await dbClient.rpc('get_team_meet_competition_all_time_rankings');
+   if(allTimeError||allTimeRanks?.error)throw(allTimeError||new Error(allTimeRanks.error));
+   const cumulative=rankTidy(rankActive(allTimeRanks||[]));
+   box.innerHTML=`<div class="rankScope"><div class="rankScopeTabs"><button type="button" class="active" onclick="setRankCategory('year',this)">${data.year} 대회왕</button><button type="button" onclick="setRankCategory('total',this)">누적 대회왕</button></div><div class="rankScopePanel" data-scope="year"><div class="eventRankMini"><h3>${data.year} 대회왕</h3>${funRankRows(rows,r=>`${r.count}개 대회`)}</div></div><div class="rankScopePanel" data-scope="total" hidden><div class="eventRankMini"><h3>누적 대회왕</h3>${funRankRows(cumulative,r=>`${r.count}개 대회`)}</div></div></div>`;
    return;
   }
 
