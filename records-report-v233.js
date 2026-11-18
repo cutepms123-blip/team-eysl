@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const strokes=['자유형','배영','평영','접영','개인혼영'];
-let mode='all',pool='25',stroke='자유형',distance=50,reportPool='25',allRows=[],loading=false;
+let mode='all',pool='25',stroke='자유형',distance=50,reportPool='25',allRows=[],surveyGoals=[],loading=false;
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const secs=r=>typeof recordSeconds==='function'?recordSeconds(r.result):null;
@@ -103,13 +103,14 @@ function mount(){mountHomeBanner();
  });
  updateAll();
 }
+async function fetchSurveyGoals(){if(!currentUser?.memberId)return;try{const {data,error}=await dbClient.from('eysl_survey_goals_2026').select('stroke,distance_m,pool_m,target_raw,target_seconds,target_date').eq('member_id',currentUser.memberId);if(error)throw error;surveyGoals=data||[];if(mode==='report')report()}catch(e){console.warn('Survey goals unavailable:',e)}}
 async function fetchRows(){
  if(loading||!currentUser?.memberId)return;
  loading=true;
  try{const {data,error}=await dbClient.from('records').select('id,category,subcategory,stroke,event_name,result,event_date,metadata,created_at').eq('member_id',currentUser.memberId).order('event_date',{ascending:false});if(error)throw error;allRows=data||[];updateAll();if(mode==='report')report()}catch(e){console.warn('Record report data:',e)}finally{loading=false}
 }
 const originalShowPage=window.showPage;
-window.showPage=function(id){const result=originalShowPage.apply(this,arguments);if(id==='records'){mount();activate('all');fetchRows()}return result};
+window.showPage=function(id){const result=originalShowPage.apply(this,arguments);if(id==='records'){mount();activate('all');fetchRows();fetchSurveyGoals()}return result};
 try{showPage=window.showPage}catch(_){}
 const originalPool=window.setRecordPoolFilter;
 window.setRecordPoolFilter=function(value,btn){pool=String(value);const result=originalPool.apply(this,arguments);updateAll();return result};
