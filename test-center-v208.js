@@ -563,6 +563,19 @@
   try{showPage=window.showPage}catch(_){}
  }
 
+ // Refresh menu visibility after authentication and whenever the drawer opens.
+ const baseApplyRole=window.applyRole;
+ if(typeof baseApplyRole==="function"&&!baseApplyRole.__eyslTcSync){
+  window.applyRole=function(){const result=baseApplyRole.apply(this,arguments);sync();return result};
+  window.applyRole.__eyslTcSync=true;
+  try{applyRole=window.applyRole}catch(_){}
+ }
+ const baseOpenDrawer=window.openDrawer;
+ if(typeof baseOpenDrawer==="function"&&!baseOpenDrawer.__eyslTcSync){
+  window.openDrawer=function(){const result=baseOpenDrawer.apply(this,arguments);sync();return result};
+  window.openDrawer.__eyslTcSync=true;
+  try{openDrawer=window.openDrawer}catch(_){}
+ }
  window.addEventListener("load",()=>setTimeout(sync,700));
  window.addEventListener("pageshow",()=>setTimeout(sync,100));
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()});
