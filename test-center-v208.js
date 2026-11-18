@@ -278,12 +278,68 @@
    ["race","🏁","대회","개인전 · 단체전 · 신청 · 마감"],
    ["notice","🔔","공지 · 알림","팝업 · 푸시 · 공지 상호작용"],
    ["member","👥","회원","가입 · 승인 · 내보내기 · 재가입"],
-   ["profile","👑","권한 · 프로필","총관리자용 ↔ 일반모임원용 화면"]
+   ["profile","👑","권한 · 프로필","총관리자용 ↔ 일반모임원용 화면"],
+   ["growth","🎯","목표 기록 · 피드백","영법별 성장 그래프 · 계획표 미리보기"]
   ];
   return "<div class='tcGrid'>"+cats.map(x=>
    "<button class='tcCard "+(state.centerCategory===x[0]?"active":"")+"' data-tc-category='"+x[0]+"'>"+
    "<i>"+x[1]+"</i><div><b>"+x[2]+"</b><span>"+x[3]+"</span></div><em>›</em></button>"
   ).join("")+"</div>";
+ }
+
+
+ const GKEY="eysl_growth_feedback_test_v1";
+ const strokes=["자유형","배영","평영","접영","개인혼영"];
+ const demoRecords={
+  "자유형":[43.50,42.80,42.10,41.12],"배영":[50.2,49.4,48.9,48.1],
+  "평영":[54.2,52.8,51.6,50.4],"접영":[49.8,48.2,47.3,46.5],"개인혼영":[112,110,107,105]
+ };
+ const demoGoals={"자유형":38,"배영":45,"평영":48,"접영":43,"개인혼영":100};
+ let growthState={stroke:"자유형",period:"전체",openFeedback:0,plans:{},feedbacks:{},goals:{},history:[]};
+ try{growthState={...growthState,...JSON.parse(localStorage.getItem(GKEY)||"{}"),plans:{}}}catch(_){}
+ function saveGrowth(){try{localStorage.setItem(GKEY,JSON.stringify({...growthState,plans:{}}))}catch(_){}}
+ function fmtTime(v){const n=Number(v);return Number.isFinite(n)?n.toFixed(2)+"초":"미등록"}
+ function graphSvg(stroke){
+  const vals=demoRecords[stroke],goal=Number(growthState.goals[stroke]??demoGoals[stroke]);
+  const max=Math.max(...vals,goal)+0.8,min=Math.min(...vals,goal)-0.8;
+  const X=i=>44+i*80,Y=v=>190-(v-min)/(max-min)*160;
+  const points=vals.map((v,i)=>X(i)+","+Y(v)).join(" ");
+  return "<svg viewBox='0 0 330 226' role='img' aria-label='기록 변화 그래프, 테스트용 가상 기록' style='width:100%;height:auto'>"+
+  [0,1,2,3,4].map(i=>{const v=min+(max-min)*i/4,y=Y(v);return "<line x1='44' x2='290' y1='"+y+"' y2='"+y+"' stroke='#e2e8f0' stroke-dasharray='3 3'/><text x='4' y='"+(y+3)+"' font-size='9' fill='#667085'>"+v.toFixed(1)+"</text>"}).join("")+
+  "<line x1='44' x2='290' y1='"+Y(goal)+"' y2='"+Y(goal)+"' stroke='#f05a76' stroke-width='2' stroke-dasharray='5 4'/>"+
+  "<polyline points='"+points+"' fill='none' stroke='#008b91' stroke-width='3' stroke-linejoin='round'/>"+
+  vals.map((v,i)=>"<circle cx='"+X(i)+"' cy='"+Y(v)+"' r='4' fill='#008b91'/><text x='"+X(i)+"' y='"+Math.max(12,Y(v)-9)+"' font-size='10' text-anchor='middle' fill='#073b42'>"+v.toFixed(2)+"</text><text x='"+X(i)+"' y='212' font-size='10' text-anchor='middle' fill='#667085'>"+["7월","8월","9월","11월"][i]+"</text>").join("")+"</svg>";
+ }
+ function growthTestHtml(){
+  const st=growthState.stroke,vals=demoRecords[st],goal=Number(growthState.goals[st]??demoGoals[st]);
+  const first=vals[0],now=vals[vals.length-1],gap=now-goal,progress=Math.max(0,Math.min(100,100*(first-now)/(first-goal||1)));
+  const sessions=[
+   {date:"2026.11.14",day:"토요 훈련",title:"자유형 캐치 & 접영 리듬",tags:"자유형 · 접영",coach:"자유형: 캐치 시 팔꿈치 위치에 집중하세요.\n접영: 호흡 시 상체가 과하게 올라오지 않도록 주의하세요."},
+   {date:"2026.11.07",day:"토요 훈련",title:"스타트 & 턴 집중 훈련",tags:"스타트 · 턴",coach:""},
+   {date:"2026.10.31",day:"토요 훈련",title:"평영 스트로크 개선",tags:"평영",coach:""}
+  ];
+  const rows=sessions.map((v,i)=>{
+   const open=growthState.openFeedback===i;
+   const plan=growthState.plans[i];
+   return "<div style='border:1px solid #dce3e7;border-radius:15px;padding:13px;margin:9px 0;background:#fff'>"+
+    "<button type='button' data-growth-open='"+i+"' style='width:100%;border:0;background:none;text-align:left;padding:0;color:#101828'><small>"+v.date+" · "+v.day+"</small><div style='font-size:15px;font-weight:800;margin-top:5px'>"+esc(v.title)+" <span style='float:right'>"+(open?"⌃":"⌄")+"</span></div><small style='color:#008b91'>"+v.tags+"</small></button>"+
+    (open?"<div style='border-top:1px solid #e5e7eb;margin-top:12px;padding-top:12px'><b>훈련 계획표 · 화면에서 바로 보기</b><p style='font-size:11px;color:#667085'>이미지 또는 PDF를 올리면 이 화면 안에 표시됩니다. 테스트용이며 파일은 서버에 저장되지 않습니다.</p>"+
+    "<input type='file' accept='image/*,application/pdf' data-growth-file='"+i+"' style='max-width:100%;font-size:11px;margin:8px 0'/>"+
+    (plan?(plan.type==="application/pdf"?"<iframe title='훈련 계획표 PDF' src='"+plan.url+"' style='width:100%;height:360px;border:1px solid #ddd;border-radius:9px'></iframe>":"<img alt='훈련 계획표' src='"+plan.url+"' style='width:100%;height:auto;border-radius:9px'/>"):"<div style='background:#f3f6f8;padding:16px;border-radius:9px;text-align:center;font-size:11px'>계획표 업로드 전</div>")+
+    "<b style='display:block;margin:14px 0 6px'>코치 피드백</b><textarea data-growth-feedback='"+i+"' style='width:100%;min-height:95px;border:1px solid #cbd5e1;border-radius:9px;padding:9px;box-sizing:border-box;font:inherit;font-size:12px'>"+esc(growthState.feedbacks[i]??v.coach)+"</textarea>"+
+    "<button type='button' class='btn primary' data-growth-save='"+i+"' style='margin-top:8px'>테스트 피드백 저장</button></div>":"")+"</div>";
+  }).join("");
+  return "<div class='card' style='padding:15px;margin-top:12px'><span class='wltTag'>TEST ONLY · 가상 기록</span><h3 style='margin:12px 0'>🎯 나의 목표 기록</h3>"+
+   "<div style='display:flex;flex-wrap:wrap;gap:5px'>"+strokes.map(v=>"<button type='button' data-growth-stroke='"+v+"' style='border:1px solid #ccd5d8;border-radius:20px;padding:7px;background:"+(v===st?"#006d75;color:#fff":"#fff;color:#333")+"'>"+v+"</button>").join("")+"</div>"+
+   "<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:14px 0'>"+
+   [["시작 기록",first],["현재 PB",now],["목표 기록",goal]].map(x=>"<div style='background:#f1f5f7;padding:10px 5px;border-radius:10px;text-align:center'><small>"+x[0]+"</small><b style='display:block;font-size:14px'>"+fmtTime(x[1])+"</b></div>").join("")+"</div>"+
+   "<b>목표 달성률 "+progress.toFixed(1)+"%</b><div style='height:9px;background:#e4e9ed;border-radius:9px;margin:8px 0'><div style='height:9px;width:"+progress+"%;background:#008b91;border-radius:9px'></div></div>"+
+   "<p style='font-size:12px'>"+(gap>0?"목표까지 "+gap.toFixed(2)+"초 남았어요!":"목표 달성! 🎉")+" · 시작보다 "+(first-now).toFixed(2)+"초 단축</p>"+
+   "<h3 style='margin-top:18px'>📈 기록 변화 추이</h3>"+graphSvg(st)+
+   "<small style='display:block;color:#667085'>그래프는 변화가 잘 보이도록 Y축을 조절했어요. 모든 기록은 가상 예시입니다.</small>"+
+   "<div style='display:flex;gap:7px;align-items:center;margin-top:16px'><label style='font-size:12px'>새 목표(초) <input id='growthGoalInput' type='number' step='0.01' min='0.01' value='"+goal+"' style='width:90px;padding:8px;border:1px solid #ccd5d8;border-radius:8px'/></label><button class='btn primary' data-growth-goal='save'>변경·이력 저장</button></div>"+
+   "<div style='font-size:11px;color:#667085;margin-top:10px'>목표 수정 이력 "+growthState.history.filter(x=>x.stroke===st).length+"건 · 테스트 브라우저에만 저장</div></div>"+
+   "<div class='section'><h2>📋 코치 피드백 모음 · 테스트</h2></div><div style='font-size:11px;color:#667085'>날짜별 훈련 주제 → 계획표 미리보기 → 코치 피드백</div>"+rows;
  }
 
  function categoryBody(){
@@ -295,6 +351,8 @@
   let html="<div class='tcCategoryHead'><button data-tc-action='all'>← 전체</button><div><b>"+esc(title)+"</b><span>테스트 항목</span></div></div>";
 
   if(cat==="training"||cat==="finance")return html+scenarios(cat);
+
+  if(cat==="growth")return growthTestHtml();
 
   if(cat==="attendance"){
    const demo=state.attendanceDemo||{
@@ -414,6 +472,17 @@
  window.resetWltTest=reset;
 
  document.addEventListener("click",e=>{
+  const gs=e.target.closest("[data-growth-stroke]");
+  if(gs){growthState.stroke=gs.dataset.growthStroke;saveGrowth();render();return}
+  const go=e.target.closest("[data-growth-open]");
+  if(go){growthState.openFeedback=growthState.openFeedback===Number(go.dataset.growthOpen)?-1:Number(go.dataset.growthOpen);render();return}
+  const gg=e.target.closest("[data-growth-goal]");
+  if(gg){const el=document.getElementById("growthGoalInput"),n=Number(el&&el.value);
+   if(!Number.isFinite(n)||n<=0){if(typeof toast==="function")toast("올바른 목표 기록을 입력하세요.");return}
+   growthState.history.push({stroke:growthState.stroke,previous:growthState.goals[growthState.stroke]??demoGoals[growthState.stroke],next:n,at:new Date().toISOString()});
+   growthState.goals[growthState.stroke]=n;saveGrowth();render();return}
+  const gf=e.target.closest("[data-growth-save]");
+  if(gf){const i=gf.dataset.growthSave,el=document.querySelector('[data-growth-feedback="'+i+'"]');growthState.feedbacks[i]=el?el.value:"";saveGrowth();render();return}
   const cat=e.target.closest("[data-tc-category]");
   if(cat){
    state.centerCategory=cat.dataset.tcCategory||"training";write();render();return;
@@ -464,6 +533,14 @@
   else if(a==="reset")reset();
  });
 
+ document.addEventListener("change",e=>{
+  const input=e.target.closest("[data-growth-file]");if(!input||!input.files||!input.files[0])return;
+  const file=input.files[0],i=input.dataset.growthFile;
+  if(!(file.type.startsWith("image/")||file.type==="application/pdf")){if(typeof toast==="function")toast("이미지 또는 PDF만 업로드하세요.");return}
+  if(growthState.plans[i])URL.revokeObjectURL(growthState.plans[i].url);
+  growthState.plans[i]={type:file.type,url:URL.createObjectURL(file)};
+  render();
+ });
  inject();sync();
 
  const oldMode=window.setEyslProfileMode;
