@@ -1083,7 +1083,7 @@ input[type="date"],input[type="time"]{-webkit-appearance:none;appearance:none;wi
  background:#F24B35!important;color:#FFFFFF!important;
  border-color:#F24B35!important;
 }
-</style>
+.eyslGoalAdmin{padding:14px}.eyslGoalFilters{display:flex;gap:7px;overflow-x:auto;padding-bottom:14px}.eyslGoalFilters button{border:1px solid #494956;border-radius:22px;background:#24262d;color:#eee;padding:9px 13px;white-space:nowrap}.eyslGoalFilters button.active{background:#7760d4;color:white}.eyslGoalAdmin input{width:100%;padding:14px;border-radius:12px;border:1px solid #45454c;background:#202127;color:white}.eyslGoalAdmin #eyslGoalStats{display:flex;justify-content:space-around;gap:8px;margin:16px 0;padding:15px 5px;background:#22232a;border-radius:13px;color:#ccc;font-size:12px}.eyslGoalAdmin #eyslGoalStats div{display:flex;flex-direction:column;text-align:center;gap:6px}.eyslGoalAdmin #eyslGoalStats b{color:#fff;font-size:18px}.eyslGoalRow{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 10px;background:#22232a;color:#fff;border:0;border-bottom:1px solid #393a42;text-align:left;gap:8px}.eyslGoalRow span:first-child{display:flex;flex-direction:column;gap:5px}.eyslGoalRow small{color:#aeb0bb;font-size:11px}.eyslGoalRow strong{font-size:14px}.eyslGoalDate{font-size:11px;color:#b5b5bf;white-space:nowrap}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -1435,7 +1435,8 @@ if(window.pdfjsLib){
 <button class="eventHubBtn" onclick="openFunEventPage('medal')"><span>메달왕</span><b>›</b></button>
 <button class="eventHubBtn" onclick="openFunEventPage('stroke')"><span>영법별 랭킹</span><b>›</b></button>
 
-</div></section><section id="eventRankingDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('teamEvents')">←</button><h1 id="eventRankingTitle">이벤트</h1><span></span></div><div id="teamEventRankings"></div></section>
+</div></section><section id="adminGoals" class="page"><div class="pagehead"><button class="back" onclick="showPage('mypage')">←</button><h1>목표 기록 관리</h1><span></span></div><div class="eyslGoalAdmin"><div class="eyslGoalFilters" id="eyslGoalFilters"></div><input id="eyslGoalSearch" placeholder="이름으로 검색" oninput="renderAdminGoals()"><div id="eyslGoalStats"></div><div id="eyslGoalRows"></div></div></section>
+<section id="eventRankingDetail" class="page"><div class="pagehead"><button class="back" onclick="showPage('teamEvents')">←</button><h1 id="eventRankingTitle">이벤트</h1><span></span></div><div id="teamEventRankings"></div></section>
 
 <section id="media" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1 id="mediaTitle">미디어</h1><span></span></div><div id="mediaRoot"><div class="actions"><button class="btn primary" onclick="createFolder()">＋ 폴더 만들기</button></div><div id="folderGrid" class="folderGrid"></div></div><div id="folderView" style="display:none"><div class="actions"><button class="btn outline" onclick="closeFolder()">← 폴더 목록</button><button class="btn primary" onclick="document.getElementById('folderUpload').click()">＋ 파일 올리기</button><button id="editFolderBtn" class="btn outline" onclick="editCurrentFolder()">폴더명 수정</button><button id="deleteFolderBtn" class="btn amber" onclick="deleteCurrentFolder()">폴더 삭제</button><input id="folderUpload" type="file" multiple hidden onchange="uploadToFolder(this)"></div><div id="folderFiles" class="list"></div></div></section>
 <section id="files" class="page"><div class="pagehead"><button class="back" onclick="showPage('home')">←</button><h1>자료실</h1><span></span></div>
@@ -1475,7 +1476,7 @@ if(window.pdfjsLib){
 </div>
 
 <div id="drawerOverlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="dparent" onclick="toggleSub('boardSub')"><span>게시판</span><span>›</span></div><div id="boardSub" class="dsub"><div class="ditem" onclick="drawerGo('notice')">공지</div><div class="ditem" onclick="drawerGo('freeBoard')">자유게시판</div></div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div><div id="testCenterMenu" class="ditem" onclick="closeDrawer();if(typeof openTestCenter==='function'){openTestCenter()}else{toast('TEST CENTER를 불러오는 중입니다.')}">TEST CENTER</div></div></div></aside>
+<aside id="drawer" class="drawer"><div class="drawerHead"><div><b>TEAM EYSL</b><div class="meta" style="margin-top:4px">상세 메뉴</div></div><button onclick="closeDrawer()">✕</button></div><div class="dsec">MAIN</div><div class="ditem main" onclick="drawerGo('home')">홈</div><div class="dparent" onclick="toggleSub('boardSub')"><span>게시판</span><span>›</span></div><div id="boardSub" class="dsub"><div class="ditem" onclick="drawerGo('notice')">공지</div><div class="ditem" onclick="drawerGo('freeBoard')">자유게시판</div></div><div class="dparent" onclick="toggleSub('schedSub')"><span>신청</span><span>›</span></div><div id="schedSub" class="dsub"><div class="ditem" onclick="drawerGo('schedule')">전체 신청</div><div class="ditem" onclick="drawerGo('trainingList')">훈련</div><div class="ditem" onclick="drawerGo('raceList')">대회</div><div class="ditem" onclick="openOtherSchedule()">기타</div></div><div class="ditem main" onclick="drawerGo('memberDirectory')">회원리스트</div><div class="ditem main" onclick="drawerGo('teamEvents')">이벤트</div><div class="dsec">자료실</div><div class="ditem main" onclick="drawerGo('files')">자료실</div><div class="dsec">MY</div><div class="dparent" onclick="toggleSub('mySub')"><span>MYPAGE</span><span>›</span></div><div id="mySub" class="dsub"><div class="ditem" onclick="drawerGo('mypage')">마이페이지 홈</div><div class="ditem" onclick="drawerGo('records')">기록</div><div class="ditem" onclick="closeDrawer();renderMyStatus('race')">나의 대회 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('training')">나의 훈련 신청 내역</div><div class="ditem" onclick="closeDrawer();renderMyStatus('event')">나의 기타 신청 내역</div><div class="ditem" onclick="drawerGo('attendance')">출석현황</div></div><div class="dsec">OPEN CHAT</div><div class="ditem main" onclick="openTeamOpenChat()">오픈채팅방 바로가기 ↗</div><div id="adminMenu"><div class="dsec">ADMIN</div><div class="dparent" onclick="toggleSub('adminSub')"><span>관리자</span><span>›</span></div><div id="adminSub" class="dsub"><div id="drawerMemberApproval" class="ditem masterOnly" onclick="drawerGo('memberApproval')">회원 승인</div><div class="ditem" onclick="drawerGo('noticeWrite')">공지 작성</div><div class="ditem" onclick="drawerGo('adminSchedule')">일정 등록</div><div class="ditem" onclick="drawerGo('memberAdmin')">회원 관리</div><div class="ditem" onclick="closeDrawer();openAdminGoals()">목표 기록 관리</div><div class="ditem" onclick="drawerGo('attendanceAdmin')">출석 관리</div><div id="testCenterMenu" class="ditem" onclick="closeDrawer();if(typeof openTestCenter==='function'){openTestCenter()}else{toast('TEST CENTER를 불러오는 중입니다.')}">TEST CENTER</div></div></div></aside>
 
 <div id="modal" class="modal"><button class="modalClose" onclick="closeModal()">✕</button><div id="modalContent"></div><div class="modalActions"><a id="modalSave" href="#" download>저장</a></div></div>
 <div id="toast" class="toast"></div>
@@ -5824,5 +5825,38 @@ if('serviceWorker' in navigator){
 <script src="/test-center-v208.js?v=final208-test-center"></script>
 <script src="/ui-integrity-v218.js?v=final232-full-text-contrast"></script>
 <script src="/records-report-v233.js?v=20261118-records-report-7"></script>
-</body>
+<script>
+let eyslAdminGoals=[],eyslGoalStroke='전체';
+async function openAdminGoals(){
+ if(typeof isAdmin==='function'&&!isAdmin()&&typeof isMasterAdmin==='function'&&!isMasterAdmin()){toast('관리자만 이용할 수 있습니다.');return;}
+ showPage('adminGoals');
+ document.getElementById('eyslGoalRows').innerHTML='<div class="card">목표 기록 불러오는 중...</div>';
+ const {data,error}=await dbClient.rpc('eysl_admin_list_goals_2026');
+ if(error||!Array.isArray(data)){document.getElementById('eyslGoalRows').innerHTML='<div class="card">목표 기록을 불러오지 못했습니다.</div>';return;}
+ eyslAdminGoals=data;renderAdminGoals();
+}
+function renderAdminGoals(){
+ const f=document.getElementById('eyslGoalFilters'),q=(document.getElementById('eyslGoalSearch').value||'').trim();
+ const strokes=['전체','자유형','배영','평영','접영','개인혼영'];
+ f.innerHTML=strokes.map(x=>'<button type="button" class="'+(x===eyslGoalStroke?'active':'')+'" onclick="eyslGoalStroke=\''+x+'\';renderAdminGoals()">'+x+'</button>').join('');
+ const data=eyslAdminGoals.filter(x=>(eyslGoalStroke==='전체'||x.stroke===eyslGoalStroke)&&(!q||x.name.includes(q)));
+ const members=new Set(eyslAdminGoals.map(x=>x.name));
+ document.getElementById('eyslGoalStats').innerHTML='<div>등록 인원 <b>'+members.size+'명</b></div><div>등록 목표 <b>'+eyslAdminGoals.length+'건</b></div><div>조회 결과 <b>'+data.length+'건</b></div>';
+ const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ document.getElementById('eyslGoalRows').innerHTML=data.length?data.map(x=>'<button class="eyslGoalRow" onclick="editAdminGoal('+Number(x.id)+')"><span><b>'+safe(x.name)+'</b><small>'+safe(x.stroke)+' '+Number(x.distance)+'m · '+Number(x.pool)+'m 풀</small></span><strong>'+safe(x.raw||'—')+'</strong><span class="eyslGoalDate">'+safe(String(x.date).slice(5).replace('-','.'))+' ›</span></button>').join(''):'<div class="card">조회 결과가 없습니다.</div>';
+}
+async function editAdminGoal(id){
+ const x=eyslAdminGoals.find(r=>Number(r.id)===id);if(!x)return;
+ const input=prompt(x.name+' · '+x.stroke+' '+x.distance+'m 목표 기록 수정\n초 단위(예: 45.00), 분:초(예: 1:30.00), 또는 측정 필요',x.raw||'');
+ if(input===null)return;
+ const raw=input.trim();let seconds=null;
+ if(/^\d+(?:\.\d{1,2})?$/.test(raw))seconds=Number(raw);
+ else if(/^\d+:\d{1,2}(?:\.\d{1,2})?$/.test(raw)){const p=raw.split(':');if(Number(p[1])>=60){toast('초는 60 미만이어야 합니다.');return;}seconds=Number(p[0])*60+Number(p[1]);}
+ else if(raw!=='측정 필요'){toast('기록 형식을 확인해 주세요.');return;}
+ if(!confirm(x.name+' · '+x.stroke+' 목표를 '+raw+'(으)로 변경할까요?'))return;
+ const {data,error}=await dbClient.rpc('eysl_admin_update_goal_2026',{p_id:id,p_raw:raw,p_seconds:seconds});
+ if(error||!data?.ok){toast('저장 실패: '+(error?.message||data?.error||'알 수 없는 오류'));return;}
+ await openAdminGoals();toast('목표 기록을 수정했습니다.');
+}
+</script></body>
 </html>
