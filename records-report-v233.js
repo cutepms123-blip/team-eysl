@@ -11,7 +11,7 @@ const fmt=n=>Number.isFinite(n)?n.toFixed(2)+'초':'—';
 const kinds=r=>personalStrokeKind(r,effectiveRecordCategory(r));
 const rows=()=>allRows.filter(r=>r.subcategory!=='relay'&&validStoredRecord(r));
 const scoped=(p)=>rows().filter(r=>p==='all'||recordPoolMeters(r)===Number(p));
-const relevant=(p,k,d)=>scoped(p).filter(r=>kinds(r)===k&&recordDistance(r)===d);
+const relevant=(p,k,d)=>scoped(p).filter(r=>effectiveRecordCategory(r)!=='fin'&&kinds(r)===k&&recordDistance(r)===d);
 function best(rs){return rs.slice().sort((a,b)=>secs(a)-secs(b))[0]}
 function goals(){try{return JSON.parse(localStorage.getItem('eysl_record_goals_v233')||'{}')}catch{return {}}}
 function goalKey(){return [currentUser?.memberId,reportPool,stroke,distance].join('|')}
@@ -37,6 +37,9 @@ function swimSvg(kind){
 function refreshPb(){
  const el=$('eyslStrokePB');if(!el)return;
  const p=pool;
+ if(typeof recordCurrentType!=='undefined'&&recordCurrentType==='relay'){
+ el.innerHTML='<h3>▥ 종목별 PB</h3><div class="eyslPbGrid">'+strokes.slice(0,4).map(k=>'<div><span class="eyslSwimIcon" aria-hidden="true">'+swimSvg(k)+'</span><small>'+k+'</small><b>—</b></div>').join('')+'</div>';return;
+ }
  el.innerHTML='<h3>▥ 종목별 PB</h3><div class="eyslPbGrid">'+strokes.slice(0,4).map(k=>{
  const category=typeof recordMajor==='string'?recordMajor:'meet';
  const v=best(relevant(p,k,50).filter(r=>effectiveRecordCategory(r)===category));
@@ -57,7 +60,7 @@ function report(){
  const series=rs.filter(r=>Number.isFinite(secs(r)));
  const start=first?secs(first):NaN,current=pb?secs(pb):NaN;
  const diff=hasGoal&&pb?current-target:NaN;
- const days=g.date?Math.ceil((new Date(g.date+'T00:00:00')-new Date())/86400000):null;
+ const days=(g.date||'2026-12-20')?Math.ceil((new Date((g.date||'2026-12-20')+'T00:00:00')-new Date())/86400000):null;
  const elapsed=series.length>1?(new Date(date(series[series.length-1]))-new Date(date(series[0])))/86400000/30.4375:0;
  const speed=elapsed>0?(start-current)/elapsed:NaN;
  const sw=strokes.map(s=>'<button data-report-stroke="'+s+'" class="'+(s===stroke?'active':'')+'">'+s+'</button>').join('');
@@ -66,7 +69,7 @@ function report(){
  el.innerHTML='<div class="eyslFilterRow">'+sw+'</div><div class="eyslFilterRow">'+pools+'</div><div class="eyslFilterRow">'+distances+'</div><h3>▥ '+safe(title())+'</h3>'+
  '<div class="eyslReportKpis"><div><small>첫 기록</small><b>'+fmt(start)+'</b><small>'+safe(first?date(first):'')+'</small></div><div class="focus"><small>현재 PB</small><b>'+fmt(current)+'</b><small>'+safe(pb?date(pb):'')+'</small></div><div><small>목표 기록</small><b>'+fmt(hasGoal?target:NaN)+'</b></div></div>'+
  '<div class="eyslReportCard"><div class="eyslCardHead"><b>↗ 기록 변화 추이</b><span>'+series.length+'개 기록</span></div>'+chart(series,hasGoal?target:null)+'</div>'+
- '<div class="eyslReportCard eyslMetrics"><div><small>목표일까지</small><strong>'+(days===null?'미설정':days>=0?'D-'+days:'D+'+Math.abs(days))+'</strong><small>'+safe(g.date||'목표일 미설정')+'</small></div><div><p>목표까지 차이 <b>'+fmt(diff)+'</b></p><p>첫 기록 대비 단축 <b>'+fmt(first&&pb?start-current:NaN)+'</b></p><p>평균 개선 속도 <b>'+fmt(speed)+'/월</b></p></div></div>'+
+ '<div class="eyslReportCard eyslMetrics"><div><small>목표일까지</small><strong>'+(days===null?'미설정':days>=0?'D-'+days:'D+'+Math.abs(days))+'</strong><small>'+safe(g.date||'2026-12-20')+'</small></div><div><p>목표까지 차이 <b>'+fmt(diff)+'</b></p><p>첫 기록 대비 단축 <b>'+fmt(first&&pb?start-current:NaN)+'</b></p><p>평균 개선 속도 <b>'+fmt(speed)+'/월</b></p></div></div>'+
  '<div class="eyslReportCard"><b>▥ 분석 한마디</b><p>'+ (series.length<2?'비교할 기록이 충분하지 않아요. 같은 조건의 기록이 추가되면 변화를 확인할 수 있어요.':start>current?'첫 기록보다 '+fmt(start-current)+' 단축했어요. 목표 달성 가능성은 기록 추이와 남은 기간을 함께 확인해 주세요.':'기록 변화 추이를 확인하고 다음 목표를 설정해 보세요.')+'</p></div>'+
  '<div class="eyslReportCard"><b>목표 설정</b><div class="eyslGoalInputs"><label>목표 기록 (초)<input id="eyslGoalSeconds" inputmode="decimal" type="number" min="1" step="0.01" value="'+(hasGoal?target:'')+'" placeholder="예: 38.00"></label><label>목표일<input id="eyslGoalDate" type="date" value="'+safe(g.date||'')+'"></label><button id="eyslGoalSave">저장</button></div><small>이 기기 브라우저에 저장되는 목표입니다.</small></div>';
 }
@@ -110,6 +113,9 @@ try{showPage=window.showPage}catch(_){}
 const originalPool=window.setRecordPoolFilter;
 window.setRecordPoolFilter=function(value,btn){pool=String(value);const result=originalPool.apply(this,arguments);updateAll();return result};
 try{setRecordPoolFilter=window.setRecordPoolFilter}catch(_){}
+const originalShowRecord=window.showRecord;
+window.showRecord=async function(){const result=await originalShowRecord.apply(this,arguments);refreshPb();return result};
+try{showRecord=window.showRecord}catch(_){}
 const originalFiltered=window.renderRecordFilteredContent;
 window.renderRecordFilteredContent=function(){const result=originalFiltered.apply(this,arguments);const pb=$('recordBody')?.querySelector('.recordScreenHead');if(pb)pb.remove();const grid=$('recordBody')?.querySelector('.screenshotPbGrid');if(grid)grid.remove();return result};
 try{renderRecordFilteredContent=window.renderRecordFilteredContent}catch(_){}
@@ -156,6 +162,9 @@ const css=document.createElement('style');css.textContent=`
 #records #recordBody .historyCard .slower{color:#e4543e!important}
 #records #recordBody .historyCard>span:last-child{font-size:12px!important;white-space:nowrap}
 #records #recordBody .historyCard>div{flex:1;min-width:0}
+#records #recordBody .relayFilteredList .recordRow{background:#f8f9fb!important;color:#14171c!important;border:1px solid #d7dbe0!important;border-radius:13px!important;padding:12px!important;margin:8px 0!important}
+#records #recordBody .relayFilteredList .recordRow b,#records #recordBody .relayFilteredList .recordRow strong{color:#14171c!important}
+#records #recordBody .relayFilteredList .recordRow p,#records #recordBody .relayFilteredList .recordRow small{color:#555d67!important}
 `;document.head.appendChild(css);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
