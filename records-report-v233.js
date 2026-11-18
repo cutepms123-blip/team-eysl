@@ -53,10 +53,13 @@ function syncPool(){
 function updateAll(){
  refreshSummary();refreshPb();syncPool();
 }
-function reportData(){return relevant(reportPool,stroke,distance).sort((a,b)=>date(a).localeCompare(date(b)))}
+function reportData(){return relevant(reportPool,stroke,distance).filter(r=>['meet','other'].includes(effectiveRecordCategory(r))).sort((a,b)=>date(a).localeCompare(date(b)))}
 function report(){
  const el=$('eyslRecordReport');if(!el)return;
- const rs=reportData(),first=rs[0],pb=best(rs),g=goals()[goalKey()]||{},target=Number(g.seconds),hasGoal=Number.isFinite(target)&&target>0;
+ const rs=reportData(),first=rs[0],pb=best(rs);
+ const survey=surveyGoals.find(x=>x.stroke===stroke&&Number(x.distance_m)===distance&&Number(x.pool_m)===Number(reportPool));
+ const g=goals()[goalKey()]||(survey?{seconds:survey.target_seconds,date:survey.target_date,raw:survey.target_raw}:{date:'2026-12-20'});
+ const target=g.seconds===null||g.seconds===undefined||g.seconds===''?NaN:Number(g.seconds),hasGoal=Number.isFinite(target)&&target>0;
  const series=rs.filter(r=>Number.isFinite(secs(r)));
  const start=first?secs(first):NaN,current=pb?secs(pb):NaN;
  const diff=hasGoal&&pb?current-target:NaN;
@@ -81,7 +84,7 @@ function chart(rs,target){
  return '<svg viewBox="0 0 340 185" role="img" aria-label="기록 변화 그래프"><line x1="32" y1="155" x2="320" y2="155" stroke="#59616d"/>'+(target?'<line x1="32" y1="'+y(target)+'" x2="320" y2="'+y(target)+'" stroke="#f5aa6a" stroke-dasharray="5 4"/>':'')+'<polyline points="'+points+'" fill="none" stroke="#ff705b" stroke-width="3"/>'+vals.map((v,i)=>'<circle cx="'+x(i)+'" cy="'+y(v)+'" r="4" fill="#ff705b"/><text x="'+x(i)+'" y="'+Math.max(11,y(v)-10)+'" fill="#ffb19d" font-size="10" text-anchor="middle">'+v.toFixed(2)+'</text>').join('')+'</svg>';
 }
 function activate(next){mode=next;$('eyslRecordAll').hidden=next!=='all';$('eyslRecordReport').hidden=next!=='report';document.querySelectorAll('[data-eysl-record-tab]').forEach(b=>b.classList.toggle('active',b.dataset.eyslRecordTab===next));if(next==='report')report()}
-function mountHomeBanner(){const home=$('home');if(!home||$('eyslHomeBrandBanner'))return;const banner=document.createElement('div');banner.id='eyslHomeBrandBanner';banner.setAttribute('role','img');banner.setAttribute('aria-label','TEAM EYSL SWIMMING TEAM');banner.innerHTML='<div class="eyslBannerSwimmer">◠</div><div class="eyslBannerTitle">TEAM <span>EYSL</span></div><div class="eyslBannerSubtitle">S W I M M I N G &nbsp; T E A M</div>';home.insertBefore(banner,home.firstElementChild)}
+function mountHomeBanner(){const home=$('home');if(!home||$('eyslHomeBrandBanner'))return;const banner=document.createElement('div');banner.id='eyslHomeBrandBanner';banner.setAttribute('role','img');banner.setAttribute('aria-label','TEAM EYSL SWIMMING TEAM');banner.innerHTML='<img src="/team-eysl-official-logo.svg?v=1" alt="TEAM EYSL 공식 로고" loading="eager">';home.insertBefore(banner,home.firstElementChild)}
 function mount(){mountHomeBanner();
  const section=$('records');if(!section||$('eyslRecordTabs'))return;
  const head=section.querySelector('.pagehead');
@@ -122,10 +125,10 @@ const originalFiltered=window.renderRecordFilteredContent;
 window.renderRecordFilteredContent=function(){const result=originalFiltered.apply(this,arguments);const pb=$('recordBody')?.querySelector('.recordScreenHead');if(pb)pb.remove();const grid=$('recordBody')?.querySelector('.screenshotPbGrid');if(grid)grid.remove();return result};
 try{renderRecordFilteredContent=window.renderRecordFilteredContent}catch(_){}
 const css=document.createElement('style');css.textContent=`
-#eyslHomeBrandBanner{background:linear-gradient(145deg,#15191f,#0a0b0e 68%);border:1px solid #3b414b;border-radius:15px;padding:15px 8px 18px;text-align:center;margin:8px 0 14px;min-height:112px;position:relative;overflow:hidden}
-#eyslHomeBrandBanner:before,#eyslHomeBrandBanner:after{content:"";position:absolute;width:90px;height:7px;background:repeating-linear-gradient(90deg,#ff705b 0 14px,#262a31 14px 22px);transform:rotate(-30deg)}
+#eyslHomeBrandBanner{background:#000;border:0;border-radius:15px;padding:6px 8px;text-align:center;margin:8px 0 14px;min-height:112px;position:relative;overflow:hidden}
+#eyslHomeBrandBanner:before,#eyslHomeBrandBanner:after{display:none!important}
 #eyslHomeBrandBanner:before{left:-18px;top:12px}#eyslHomeBrandBanner:after{right:-18px;bottom:12px}
-#eyslHomeBrandBanner .eyslBannerSwimmer{font-size:22px;color:#ff705b;height:25px;line-height:22px}
+#eyslHomeBrandBanner img{display:block;width:100%;max-width:360px;height:132px;object-fit:contain;margin:auto}#eyslHomeBrandBanner .eyslBannerSwimmer{font-size:22px;color:#ff705b;height:25px;line-height:22px}
 #eyslHomeBrandBanner .eyslBannerTitle{font-size:29px;letter-spacing:-1px;font-weight:900;font-style:italic;color:#fff;line-height:1.2}
 #eyslHomeBrandBanner .eyslBannerTitle span{color:#ff705b}
 #eyslHomeBrandBanner .eyslBannerSubtitle{font-size:9px;letter-spacing:2px;color:#b8bdc6;margin-top:5px}
