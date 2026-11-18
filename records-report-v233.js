@@ -54,6 +54,31 @@ function updateAll(){
  refreshSummary();refreshPb();syncPool();
 }
 function reportData(){return relevant(reportPool,stroke,distance).filter(r=>['meet','other'].includes(effectiveRecordCategory(r))).sort((a,b)=>date(a).localeCompare(date(b)))}
+function recordInsight(series,target,days){
+ const ordered=series.filter(r=>Number.isFinite(secs(r))).slice().sort((a,b)=>date(a).localeCompare(date(b)));
+ if(ordered.length<2)return '비교할 기록이 충분하지 않아요. 같은 영법·거리·수로의 기록이 2개 이상 쌓이면 변화를 분석할 수 있어요.';
+ const first=secs(ordered[0]),pb=Math.min(...ordered.map(secs)),improvement=first-pb;
+ const recent=ordered.slice(-Math.min(5,ordered.length));
+ const changes=recent.slice(1).map((r,i)=>secs(recent[i])-secs(r));
+ const faster=changes.filter(v=>v>0.005).length,slower=changes.filter(v=>v<-.005).length;
+ let trend='';
+ if(faster===changes.length)trend='최근 '+recent.length+'회 기록이 연속으로 단축됐어요.';
+ else if(slower===changes.length)trend='최근 '+recent.length+'회 기록은 연속으로 느려졌어요.';
+ else if(faster>slower)trend='최근 '+recent.length+'회 중 기록이 단축된 구간이 더 많아요.';
+ else if(slower>faster)trend='최근 '+recent.length+'회 중 기록이 느려진 구간이 더 많아요.';
+ else trend='최근 '+recent.length+'회 기록은 개선과 하락이 섞여 있어요.';
+ let summary=improvement>.005?' 첫 기록 대비 최고 기록은 '+improvement.toFixed(2)+'초 단축됐어요.':improvement<-.005?' 첫 기록보다 빠른 기록은 아직 없어요.':' 첫 기록이 현재 최고 기록이에요.';
+ if(Number.isFinite(target)&&target>0){
+  const remain=pb-target;
+  summary+=remain<=0?' 설정한 목표 기록을 달성했어요.':' 목표까지 '+remain.toFixed(2)+'초 남았어요.';
+ }
+ if(changes.length>=2){
+  const abs=changes.map(Math.abs),latest=abs[abs.length-1],prior=abs.slice(0,-1).reduce((a,b)=>a+b,0)/(abs.length-1);
+  if(faster===changes.length&&latest<prior-.005)summary+=' 최근 단축 폭은 앞선 구간 평균보다 작아요.';
+ }
+ if(days!==null&&days<0)summary+=' 목표일은 이미 지났어요.';
+ return trend+summary;
+}
 function report(){
  const el=$('eyslRecordReport');if(!el)return;
  const rs=reportData(),first=rs[0],pb=best(rs);
@@ -73,7 +98,7 @@ function report(){
  '<div class="eyslReportKpis"><div><small>첫 기록</small><b>'+fmt(start)+'</b><small>'+safe(first?date(first):'')+'</small></div><div class="focus"><small>현재 PB</small><b>'+fmt(current)+'</b><small>'+safe(pb?date(pb):'')+'</small></div><div><small>목표 기록</small><b>'+fmt(hasGoal?target:NaN)+'</b></div></div>'+
  '<div class="eyslReportCard"><div class="eyslCardHead"><b>↗ 기록 변화 추이</b><span>'+series.length+'개 기록</span></div>'+chart(series,hasGoal?target:null)+'</div>'+
  '<div class="eyslReportCard eyslMetrics"><div><small>목표일까지</small><strong>'+(days===null?'미설정':days>=0?'D-'+days:'D+'+Math.abs(days))+'</strong><small>'+safe(g.date||'2026-12-20')+'</small></div><div><p>목표까지 차이 <b>'+fmt(diff)+'</b></p><p>첫 기록 대비 단축 <b>'+fmt(first&&pb?start-current:NaN)+'</b></p><p>평균 개선 속도 <b>'+fmt(speed)+'/월</b></p></div></div>'+
- '<div class="eyslReportCard"><b>▥ 분석 한마디</b><p>'+ (series.length<2?'비교할 기록이 충분하지 않아요. 같은 조건의 기록이 추가되면 변화를 확인할 수 있어요.':start>current?'첫 기록보다 '+fmt(start-current)+' 단축했어요. 목표 달성 가능성은 기록 추이와 남은 기간을 함께 확인해 주세요.':'기록 변화 추이를 확인하고 다음 목표를 설정해 보세요.')+'</p></div>'+
+ '<div class="eyslReportCard"><b>▥ 분석 한마디</b><p>'+ safe(recordInsight(series,hasGoal?target:NaN,days))+'</p></div>'+
  '<div class="eyslReportCard"><b>목표 설정</b><div class="eyslGoalInputs"><label>목표 기록 (초)<input id="eyslGoalSeconds" inputmode="decimal" type="number" min="1" step="0.01" value="'+(hasGoal?target:'')+'" placeholder="예: 38.00"></label><label>목표일<input id="eyslGoalDate" type="date" value="'+safe(g.date||'')+'"></label><button id="eyslGoalSave">저장</button></div><small>이 기기 브라우저에 저장되는 목표입니다.</small></div>';
 }
 function chart(rs,target){
@@ -128,6 +153,7 @@ const css=document.createElement('style');css.textContent=`
 #eyslHomeBrandBanner{background:#000;border:0;border-radius:15px;padding:6px 8px;text-align:center;margin:8px 0 14px;min-height:112px;position:relative;overflow:hidden}
 #eyslHomeBrandBanner:before,#eyslHomeBrandBanner:after{display:none!important}
 #eyslHomeBrandBanner:before{left:-18px;top:12px}#eyslHomeBrandBanner:after{right:-18px;bottom:12px}
+#home #homeNotice.hero{height:auto!important;min-height:0!important;padding:12px 15px!important}#home #homeNotice.hero h1{margin:5px 0!important;line-height:1.25!important}#home #homeNotice.hero p{margin:3px 0 0!important;line-height:1.35!important}#home #homeNotice.hero small{line-height:1.2!important}
 #eyslHomeBrandBanner img{display:block;width:100%;max-width:360px;height:132px;object-fit:contain;margin:auto}#eyslHomeBrandBanner .eyslBannerSwimmer{font-size:22px;color:#ff705b;height:25px;line-height:22px}
 #eyslHomeBrandBanner .eyslBannerTitle{font-size:29px;letter-spacing:-1px;font-weight:900;font-style:italic;color:#fff;line-height:1.2}
 #eyslHomeBrandBanner .eyslBannerTitle span{color:#ff705b}
