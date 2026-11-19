@@ -114,8 +114,7 @@ function chart(rs,target){
  return '<svg viewBox="0 0 340 185" role="img" aria-label="기록 변화 그래프"><line x1="32" y1="155" x2="320" y2="155" stroke="#59616d"/>'+(target?'<line x1="32" y1="'+y(target)+'" x2="320" y2="'+y(target)+'" stroke="#f5aa6a" stroke-dasharray="5 4"/>':'')+'<polyline points="'+points+'" fill="none" stroke="#ff705b" stroke-width="3"/>'+vals.map((v,i)=>'<circle cx="'+x(i)+'" cy="'+y(v)+'" r="4" fill="#ff705b"/><text x="'+x(i)+'" y="'+Math.max(11,y(v)-10)+'" fill="#ffb19d" font-size="10" text-anchor="middle">'+v.toFixed(2)+'</text>').join('')+'</svg>';
 }
 function activate(next){mode=next;$('eyslRecordAll').hidden=next!=='all';$('eyslRecordReport').hidden=next!=='report';document.querySelectorAll('[data-eysl-record-tab]').forEach(b=>b.classList.toggle('active',b.dataset.eyslRecordTab===next));if(next==='report')report()}
-function mountHomeBanner(){const home=$('home');if(!home||$('eyslHomeBrandBanner'))return;const banner=document.createElement('div');banner.id='eyslHomeBrandBanner';banner.setAttribute('role','img');banner.setAttribute('aria-label','TEAM EYSL SWIMMING TEAM');banner.innerHTML='<img src="/team-eysl-official-logo.svg?v=1" alt="TEAM EYSL 공식 로고" loading="eager">';home.insertBefore(banner,home.firstElementChild)}
-function mount(){mountHomeBanner();
+function mount(){document.getElementById('eyslHomeBrandBanner')?.remove();
  const section=$('records');if(!section||$('eyslRecordTabs'))return;
  const head=section.querySelector('.pagehead');
  head.insertAdjacentHTML('afterend','<div id="eyslRecordTabs" class="eyslTopTabs"><button class="active" data-eysl-record-tab="all">전체 기록</button><button data-eysl-record-tab="report">기록 리포트</button></div><div id="eyslRecordAll"><div id="eyslRecordSummary"></div><div id="eyslRecordTopPool"></div><div id="eyslRecordPB"></div><div id="eyslRecordExisting"></div></div><div id="eyslRecordReport" hidden></div>');
